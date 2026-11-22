@@ -212,3 +212,33 @@ def test_lh_notices_rejects_reversed_date_range(client, monkeypatch):
         params={"start_date": "2025-02-03", "end_date": "2025-01-02"},
     )
     assert r.status_code == 422
+
+
+def test_lh_upstream_error_code_is_reported_without_exposing_key(client, monkeypatch):
+    service_key = "lh-server-only-key"
+    monkeypatch.setenv("LH_SERVICE_KEY", service_key)
+
+    class FakeAsyncClient:
+        def __init__(self, **kwargs):
+            pass
+
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *args):
+            return None
+
+        async def get(self, url, params):
+            request = public_data.httpx.Request("GET", url)
+            return public_data.httpx.Response(
+                403,
+                json={"cmmMsgHeader": {"returnAuthMsg": "SERVICE_ACCESS_DENIED_ERROR"}},
+                request=request,
+            )
+
+    monkeypatch.setattr(public_data.httpx, "AsyncClient", FakeAsyncClient)
+    response = client.get("/api/public/lh-notices")
+
+    assert response.status_code == 502
+    assert "SERVICE_ACCESS_DENIED_ERROR" in response.json()["detail"]
+    assert service_key not in response.text

@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import logging
 import os
+import re
 from datetime import date, timedelta
 from typing import Any
 
@@ -14,6 +15,27 @@ router = APIRouter(prefix="/api/public", tags=["public-data"])
 
 GOV24_BASE_URL = "https://api.odcloud.kr/api/gov24/v3"
 LH_URL = "https://apis.data.go.kr/B552555/lhLeaseNoticeInfo1/lhLeaseNoticeInfo1"
+
+
+def _upstream_error_code(response: httpx.Response) -> str | None:
+    try:
+        payload = response.json()
+    except ValueError:
+        payload = None
+
+    if isinstance(payload, dict):
+        header = payload.get("cmmMsgHeader")
+        if isinstance(header, dict):
+            for name in ("returnAuthMsg", "returnReasonCode"):
+                value = header.get(name)
+                if isinstance(value, str) and re.fullmatch(r"[A-Za-z0-9_.-]{1,80}", value):
+                    return value
+
+    for name in ("returnAuthMsg", "returnReasonCode"):
+        match = re.search(rf"<{name}>\s*([A-Za-z0-9_.-]{{1,80}})\s*</{name}>", response.text)
+        if match:
+            return match.group(1)
+    return None
 
 
 def _service_key(name: str, label: str) -> str:
@@ -30,11 +52,19 @@ async def _fetch_json(url: str, params: dict[str, str | int], source: str) -> An
             response.raise_for_status()
             return response.json()
     except httpx.HTTPStatusError as exc:
-        logger.warning("%s upstream returned HTTP %s", source, exc.response.status_code)
+        error_code = _upstream_error_code(exc.response)
+        logger.warning(
+            "%s upstream returned HTTP %s%s",
+            source,
+            exc.response.status_code,
+            f" ({error_code})" if error_code else "",
+        )
+        detail = f"{source} API 요청이 실패했습니다 (HTTP {exc.response.status_code}). "
+        if error_code:
+            detail += f"오류 코드: {error_code}. "
         raise HTTPException(
             502,
-            f"{source} API 요청이 실패했습니다 (HTTP {exc.response.status_code}). "
-            "인증키와 활용 신청 상태를 확인해 주세요.",
+            detail + "인증키와 활용 신청 상태를 확인해 주세요.",
         ) from exc
     except httpx.RequestError as exc:
         logger.warning("%s upstream request failed: %s", source, type(exc).__name__)
