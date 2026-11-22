@@ -49,6 +49,18 @@ GitHub Pages는 정적 파일만 제공하므로 FastAPI 백엔드는 실행되�
 따라서 API 기반 정책 갱신, 편지 저장, 플레이 기록 기능은 사용할 수 없고, 게임의 내장 정책을 사용합니다.
 API 기능까지 공개하려면 백엔드를 별도 호스팅하고 프론트엔드의 API 주소 및 CORS 설정을 구성해야 합니다. GitHub Pages에는 `frontend/public-services.html`도 배포되며, 게임의 「공공정보」 메뉴에서 정부24 혜택과 LH 임대공고 목록을 볼 수 있습니다. 이 목록은 게임의 정책 판정과 별도로 동작합니다.
 
+### KOSIS 통계 페이지
+
+`frontend/statistics.html`은 2025년 KOSIS 인구·가구 집계 결과를 정적 JSON으로 표시합니다. SQLite나 Render API를 거치지 않으며, 원본 CSV를 브라우저에 내려주지 않습니다. `data/`의 원본 파일은 Git에서 제외되고, 공개 집계 결과만 `frontend/public-data/kosis-2025.json`에 들어갑니다.
+
+KOSIS CSV 세 파일을 `data/01_KOSIS/`에 둔 뒤 저장소 루트에서 아래 명령을 실행해 공개 JSON을 다시 생성합니다.
+
+```powershell
+python backend/app/kosis_public.py
+```
+
+페이지는 게임 시작 화면과 `public-services.html`에서 연결됩니다. 공개 데이터 범위를 넓힐 때도 MDIS·YP2021 행 단위 원자료는 추가하지 말고, 재배포 조건을 확인한 집계 결과만 별도로 검토하세요.
+
 ## API
 
 | 메서드 | 경로 | 설명 |

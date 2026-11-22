@@ -1,0 +1,2709 @@
+{
+  "year": 2025,
+  "population": {
+    "latestMonth": "2025.12",
+    "monthly": [
+      {
+        "period": "202501",
+        "total": 51207874,
+        "male": 25492996,
+        "female": 25714878
+      },
+      {
+        "period": "202502",
+        "total": 51191817,
+        "male": 25484498,
+        "female": 25707319
+      },
+      {
+        "period": "202503",
+        "total": 51183336,
+        "male": 25479498,
+        "female": 25703838
+      },
+      {
+        "period": "202504",
+        "total": 51175725,
+        "male": 25474633,
+        "female": 25701092
+      },
+      {
+        "period": "202505",
+        "total": 51169148,
+        "male": 25470398,
+        "female": 25698750
+      },
+      {
+        "period": "202506",
+        "total": 51164582,
+        "male": 25467115,
+        "female": 25697467
+      },
+      {
+        "period": "202507",
+        "total": 51159889,
+        "male": 25463429,
+        "female": 25696460
+      },
+      {
+        "period": "202508",
+        "total": 51154981,
+        "male": 25459789,
+        "female": 25695192
+      },
+      {
+        "period": "202509",
+        "total": 51149546,
+        "male": 25455867,
+        "female": 25693679
+      },
+      {
+        "period": "202510",
+        "total": 51143421,
+        "male": 25451723,
+        "female": 25691698
+      },
+      {
+        "period": "202511",
+        "total": 51128530,
+        "male": 25443016,
+        "female": 25685514
+      },
+      {
+        "period": "202512",
+        "total": 51117378,
+        "male": 25436665,
+        "female": 25680713
+      }
+    ],
+    "ageDistribution": [
+      {
+        "age": "0세",
+        "total": 252212,
+        "male": 129588,
+        "female": 122624
+      },
+      {
+        "age": "1세",
+        "total": 243765,
+        "male": 124790,
+        "female": 118975
+      },
+      {
+        "age": "2세",
+        "total": 235297,
+        "male": 120453,
+        "female": 114844
+      },
+      {
+        "age": "3세",
+        "total": 255233,
+        "male": 130446,
+        "female": 124787
+      },
+      {
+        "age": "4세",
+        "total": 267994,
+        "male": 137337,
+        "female": 130657
+      },
+      {
+        "age": "5세",
+        "total": 280450,
+        "male": 143433,
+        "female": 137017
+      },
+      {
+        "age": "6세",
+        "total": 310444,
+        "male": 159383,
+        "female": 151061
+      },
+      {
+        "age": "7세",
+        "total": 334444,
+        "male": 171503,
+        "female": 162941
+      },
+      {
+        "age": "8세",
+        "total": 365325,
+        "male": 187972,
+        "female": 177353
+      },
+      {
+        "age": "9세",
+        "total": 414059,
+        "male": 211765,
+        "female": 202294
+      },
+      {
+        "age": "10세",
+        "total": 445457,
+        "male": 228208,
+        "female": 217249
+      },
+      {
+        "age": "11세",
+        "total": 441512,
+        "male": 226064,
+        "female": 215448
+      },
+      {
+        "age": "12세",
+        "total": 442131,
+        "male": 226388,
+        "female": 215743
+      },
+      {
+        "age": "13세",
+        "total": 490313,
+        "male": 251455,
+        "female": 238858
+      },
+      {
+        "age": "14세",
+        "total": 476544,
+        "male": 244355,
+        "female": 232189
+      },
+      {
+        "age": "15세",
+        "total": 473708,
+        "male": 244010,
+        "female": 229698
+      },
+      {
+        "age": "16세",
+        "total": 447924,
+        "male": 230358,
+        "female": 217566
+      },
+      {
+        "age": "17세",
+        "total": 468145,
+        "male": 240467,
+        "female": 227678
+      },
+      {
+        "age": "18세",
+        "total": 494672,
+        "male": 253736,
+        "female": 240936
+      },
+      {
+        "age": "19세",
+        "total": 447937,
+        "male": 230802,
+        "female": 217135
+      },
+      {
+        "age": "20세",
+        "total": 434325,
+        "male": 224127,
+        "female": 210198
+      },
+      {
+        "age": "21세",
+        "total": 471552,
+        "male": 243613,
+        "female": 227939
+      },
+      {
+        "age": "22세",
+        "total": 490790,
+        "male": 254034,
+        "female": 236756
+      },
+      {
+        "age": "23세",
+        "total": 491854,
+        "male": 256065,
+        "female": 235789
+      },
+      {
+        "age": "24세",
+        "total": 556150,
+        "male": 288559,
+        "female": 267591
+      },
+      {
+        "age": "25세",
+        "total": 635753,
+        "male": 330974,
+        "female": 304779
+      },
+      {
+        "age": "26세",
+        "total": 616481,
+        "male": 320399,
+        "female": 296082
+      },
+      {
+        "age": "27세",
+        "total": 636192,
+        "male": 331289,
+        "female": 304903
+      },
+      {
+        "age": "28세",
+        "total": 667594,
+        "male": 344671,
+        "female": 322923
+      },
+      {
+        "age": "29세",
+        "total": 681551,
+        "male": 356797,
+        "female": 324754
+      },
+      {
+        "age": "30세",
+        "total": 704378,
+        "male": 371166,
+        "female": 333212
+      },
+      {
+        "age": "31세",
+        "total": 710144,
+        "male": 376627,
+        "female": 333517
+      },
+      {
+        "age": "32세",
+        "total": 707175,
+        "male": 374687,
+        "female": 332488
+      },
+      {
+        "age": "33세",
+        "total": 722161,
+        "male": 379379,
+        "female": 342782
+      },
+      {
+        "age": "34세",
+        "total": 699697,
+        "male": 365136,
+        "female": 334561
+      },
+      {
+        "age": "35세",
+        "total": 638635,
+        "male": 337354,
+        "female": 301281
+      },
+      {
+        "age": "36세",
+        "total": 629083,
+        "male": 326138,
+        "female": 302945
+      },
+      {
+        "age": "37세",
+        "total": 624003,
+        "male": 324782,
+        "female": 299221
+      },
+      {
+        "age": "38세",
+        "total": 615866,
+        "male": 314203,
+        "female": 301663
+      },
+      {
+        "age": "39세",
+        "total": 625315,
+        "male": 323337,
+        "female": 301978
+      },
+      {
+        "age": "40세",
+        "total": 649453,
+        "male": 332912,
+        "female": 316541
+      },
+      {
+        "age": "41세",
+        "total": 658085,
+        "male": 336319,
+        "female": 321766
+      },
+      {
+        "age": "42세",
+        "total": 742966,
+        "male": 378819,
+        "female": 364147
+      },
+      {
+        "age": "43세",
+        "total": 815726,
+        "male": 414870,
+        "female": 400856
+      },
+      {
+        "age": "44세",
+        "total": 832650,
+        "male": 424748,
+        "female": 407902
+      },
+      {
+        "age": "45세",
+        "total": 828806,
+        "male": 421862,
+        "female": 406944
+      },
+      {
+        "age": "46세",
+        "total": 819025,
+        "male": 412478,
+        "female": 406547
+      },
+      {
+        "age": "47세",
+        "total": 713936,
+        "male": 367979,
+        "female": 345957
+      },
+      {
+        "age": "48세",
+        "total": 769434,
+        "male": 385866,
+        "female": 383568
+      },
+      {
+        "age": "49세",
+        "total": 752131,
+        "male": 383898,
+        "female": 368233
+      },
+      {
+        "age": "50세",
+        "total": 778434,
+        "male": 391601,
+        "female": 386833
+      },
+      {
+        "age": "51세",
+        "total": 844025,
+        "male": 429737,
+        "female": 414288
+      },
+      {
+        "age": "52세",
+        "total": 878065,
+        "male": 439347,
+        "female": 438718
+      },
+      {
+        "age": "53세",
+        "total": 877870,
+        "male": 447896,
+        "female": 429974
+      },
+      {
+        "age": "54세",
+        "total": 923656,
+        "male": 469130,
+        "female": 454526
+      },
+      {
+        "age": "55세",
+        "total": 898223,
+        "male": 454492,
+        "female": 443731
+      },
+      {
+        "age": "56세",
+        "total": 902052,
+        "male": 452208,
+        "female": 449844
+      },
+      {
+        "age": "57세",
+        "total": 902554,
+        "male": 449916,
+        "female": 452638
+      },
+      {
+        "age": "58세",
+        "total": 837902,
+        "male": 411060,
+        "female": 426842
+      },
+      {
+        "age": "59세",
+        "total": 791291,
+        "male": 409384,
+        "female": 381907
+      },
+      {
+        "age": "60세",
+        "total": 824211,
+        "male": 409307,
+        "female": 414904
+      },
+      {
+        "age": "61세",
+        "total": 805015,
+        "male": 403436,
+        "female": 401579
+      },
+      {
+        "age": "62세",
+        "total": 763732,
+        "male": 384571,
+        "female": 379161
+      },
+      {
+        "age": "63세",
+        "total": 846301,
+        "male": 425244,
+        "female": 421057
+      },
+      {
+        "age": "64세",
+        "total": 874748,
+        "male": 429586,
+        "female": 445162
+      },
+      {
+        "age": "65세",
+        "total": 880186,
+        "male": 428828,
+        "female": 451358
+      },
+      {
+        "age": "66세",
+        "total": 809673,
+        "male": 394070,
+        "female": 415603
+      },
+      {
+        "age": "67세",
+        "total": 737628,
+        "male": 361882,
+        "female": 375746
+      },
+      {
+        "age": "68세",
+        "total": 727802,
+        "male": 355156,
+        "female": 372646
+      },
+      {
+        "age": "69세",
+        "total": 652982,
+        "male": 314961,
+        "female": 338021
+      },
+      {
+        "age": "70세",
+        "total": 672218,
+        "male": 316944,
+        "female": 355274
+      },
+      {
+        "age": "71세",
+        "total": 567117,
+        "male": 272045,
+        "female": 295072
+      },
+      {
+        "age": "72세",
+        "total": 485894,
+        "male": 227597,
+        "female": 258297
+      },
+      {
+        "age": "73세",
+        "total": 531392,
+        "male": 248094,
+        "female": 283298
+      },
+      {
+        "age": "74세",
+        "total": 382196,
+        "male": 176779,
+        "female": 205417
+      },
+      {
+        "age": "75세",
+        "total": 402372,
+        "male": 184706,
+        "female": 217666
+      },
+      {
+        "age": "76세",
+        "total": 401141,
+        "male": 182170,
+        "female": 218971
+      },
+      {
+        "age": "77세",
+        "total": 391994,
+        "male": 177260,
+        "female": 214734
+      },
+      {
+        "age": "78세",
+        "total": 387739,
+        "male": 170798,
+        "female": 216941
+      },
+      {
+        "age": "79세",
+        "total": 302211,
+        "male": 132993,
+        "female": 169218
+      },
+      {
+        "age": "80세",
+        "total": 261648,
+        "male": 111661,
+        "female": 149987
+      },
+      {
+        "age": "81세",
+        "total": 270820,
+        "male": 110923,
+        "female": 159897
+      },
+      {
+        "age": "82세",
+        "total": 261448,
+        "male": 103963,
+        "female": 157485
+      },
+      {
+        "age": "83세",
+        "total": 305697,
+        "male": 118990,
+        "female": 186707
+      },
+      {
+        "age": "84세",
+        "total": 239464,
+        "male": 89580,
+        "female": 149884
+      },
+      {
+        "age": "85세",
+        "total": 198069,
+        "male": 70753,
+        "female": 127316
+      },
+      {
+        "age": "86세",
+        "total": 190292,
+        "male": 65610,
+        "female": 124682
+      },
+      {
+        "age": "87세",
+        "total": 158876,
+        "male": 52511,
+        "female": 106365
+      },
+      {
+        "age": "88세",
+        "total": 134486,
+        "male": 42276,
+        "female": 92210
+      },
+      {
+        "age": "89세",
+        "total": 113705,
+        "male": 33746,
+        "female": 79959
+      },
+      {
+        "age": "90세",
+        "total": 96203,
+        "male": 26886,
+        "female": 69317
+      },
+      {
+        "age": "91세",
+        "total": 74612,
+        "male": 19566,
+        "female": 55046
+      },
+      {
+        "age": "92세",
+        "total": 55273,
+        "male": 13561,
+        "female": 41712
+      },
+      {
+        "age": "93세",
+        "total": 43724,
+        "male": 9984,
+        "female": 33740
+      },
+      {
+        "age": "94세",
+        "total": 30083,
+        "male": 6349,
+        "female": 23734
+      },
+      {
+        "age": "95세",
+        "total": 22941,
+        "male": 4379,
+        "female": 18562
+      },
+      {
+        "age": "96세",
+        "total": 17348,
+        "male": 3489,
+        "female": 13859
+      },
+      {
+        "age": "97세",
+        "total": 12045,
+        "male": 2127,
+        "female": 9918
+      },
+      {
+        "age": "98세",
+        "total": 8200,
+        "male": 1341,
+        "female": 6859
+      },
+      {
+        "age": "99세",
+        "total": 4617,
+        "male": 730,
+        "female": 3887
+      },
+      {
+        "age": "100세 이상",
+        "total": 8726,
+        "male": 1441,
+        "female": 7285
+      }
+    ]
+  },
+  "households": {
+    "total": 22495096,
+    "onePerson": 8244308,
+    "averageSize": 2.2,
+    "bySize": [
+      {
+        "label": "1인",
+        "count": 8244308
+      },
+      {
+        "label": "2인",
+        "count": 6623694
+      },
+      {
+        "label": "3인",
+        "count": 4219043
+      },
+      {
+        "label": "4인",
+        "count": 2732400
+      },
+      {
+        "label": "5인",
+        "count": 559471
+      },
+      {
+        "label": "6인",
+        "count": 94288
+      },
+      {
+        "label": "7인 이상",
+        "count": 21892
+      }
+    ],
+    "onePersonSharePercent": 36.6,
+    "regionsByOnePersonShare": [
+      {
+        "code": "11210",
+        "name": "서울특별시 관악구",
+        "total": 268074,
+        "onePerson": 158667,
+        "onePersonSharePercent": 59.2
+      },
+      {
+        "code": "21010",
+        "name": "부산광역시 중구",
+        "total": 21018,
+        "onePerson": 12086,
+        "onePersonSharePercent": 57.5
+      },
+      {
+        "code": "23520",
+        "name": "인천광역시 옹진군",
+        "total": 9869,
+        "onePerson": 4895,
+        "onePersonSharePercent": 49.6
+      },
+      {
+        "code": "11020",
+        "name": "서울특별시 중구",
+        "total": 59346,
+        "onePerson": 29148,
+        "onePersonSharePercent": 49.1
+      },
+      {
+        "code": "22040",
+        "name": "대구광역시 남구",
+        "total": 70435,
+        "onePerson": 34383,
+        "onePersonSharePercent": 48.8
+      },
+      {
+        "code": "11180",
+        "name": "서울특별시 금천구",
+        "total": 113400,
+        "onePerson": 55126,
+        "onePersonSharePercent": 48.6
+      },
+      {
+        "code": "37630",
+        "name": "경상북도 울릉군",
+        "total": 4281,
+        "onePerson": 2041,
+        "onePersonSharePercent": 47.7
+      },
+      {
+        "code": "11010",
+        "name": "서울특별시 종로구",
+        "total": 65131,
+        "onePerson": 30684,
+        "onePersonSharePercent": 47.1
+      },
+      {
+        "code": "11050",
+        "name": "서울특별시 광진구",
+        "total": 160750,
+        "onePerson": 75319,
+        "onePersonSharePercent": 46.9
+      },
+      {
+        "code": "38510",
+        "name": "경상남도 의령군",
+        "total": 12296,
+        "onePerson": 5683,
+        "onePersonSharePercent": 46.2
+      },
+      {
+        "code": "37550",
+        "name": "경상북도 영덕군",
+        "total": 16727,
+        "onePerson": 7730,
+        "onePersonSharePercent": 46.2
+      },
+      {
+        "code": "36520",
+        "name": "전라남도 곡성군",
+        "total": 13087,
+        "onePerson": 6016,
+        "onePersonSharePercent": 46.0
+      },
+      {
+        "code": "38600",
+        "name": "경상남도 합천군",
+        "total": 19800,
+        "onePerson": 9081,
+        "onePersonSharePercent": 45.9
+      },
+      {
+        "code": "11190",
+        "name": "서울특별시 영등포구",
+        "total": 178380,
+        "onePerson": 81908,
+        "onePersonSharePercent": 45.9
+      },
+      {
+        "code": "24010",
+        "name": "광주광역시 동구",
+        "total": 53307,
+        "onePerson": 24188,
+        "onePersonSharePercent": 45.4
+      },
+      {
+        "code": "21030",
+        "name": "부산광역시 동구",
+        "total": 41726,
+        "onePerson": 18862,
+        "onePersonSharePercent": 45.2
+      },
+      {
+        "code": "37530",
+        "name": "경상북도 청송군",
+        "total": 11952,
+        "onePerson": 5382,
+        "onePersonSharePercent": 45.0
+      },
+      {
+        "code": "11060",
+        "name": "서울특별시 동대문구",
+        "total": 163744,
+        "onePerson": 73639,
+        "onePersonSharePercent": 45.0
+      },
+      {
+        "code": "36550",
+        "name": "전라남도 고흥군",
+        "total": 30149,
+        "onePerson": 13489,
+        "onePersonSharePercent": 44.7
+      },
+      {
+        "code": "37520",
+        "name": "경상북도 의성군",
+        "total": 24224,
+        "onePerson": 10803,
+        "onePersonSharePercent": 44.6
+      },
+      {
+        "code": "25010",
+        "name": "대전광역시 동구",
+        "total": 108281,
+        "onePerson": 48245,
+        "onePersonSharePercent": 44.6
+      },
+      {
+        "code": "11200",
+        "name": "서울특별시 동작구",
+        "total": 175902,
+        "onePerson": 78375,
+        "onePersonSharePercent": 44.6
+      },
+      {
+        "code": "37540",
+        "name": "경상북도 영양군",
+        "total": 7775,
+        "onePerson": 3411,
+        "onePersonSharePercent": 43.9
+      },
+      {
+        "code": "11030",
+        "name": "서울특별시 용산구",
+        "total": 93448,
+        "onePerson": 40988,
+        "onePersonSharePercent": 43.9
+      },
+      {
+        "code": "11140",
+        "name": "서울특별시 마포구",
+        "total": 167118,
+        "onePerson": 73242,
+        "onePersonSharePercent": 43.8
+      },
+      {
+        "code": "32550",
+        "name": "강원특별자치도 정선군",
+        "total": 16602,
+        "onePerson": 7252,
+        "onePersonSharePercent": 43.7
+      },
+      {
+        "code": "37620",
+        "name": "경상북도 울진군",
+        "total": 22324,
+        "onePerson": 9723,
+        "onePersonSharePercent": 43.6
+      },
+      {
+        "code": "36560",
+        "name": "전라남도 보성군",
+        "total": 17783,
+        "onePerson": 7754,
+        "onePersonSharePercent": 43.6
+      },
+      {
+        "code": "31013",
+        "name": "경기도 팔달구",
+        "total": 90286,
+        "onePerson": 39286,
+        "onePersonSharePercent": 43.5
+      },
+      {
+        "code": "33560",
+        "name": "충청북도 괴산군",
+        "total": 18220,
+        "onePerson": 7928,
+        "onePersonSharePercent": 43.5
+      },
+      {
+        "code": "32070",
+        "name": "강원특별자치도 삼척시",
+        "total": 30130,
+        "onePerson": 13080,
+        "onePersonSharePercent": 43.4
+      },
+      {
+        "code": "21020",
+        "name": "부산광역시 서구",
+        "total": 49001,
+        "onePerson": 21237,
+        "onePersonSharePercent": 43.3
+      },
+      {
+        "code": "38570",
+        "name": "경상남도 산청군",
+        "total": 16091,
+        "onePerson": 6959,
+        "onePersonSharePercent": 43.2
+      },
+      {
+        "code": "36610",
+        "name": "전라남도 영암군",
+        "total": 24376,
+        "onePerson": 10538,
+        "onePersonSharePercent": 43.2
+      },
+      {
+        "code": "21050",
+        "name": "부산광역시 부산진구",
+        "total": 176676,
+        "onePerson": 75972,
+        "onePersonSharePercent": 43.0
+      },
+      {
+        "code": "36670",
+        "name": "전라남도 진도군",
+        "total": 13497,
+        "onePerson": 5809,
+        "onePersonSharePercent": 43.0
+      },
+      {
+        "code": "32530",
+        "name": "강원특별자치도 영월군",
+        "total": 17839,
+        "onePerson": 7648,
+        "onePersonSharePercent": 42.9
+      },
+      {
+        "code": "36580",
+        "name": "전라남도 장흥군",
+        "total": 16475,
+        "onePerson": 7062,
+        "onePersonSharePercent": 42.9
+      },
+      {
+        "code": "33570",
+        "name": "충청북도 음성군",
+        "total": 44215,
+        "onePerson": 18959,
+        "onePersonSharePercent": 42.9
+      },
+      {
+        "code": "31021",
+        "name": "경기도 수정구",
+        "total": 108662,
+        "onePerson": 46545,
+        "onePersonSharePercent": 42.8
+      },
+      {
+        "code": "37100",
+        "name": "경상북도 경산시",
+        "total": 129315,
+        "onePerson": 55411,
+        "onePersonSharePercent": 42.8
+      },
+      {
+        "code": "21140",
+        "name": "부산광역시 수영구",
+        "total": 81182,
+        "onePerson": 34645,
+        "onePersonSharePercent": 42.7
+      },
+      {
+        "code": "32540",
+        "name": "강원특별자치도 평창군",
+        "total": 19364,
+        "onePerson": 8244,
+        "onePersonSharePercent": 42.6
+      },
+      {
+        "code": "36590",
+        "name": "전라남도 강진군",
+        "total": 15229,
+        "onePerson": 6481,
+        "onePersonSharePercent": 42.6
+      },
+      {
+        "code": "21110",
+        "name": "부산광역시 금정구",
+        "total": 99367,
+        "onePerson": 42085,
+        "onePersonSharePercent": 42.4
+      },
+      {
+        "code": "11160",
+        "name": "서울특별시 강서구",
+        "total": 255799,
+        "onePerson": 108459,
+        "onePersonSharePercent": 42.4
+      },
+      {
+        "code": "38580",
+        "name": "경상남도 함양군",
+        "total": 17228,
+        "onePerson": 7289,
+        "onePersonSharePercent": 42.3
+      },
+      {
+        "code": "38530",
+        "name": "경상남도 창녕군",
+        "total": 26575,
+        "onePerson": 11182,
+        "onePersonSharePercent": 42.1
+      },
+      {
+        "code": "22010",
+        "name": "대구광역시 중구",
+        "total": 47243,
+        "onePerson": 19881,
+        "onePersonSharePercent": 42.1
+      },
+      {
+        "code": "21040",
+        "name": "부산광역시 영도구",
+        "total": 49004,
+        "onePerson": 20608,
+        "onePersonSharePercent": 42.1
+      },
+      {
+        "code": "33540",
+        "name": "충청북도 영동군",
+        "total": 21256,
+        "onePerson": 8959,
+        "onePersonSharePercent": 42.1
+      },
+      {
+        "code": "32570",
+        "name": "강원특별자치도 화천군",
+        "total": 10259,
+        "onePerson": 4309,
+        "onePersonSharePercent": 42.0
+      },
+      {
+        "code": "38560",
+        "name": "경상남도 하동군",
+        "total": 19233,
+        "onePerson": 8079,
+        "onePersonSharePercent": 42.0
+      },
+      {
+        "code": "37610",
+        "name": "경상북도 봉화군",
+        "total": 13910,
+        "onePerson": 5847,
+        "onePersonSharePercent": 42.0
+      },
+      {
+        "code": "37040",
+        "name": "경상북도 안동시",
+        "total": 73100,
+        "onePerson": 30674,
+        "onePersonSharePercent": 42.0
+      },
+      {
+        "code": "23010",
+        "name": "인천광역시 중구",
+        "total": 80148,
+        "onePerson": 33664,
+        "onePersonSharePercent": 42.0
+      },
+      {
+        "code": "32610",
+        "name": "강원특별자치도 양양군",
+        "total": 13194,
+        "onePerson": 5532,
+        "onePersonSharePercent": 41.9
+      },
+      {
+        "code": "38550",
+        "name": "경상남도 남해군",
+        "total": 19377,
+        "onePerson": 8113,
+        "onePersonSharePercent": 41.9
+      },
+      {
+        "code": "11090",
+        "name": "서울특별시 강북구",
+        "total": 130411,
+        "onePerson": 54655,
+        "onePersonSharePercent": 41.9
+      },
+      {
+        "code": "33042",
+        "name": "충청북도 서원구",
+        "total": 85950,
+        "onePerson": 35906,
+        "onePersonSharePercent": 41.8
+      },
+      {
+        "code": "32600",
+        "name": "강원특별자치도 고성군",
+        "total": 12795,
+        "onePerson": 5332,
+        "onePersonSharePercent": 41.7
+      },
+      {
+        "code": "32050",
+        "name": "강원특별자치도 태백시",
+        "total": 18372,
+        "onePerson": 7653,
+        "onePersonSharePercent": 41.7
+      },
+      {
+        "code": "36630",
+        "name": "전라남도 함평군",
+        "total": 13614,
+        "onePerson": 5680,
+        "onePersonSharePercent": 41.7
+      },
+      {
+        "code": "11130",
+        "name": "서울특별시 서대문구",
+        "total": 137778,
+        "onePerson": 57273,
+        "onePersonSharePercent": 41.6
+      },
+      {
+        "code": "33580",
+        "name": "충청북도 단양군",
+        "total": 13062,
+        "onePerson": 5429,
+        "onePersonSharePercent": 41.6
+      },
+      {
+        "code": "36530",
+        "name": "전라남도 구례군",
+        "total": 11248,
+        "onePerson": 4673,
+        "onePersonSharePercent": 41.5
+      },
+      {
+        "code": "37070",
+        "name": "경상북도 영천시",
+        "total": 45718,
+        "onePerson": 18932,
+        "onePersonSharePercent": 41.4
+      },
+      {
+        "code": "33590",
+        "name": "충청북도 증평군",
+        "total": 17429,
+        "onePerson": 7220,
+        "onePersonSharePercent": 41.4
+      },
+      {
+        "code": "35570",
+        "name": "전북특별자치도 고창군",
+        "total": 23841,
+        "onePerson": 9835,
+        "onePersonSharePercent": 41.3
+      },
+      {
+        "code": "34020",
+        "name": "충청남도 공주시",
+        "total": 47013,
+        "onePerson": 19378,
+        "onePersonSharePercent": 41.2
+      },
+      {
+        "code": "37560",
+        "name": "경상북도 청도군",
+        "total": 19237,
+        "onePerson": 7900,
+        "onePersonSharePercent": 41.1
+      },
+      {
+        "code": "34580",
+        "name": "충청남도 태안군",
+        "total": 28955,
+        "onePerson": 11868,
+        "onePersonSharePercent": 41.0
+      },
+      {
+        "code": "37080",
+        "name": "경상북도 상주시",
+        "total": 43495,
+        "onePerson": 17768,
+        "onePersonSharePercent": 40.9
+      },
+      {
+        "code": "32590",
+        "name": "강원특별자치도 인제군",
+        "total": 14098,
+        "onePerson": 5758,
+        "onePersonSharePercent": 40.8
+      },
+      {
+        "code": "38080",
+        "name": "경상남도 밀양시",
+        "total": 47765,
+        "onePerson": 19485,
+        "onePersonSharePercent": 40.8
+      },
+      {
+        "code": "11070",
+        "name": "서울특별시 중랑구",
+        "total": 174596,
+        "onePerson": 71249,
+        "onePersonSharePercent": 40.8
+      },
+      {
+        "code": "32030",
+        "name": "강원특별자치도 강릉시",
+        "total": 99671,
+        "onePerson": 40615,
+        "onePersonSharePercent": 40.7
+      },
+      {
+        "code": "36010",
+        "name": "전라남도 목포시",
+        "total": 96053,
+        "onePerson": 39107,
+        "onePersonSharePercent": 40.7
+      },
+      {
+        "code": "36680",
+        "name": "전라남도 신안군",
+        "total": 17423,
+        "onePerson": 7087,
+        "onePersonSharePercent": 40.7
+      },
+      {
+        "code": "36660",
+        "name": "전라남도 완도군",
+        "total": 20970,
+        "onePerson": 8523,
+        "onePersonSharePercent": 40.6
+      },
+      {
+        "code": "21150",
+        "name": "부산광역시 사상구",
+        "total": 92443,
+        "onePerson": 37397,
+        "onePersonSharePercent": 40.5
+      },
+      {
+        "code": "36600",
+        "name": "전라남도 해남군",
+        "total": 28952,
+        "onePerson": 11735,
+        "onePersonSharePercent": 40.5
+      },
+      {
+        "code": "35550",
+        "name": "전북특별자치도 임실군",
+        "total": 11869,
+        "onePerson": 4812,
+        "onePersonSharePercent": 40.5
+      },
+      {
+        "code": "33044",
+        "name": "충청북도 청원구",
+        "total": 85251,
+        "onePerson": 34499,
+        "onePersonSharePercent": 40.5
+      },
+      {
+        "code": "33020",
+        "name": "충청북도 충주시",
+        "total": 99551,
+        "onePerson": 40305,
+        "onePersonSharePercent": 40.5
+      },
+      {
+        "code": "33043",
+        "name": "충청북도 흥덕구",
+        "total": 132894,
+        "onePerson": 53867,
+        "onePersonSharePercent": 40.5
+      },
+      {
+        "code": "25030",
+        "name": "대전광역시 서구",
+        "total": 213944,
+        "onePerson": 86267,
+        "onePersonSharePercent": 40.3
+      },
+      {
+        "code": "36040",
+        "name": "전라남도 나주시",
+        "total": 52978,
+        "onePerson": 21365,
+        "onePersonSharePercent": 40.3
+      },
+      {
+        "code": "35530",
+        "name": "전북특별자치도 무주군",
+        "total": 10770,
+        "onePerson": 4345,
+        "onePersonSharePercent": 40.3
+      },
+      {
+        "code": "38540",
+        "name": "경상남도 고성군",
+        "total": 22172,
+        "onePerson": 8924,
+        "onePersonSharePercent": 40.2
+      },
+      {
+        "code": "38590",
+        "name": "경상남도 거창군",
+        "total": 27726,
+        "onePerson": 11110,
+        "onePersonSharePercent": 40.1
+      },
+      {
+        "code": "32060",
+        "name": "강원특별자치도 속초시",
+        "total": 38027,
+        "onePerson": 15201,
+        "onePersonSharePercent": 40.0
+      },
+      {
+        "code": "37570",
+        "name": "경상북도 고령군",
+        "total": 14027,
+        "onePerson": 5612,
+        "onePersonSharePercent": 40.0
+      },
+      {
+        "code": "22030",
+        "name": "대구광역시 서구",
+        "total": 77461,
+        "onePerson": 31001,
+        "onePersonSharePercent": 40.0
+      },
+      {
+        "code": "25040",
+        "name": "대전광역시 유성구",
+        "total": 165339,
+        "onePerson": 66145,
+        "onePersonSharePercent": 40.0
+      },
+      {
+        "code": "35040",
+        "name": "전북특별자치도 정읍시",
+        "total": 47114,
+        "onePerson": 18839,
+        "onePersonSharePercent": 40.0
+      },
+      {
+        "code": "32010",
+        "name": "강원특별자치도 춘천시",
+        "total": 131228,
+        "onePerson": 52308,
+        "onePersonSharePercent": 39.9
+      },
+      {
+        "code": "31550",
+        "name": "경기도 연천군",
+        "total": 19043,
+        "onePerson": 7591,
+        "onePersonSharePercent": 39.9
+      },
+      {
+        "code": "37020",
+        "name": "경상북도 경주시",
+        "total": 116834,
+        "onePerson": 46606,
+        "onePersonSharePercent": 39.9
+      },
+      {
+        "code": "35580",
+        "name": "전북특별자치도 부안군",
+        "total": 22201,
+        "onePerson": 8850,
+        "onePersonSharePercent": 39.9
+      },
+      {
+        "code": "34510",
+        "name": "충청남도 금산군",
+        "total": 23472,
+        "onePerson": 9359,
+        "onePersonSharePercent": 39.9
+      },
+      {
+        "code": "32510",
+        "name": "강원특별자치도 홍천군",
+        "total": 31223,
+        "onePerson": 12438,
+        "onePersonSharePercent": 39.8
+      },
+      {
+        "code": "31570",
+        "name": "경기도 가평군",
+        "total": 28034,
+        "onePerson": 11159,
+        "onePersonSharePercent": 39.8
+      },
+      {
+        "code": "38060",
+        "name": "경상남도 사천시",
+        "total": 50132,
+        "onePerson": 19953,
+        "onePersonSharePercent": 39.8
+      },
+      {
+        "code": "37090",
+        "name": "경상북도 문경시",
+        "total": 30815,
+        "onePerson": 12250,
+        "onePersonSharePercent": 39.8
+      },
+      {
+        "code": "37590",
+        "name": "경상북도 칠곡군",
+        "total": 48321,
+        "onePerson": 19198,
+        "onePersonSharePercent": 39.7
+      },
+      {
+        "code": "37580",
+        "name": "경상북도 성주군",
+        "total": 18819,
+        "onePerson": 7447,
+        "onePersonSharePercent": 39.6
+      },
+      {
+        "code": "34540",
+        "name": "충청남도 서천군",
+        "total": 22623,
+        "onePerson": 8949,
+        "onePersonSharePercent": 39.6
+      },
+      {
+        "code": "11040",
+        "name": "서울특별시 성동구",
+        "total": 123336,
+        "onePerson": 48664,
+        "onePersonSharePercent": 39.5
+      },
+      {
+        "code": "34060",
+        "name": "충청남도 논산시",
+        "total": 49946,
+        "onePerson": 19738,
+        "onePersonSharePercent": 39.5
+      },
+      {
+        "code": "34080",
+        "name": "충청남도 당진시",
+        "total": 79238,
+        "onePerson": 31313,
+        "onePersonSharePercent": 39.5
+      },
+      {
+        "code": "35050",
+        "name": "전북특별자치도 남원시",
+        "total": 34877,
+        "onePerson": 13752,
+        "onePersonSharePercent": 39.4
+      },
+      {
+        "code": "35540",
+        "name": "전북특별자치도 장수군",
+        "total": 9431,
+        "onePerson": 3713,
+        "onePersonSharePercent": 39.4
+      },
+      {
+        "code": "35520",
+        "name": "전북특별자치도 진안군",
+        "total": 11030,
+        "onePerson": 4341,
+        "onePersonSharePercent": 39.4
+      },
+      {
+        "code": "34012",
+        "name": "충청남도 서북구",
+        "total": 179929,
+        "onePerson": 70846,
+        "onePersonSharePercent": 39.4
+      },
+      {
+        "code": "34010",
+        "name": "충청남도 천안시",
+        "total": 300564,
+        "onePerson": 118303,
+        "onePersonSharePercent": 39.4
+      },
+      {
+        "code": "24020",
+        "name": "광주광역시 서구",
+        "total": 126967,
+        "onePerson": 49957,
+        "onePersonSharePercent": 39.3
+      },
+      {
+        "code": "34011",
+        "name": "충청남도 동남구",
+        "total": 120635,
+        "onePerson": 47457,
+        "onePersonSharePercent": 39.3
+      },
+      {
+        "code": "34550",
+        "name": "충청남도 청양군",
+        "total": 13685,
+        "onePerson": 5379,
+        "onePersonSharePercent": 39.3
+      },
+      {
+        "code": "31022",
+        "name": "경기도 중원구",
+        "total": 92522,
+        "onePerson": 36226,
+        "onePersonSharePercent": 39.2
+      },
+      {
+        "code": "35060",
+        "name": "전북특별자치도 김제시",
+        "total": 37044,
+        "onePerson": 14515,
+        "onePersonSharePercent": 39.2
+      },
+      {
+        "code": "33040",
+        "name": "충청북도 청주시",
+        "total": 386887,
+        "onePerson": 151552,
+        "onePersonSharePercent": 39.2
+      },
+      {
+        "code": "24040",
+        "name": "광주광역시 북구",
+        "total": 193049,
+        "onePerson": 75519,
+        "onePersonSharePercent": 39.1
+      },
+      {
+        "code": "35030",
+        "name": "전북특별자치도 익산시",
+        "total": 123255,
+        "onePerson": 48251,
+        "onePersonSharePercent": 39.1
+      },
+      {
+        "code": "33030",
+        "name": "충청북도 제천시",
+        "total": 59984,
+        "onePerson": 23435,
+        "onePersonSharePercent": 39.1
+      },
+      {
+        "code": "32020",
+        "name": "강원특별자치도 원주시",
+        "total": 166698,
+        "onePerson": 64981,
+        "onePersonSharePercent": 39.0
+      },
+      {
+        "code": "36640",
+        "name": "전라남도 영광군",
+        "total": 23554,
+        "onePerson": 9187,
+        "onePersonSharePercent": 39.0
+      },
+      {
+        "code": "32520",
+        "name": "강원특별자치도 횡성군",
+        "total": 21286,
+        "onePerson": 8285,
+        "onePersonSharePercent": 38.9
+      },
+      {
+        "code": "31080",
+        "name": "경기도 동두천시",
+        "total": 39169,
+        "onePerson": 15255,
+        "onePersonSharePercent": 38.9
+      },
+      {
+        "code": "35020",
+        "name": "전북특별자치도 군산시",
+        "total": 118651,
+        "onePerson": 46152,
+        "onePersonSharePercent": 38.9
+      },
+      {
+        "code": "35011",
+        "name": "전북특별자치도 완산구",
+        "total": 145579,
+        "onePerson": 56611,
+        "onePersonSharePercent": 38.9
+      },
+      {
+        "code": "34560",
+        "name": "충청남도 홍성군",
+        "total": 46511,
+        "onePerson": 18107,
+        "onePersonSharePercent": 38.9
+      },
+      {
+        "code": "37060",
+        "name": "경상북도 영주시",
+        "total": 46161,
+        "onePerson": 17933,
+        "onePersonSharePercent": 38.8
+      },
+      {
+        "code": "38050",
+        "name": "경상남도 통영시",
+        "total": 53883,
+        "onePerson": 20788,
+        "onePersonSharePercent": 38.6
+      },
+      {
+        "code": "37011",
+        "name": "경상북도 남구",
+        "total": 99816,
+        "onePerson": 38509,
+        "onePersonSharePercent": 38.6
+      },
+      {
+        "code": "34030",
+        "name": "충청남도 보령시",
+        "total": 43463,
+        "onePerson": 16766,
+        "onePersonSharePercent": 38.6
+      },
+      {
+        "code": "38113",
+        "name": "경상남도 마산합포구",
+        "total": 80362,
+        "onePerson": 30957,
+        "onePersonSharePercent": 38.5
+      },
+      {
+        "code": "11080",
+        "name": "서울특별시 성북구",
+        "total": 186466,
+        "onePerson": 71799,
+        "onePersonSharePercent": 38.5
+      },
+      {
+        "code": "33520",
+        "name": "충청북도 보은군",
+        "total": 14339,
+        "onePerson": 5500,
+        "onePersonSharePercent": 38.4
+      },
+      {
+        "code": "38030",
+        "name": "경상남도 진주시",
+        "total": 153728,
+        "onePerson": 58952,
+        "onePersonSharePercent": 38.3
+      },
+      {
+        "code": "37030",
+        "name": "경상북도 김천시",
+        "total": 61621,
+        "onePerson": 23572,
+        "onePersonSharePercent": 38.3
+      },
+      {
+        "code": "35010",
+        "name": "전북특별자치도 전주시",
+        "total": 283782,
+        "onePerson": 108812,
+        "onePersonSharePercent": 38.3
+      },
+      {
+        "code": "31220",
+        "name": "경기도 안성시",
+        "total": 88746,
+        "onePerson": 33876,
+        "onePersonSharePercent": 38.2
+      },
+      {
+        "code": "37600",
+        "name": "경상북도 예천군",
+        "total": 24866,
+        "onePerson": 9499,
+        "onePersonSharePercent": 38.2
+      },
+      {
+        "code": "36570",
+        "name": "전라남도 화순군",
+        "total": 26731,
+        "onePerson": 10201,
+        "onePersonSharePercent": 38.2
+      },
+      {
+        "code": "35510",
+        "name": "전북특별자치도 완주군",
+        "total": 45563,
+        "onePerson": 17410,
+        "onePersonSharePercent": 38.2
+      },
+      {
+        "code": "34530",
+        "name": "충청남도 부여군",
+        "total": 27478,
+        "onePerson": 10498,
+        "onePersonSharePercent": 38.2
+      },
+      {
+        "code": "32580",
+        "name": "강원특별자치도 양구군",
+        "total": 9052,
+        "onePerson": 3449,
+        "onePersonSharePercent": 38.1
+      },
+      {
+        "code": "38520",
+        "name": "경상남도 함안군",
+        "total": 26316,
+        "onePerson": 10023,
+        "onePersonSharePercent": 38.1
+      },
+      {
+        "code": "37050",
+        "name": "경상북도 구미시",
+        "total": 181883,
+        "onePerson": 69162,
+        "onePersonSharePercent": 38.0
+      },
+      {
+        "code": "25050",
+        "name": "대전광역시 대덕구",
+        "total": 76526,
+        "onePerson": 29114,
+        "onePersonSharePercent": 38.0
+      },
+      {
+        "code": "34570",
+        "name": "충청남도 예산군",
+        "total": 36909,
+        "onePerson": 14024,
+        "onePersonSharePercent": 38.0
+      },
+      {
+        "code": "33550",
+        "name": "충청북도 진천군",
+        "total": 38940,
+        "onePerson": 14812,
+        "onePersonSharePercent": 38.0
+      },
+      {
+        "code": "32040",
+        "name": "강원특별자치도 동해시",
+        "total": 39787,
+        "onePerson": 15048,
+        "onePersonSharePercent": 37.8
+      },
+      {
+        "code": "25020",
+        "name": "대전광역시 중구",
+        "total": 101624,
+        "onePerson": 38440,
+        "onePersonSharePercent": 37.8
+      },
+      {
+        "code": "23090",
+        "name": "인천광역시 미추홀구",
+        "total": 189548,
+        "onePerson": 71568,
+        "onePersonSharePercent": 37.8
+      },
+      {
+        "code": "35012",
+        "name": "전북특별자치도 덕진구",
+        "total": 138203,
+        "onePerson": 52201,
+        "onePersonSharePercent": 37.8
+      },
+      {
+        "code": "11170",
+        "name": "서울특별시 구로구",
+        "total": 172595,
+        "onePerson": 65153,
+        "onePersonSharePercent": 37.7
+      },
+      {
+        "code": "31070",
+        "name": "경기도 평택시",
+        "total": 266997,
+        "onePerson": 100083,
+        "onePersonSharePercent": 37.5
+      },
+      {
+        "code": "31270",
+        "name": "경기도 포천시",
+        "total": 62773,
+        "onePerson": 23568,
+        "onePersonSharePercent": 37.5
+      },
+      {
+        "code": "35560",
+        "name": "전북특별자치도 순창군",
+        "total": 12119,
+        "onePerson": 4549,
+        "onePersonSharePercent": 37.5
+      },
+      {
+        "code": "34040",
+        "name": "충청남도 아산시",
+        "total": 157127,
+        "onePerson": 58941,
+        "onePersonSharePercent": 37.5
+      },
+      {
+        "code": "22050",
+        "name": "대구광역시 북구",
+        "total": 186385,
+        "onePerson": 69664,
+        "onePersonSharePercent": 37.4
+      },
+      {
+        "code": "22020",
+        "name": "대구광역시 동구",
+        "total": 154575,
+        "onePerson": 57636,
+        "onePersonSharePercent": 37.3
+      },
+      {
+        "code": "31140",
+        "name": "경기도 오산시",
+        "total": 107981,
+        "onePerson": 40193,
+        "onePersonSharePercent": 37.2
+      },
+      {
+        "code": "22520",
+        "name": "대구광역시 군위군",
+        "total": 10886,
+        "onePerson": 4051,
+        "onePersonSharePercent": 37.2
+      },
+      {
+        "code": "21100",
+        "name": "부산광역시 사하구",
+        "total": 130444,
+        "onePerson": 48445,
+        "onePersonSharePercent": 37.1
+      },
+      {
+        "code": "21070",
+        "name": "부산광역시 남구",
+        "total": 113194,
+        "onePerson": 41885,
+        "onePersonSharePercent": 37.0
+      },
+      {
+        "code": "36620",
+        "name": "전라남도 무안군",
+        "total": 41208,
+        "onePerson": 15243,
+        "onePersonSharePercent": 37.0
+      },
+      {
+        "code": "31091",
+        "name": "경기도 상록구",
+        "total": 141562,
+        "onePerson": 52156,
+        "onePersonSharePercent": 36.8
+      },
+      {
+        "code": "36510",
+        "name": "전라남도 담양군",
+        "total": 19256,
+        "onePerson": 7072,
+        "onePersonSharePercent": 36.7
+      },
+      {
+        "code": "34050",
+        "name": "충청남도 서산시",
+        "total": 78336,
+        "onePerson": 28700,
+        "onePersonSharePercent": 36.6
+      },
+      {
+        "code": "31010",
+        "name": "경기도 수원시",
+        "total": 510479,
+        "onePerson": 186214,
+        "onePersonSharePercent": 36.5
+      },
+      {
+        "code": "33530",
+        "name": "충청북도 옥천군",
+        "total": 21990,
+        "onePerson": 7998,
+        "onePersonSharePercent": 36.4
+      },
+      {
+        "code": "31090",
+        "name": "경기도 안산시",
+        "total": 268000,
+        "onePerson": 97259,
+        "onePersonSharePercent": 36.3
+      },
+      {
+        "code": "11120",
+        "name": "서울특별시 은평구",
+        "total": 198997,
+        "onePerson": 71796,
+        "onePersonSharePercent": 36.1
+      },
+      {
+        "code": "36650",
+        "name": "전라남도 장성군",
+        "total": 18480,
+        "onePerson": 6644,
+        "onePersonSharePercent": 36.0
+      },
+      {
+        "code": "37010",
+        "name": "경상북도 포항시",
+        "total": 220773,
+        "onePerson": 79273,
+        "onePersonSharePercent": 35.9
+      },
+      {
+        "code": "21130",
+        "name": "부산광역시 연제구",
+        "total": 94261,
+        "onePerson": 33737,
+        "onePersonSharePercent": 35.8
+      },
+      {
+        "code": "32560",
+        "name": "강원특별자치도 철원군",
+        "total": 17362,
+        "onePerson": 6192,
+        "onePersonSharePercent": 35.7
+      },
+      {
+        "code": "31092",
+        "name": "경기도 단원구",
+        "total": 126438,
+        "onePerson": 45103,
+        "onePersonSharePercent": 35.7
+      },
+      {
+        "code": "38115",
+        "name": "경상남도 진해구",
+        "total": 80527,
+        "onePerson": 28721,
+        "onePersonSharePercent": 35.7
+      },
+      {
+        "code": "31012",
+        "name": "경기도 권선구",
+        "total": 156026,
+        "onePerson": 55361,
+        "onePersonSharePercent": 35.5
+      },
+      {
+        "code": "26020",
+        "name": "울산광역시 남구",
+        "total": 135243,
+        "onePerson": 48002,
+        "onePersonSharePercent": 35.5
+      },
+      {
+        "code": "31020",
+        "name": "경기도 성남시",
+        "total": 382964,
+        "onePerson": 135448,
+        "onePersonSharePercent": 35.4
+      },
+      {
+        "code": "23050",
+        "name": "인천광역시 남동구",
+        "total": 209564,
+        "onePerson": 74170,
+        "onePersonSharePercent": 35.4
+      },
+      {
+        "code": "31280",
+        "name": "경기도 여주시",
+        "total": 49951,
+        "onePerson": 17655,
+        "onePersonSharePercent": 35.3
+      },
+      {
+        "code": "38111",
+        "name": "경상남도 의창구",
+        "total": 91125,
+        "onePerson": 32119,
+        "onePersonSharePercent": 35.2
+      },
+      {
+        "code": "36020",
+        "name": "전라남도 여수시",
+        "total": 116227,
+        "onePerson": 40876,
+        "onePersonSharePercent": 35.2
+      },
+      {
+        "code": "31210",
+        "name": "경기도 이천시",
+        "total": 94578,
+        "onePerson": 33187,
+        "onePersonSharePercent": 35.1
+      },
+      {
+        "code": "38110",
+        "name": "경상남도 창원시",
+        "total": 433649,
+        "onePerson": 152260,
+        "onePersonSharePercent": 35.1
+      },
+      {
+        "code": "22070",
+        "name": "대구광역시 달서구",
+        "total": 230843,
+        "onePerson": 81045,
+        "onePersonSharePercent": 35.1
+      },
+      {
+        "code": "11230",
+        "name": "서울특별시 강남구",
+        "total": 225873,
+        "onePerson": 79351,
+        "onePersonSharePercent": 35.1
+      },
+      {
+        "code": "39020",
+        "name": "제주특별자치도 서귀포시",
+        "total": 76399,
+        "onePerson": 26843,
+        "onePersonSharePercent": 35.1
+      },
+      {
+        "code": "31014",
+        "name": "경기도 영통구",
+        "total": 150130,
+        "onePerson": 52504,
+        "onePersonSharePercent": 35.0
+      },
+      {
+        "code": "31580",
+        "name": "경기도 양평군",
+        "total": 54642,
+        "onePerson": 18977,
+        "onePersonSharePercent": 34.7
+      },
+      {
+        "code": "38114",
+        "name": "경상남도 마산회원구",
+        "total": 77928,
+        "onePerson": 26982,
+        "onePersonSharePercent": 34.6
+      },
+      {
+        "code": "23020",
+        "name": "인천광역시 동구",
+        "total": 25224,
+        "onePerson": 8731,
+        "onePersonSharePercent": 34.6
+      },
+      {
+        "code": "31011",
+        "name": "경기도 장안구",
+        "total": 114037,
+        "onePerson": 39063,
+        "onePersonSharePercent": 34.3
+      },
+      {
+        "code": "24050",
+        "name": "광주광역시 광산구",
+        "total": 165844,
+        "onePerson": 56860,
+        "onePersonSharePercent": 34.3
+      },
+      {
+        "code": "11100",
+        "name": "서울특별시 도봉구",
+        "total": 130122,
+        "onePerson": 44448,
+        "onePersonSharePercent": 34.2
+      },
+      {
+        "code": "38090",
+        "name": "경상남도 거제시",
+        "total": 99710,
+        "onePerson": 34002,
+        "onePersonSharePercent": 34.1
+      },
+      {
+        "code": "24030",
+        "name": "광주광역시 남구",
+        "total": 91385,
+        "onePerson": 31178,
+        "onePersonSharePercent": 34.1
+      },
+      {
+        "code": "11240",
+        "name": "서울특별시 송파구",
+        "total": 267887,
+        "onePerson": 91108,
+        "onePersonSharePercent": 34.0
+      },
+      {
+        "code": "39010",
+        "name": "제주특별자치도 제주시",
+        "total": 204292,
+        "onePerson": 69548,
+        "onePersonSharePercent": 34.0
+      },
+      {
+        "code": "31051",
+        "name": "경기도 원미구",
+        "total": 164043,
+        "onePerson": 55659,
+        "onePersonSharePercent": 33.9
+      },
+      {
+        "code": "31191",
+        "name": "경기도 처인구",
+        "total": 119557,
+        "onePerson": 40436,
+        "onePersonSharePercent": 33.8
+      },
+      {
+        "code": "36030",
+        "name": "전라남도 순천시",
+        "total": 118293,
+        "onePerson": 40032,
+        "onePersonSharePercent": 33.8
+      },
+      {
+        "code": "37012",
+        "name": "경상북도 북구",
+        "total": 120957,
+        "onePerson": 40764,
+        "onePersonSharePercent": 33.7
+      },
+      {
+        "code": "11250",
+        "name": "서울특별시 강동구",
+        "total": 209771,
+        "onePerson": 70590,
+        "onePersonSharePercent": 33.7
+      },
+      {
+        "code": "38100",
+        "name": "경상남도 양산시",
+        "total": 155237,
+        "onePerson": 52224,
+        "onePersonSharePercent": 33.6
+      },
+      {
+        "code": "31053",
+        "name": "경기도 오정구",
+        "total": 64230,
+        "onePerson": 21519,
+        "onePersonSharePercent": 33.5
+      },
+      {
+        "code": "31030",
+        "name": "경기도 의정부시",
+        "total": 196898,
+        "onePerson": 65966,
+        "onePersonSharePercent": 33.5
+      },
+      {
+        "code": "36060",
+        "name": "전라남도 광양시",
+        "total": 66103,
+        "onePerson": 22152,
+        "onePersonSharePercent": 33.5
+      },
+      {
+        "code": "11110",
+        "name": "서울특별시 노원구",
+        "total": 205025,
+        "onePerson": 68464,
+        "onePersonSharePercent": 33.4
+      },
+      {
+        "code": "21080",
+        "name": "부산광역시 북구",
+        "total": 115732,
+        "onePerson": 38574,
+        "onePersonSharePercent": 33.3
+      },
+      {
+        "code": "29010",
+        "name": "세종특별자치시 세종시",
+        "total": 161163,
+        "onePerson": 53627,
+        "onePersonSharePercent": 33.3
+      },
+      {
+        "code": "26010",
+        "name": "울산광역시 중구",
+        "total": 88470,
+        "onePerson": 29340,
+        "onePersonSharePercent": 33.2
+      },
+      {
+        "code": "23510",
+        "name": "인천광역시 강화군",
+        "total": 30579,
+        "onePerson": 10139,
+        "onePersonSharePercent": 33.2
+      },
+      {
+        "code": "33041",
+        "name": "충청북도 상당구",
+        "total": 82792,
+        "onePerson": 27280,
+        "onePersonSharePercent": 33.0
+      },
+      {
+        "code": "26030",
+        "name": "울산광역시 동구",
+        "total": 63860,
+        "onePerson": 21017,
+        "onePersonSharePercent": 32.9
+      },
+      {
+        "code": "23060",
+        "name": "인천광역시 부평구",
+        "total": 212695,
+        "onePerson": 69960,
+        "onePersonSharePercent": 32.9
+      },
+      {
+        "code": "31150",
+        "name": "경기도 시흥시",
+        "total": 214655,
+        "onePerson": 70346,
+        "onePersonSharePercent": 32.8
+      },
+      {
+        "code": "21090",
+        "name": "부산광역시 해운대구",
+        "total": 159868,
+        "onePerson": 52417,
+        "onePersonSharePercent": 32.8
+      },
+      {
+        "code": "31103",
+        "name": "경기도 일산동구",
+        "total": 121788,
+        "onePerson": 39825,
+        "onePersonSharePercent": 32.7
+      },
+      {
+        "code": "31101",
+        "name": "경기도 덕양구",
+        "total": 203388,
+        "onePerson": 66395,
+        "onePersonSharePercent": 32.6
+      },
+      {
+        "code": "31050",
+        "name": "경기도 부천시",
+        "total": 321814,
+        "onePerson": 104884,
+        "onePersonSharePercent": 32.6
+      },
+      {
+        "code": "21510",
+        "name": "부산광역시 기장군",
+        "total": 72979,
+        "onePerson": 23642,
+        "onePersonSharePercent": 32.4
+      },
+      {
+        "code": "23070",
+        "name": "인천광역시 계양구",
+        "total": 119005,
+        "onePerson": 38610,
+        "onePersonSharePercent": 32.4
+      },
+      {
+        "code": "38112",
+        "name": "경상남도 성산구",
+        "total": 103707,
+        "onePerson": 33481,
+        "onePersonSharePercent": 32.3
+      },
+      {
+        "code": "31240",
+        "name": "경기도 화성시",
+        "total": 400047,
+        "onePerson": 128844,
+        "onePersonSharePercent": 32.2
+      },
+      {
+        "code": "26510",
+        "name": "울산광역시 울주군",
+        "total": 93052,
+        "onePerson": 29925,
+        "onePersonSharePercent": 32.2
+      },
+      {
+        "code": "21060",
+        "name": "부산광역시 동래구",
+        "total": 115777,
+        "onePerson": 37137,
+        "onePersonSharePercent": 32.1
+      },
+      {
+        "code": "38070",
+        "name": "경상남도 김해시",
+        "total": 223994,
+        "onePerson": 71569,
+        "onePersonSharePercent": 32.0
+      },
+      {
+        "code": "31041",
+        "name": "경기도 만안구",
+        "total": 99222,
+        "onePerson": 31630,
+        "onePersonSharePercent": 31.9
+      },
+      {
+        "code": "31160",
+        "name": "경기도 군포시",
+        "total": 104790,
+        "onePerson": 33306,
+        "onePersonSharePercent": 31.8
+      },
+      {
+        "code": "11220",
+        "name": "서울특별시 서초구",
+        "total": 161177,
+        "onePerson": 50435,
+        "onePersonSharePercent": 31.3
+      },
+      {
+        "code": "31100",
+        "name": "경기도 고양시",
+        "total": 431423,
+        "onePerson": 132693,
+        "onePersonSharePercent": 30.8
+      },
+      {
+        "code": "22510",
+        "name": "대구광역시 달성군",
+        "total": 106165,
+        "onePerson": 32609,
+        "onePersonSharePercent": 30.7
+      },
+      {
+        "code": "31180",
+        "name": "경기도 하남시",
+        "total": 131208,
+        "onePerson": 40140,
+        "onePersonSharePercent": 30.6
+      },
+      {
+        "code": "31260",
+        "name": "경기도 양주시",
+        "total": 120811,
+        "onePerson": 36789,
+        "onePersonSharePercent": 30.5
+      },
+      {
+        "code": "31120",
+        "name": "경기도 구리시",
+        "total": 75638,
+        "onePerson": 22895,
+        "onePersonSharePercent": 30.3
+      },
+      {
+        "code": "21120",
+        "name": "부산광역시 강서구",
+        "total": 59105,
+        "onePerson": 17786,
+        "onePersonSharePercent": 30.1
+      },
+      {
+        "code": "22060",
+        "name": "대구광역시 수성구",
+        "total": 168197,
+        "onePerson": 50040,
+        "onePersonSharePercent": 29.8
+      },
+      {
+        "code": "31052",
+        "name": "경기도 소사구",
+        "total": 93541,
+        "onePerson": 27706,
+        "onePersonSharePercent": 29.6
+      },
+      {
+        "code": "31200",
+        "name": "경기도 파주시",
+        "total": 208758,
+        "onePerson": 61849,
+        "onePersonSharePercent": 29.6
+      },
+      {
+        "code": "34070",
+        "name": "충청남도 계룡시",
+        "total": 18541,
+        "onePerson": 5491,
+        "onePersonSharePercent": 29.6
+      },
+      {
+        "code": "11150",
+        "name": "서울특별시 양천구",
+        "total": 169089,
+        "onePerson": 49370,
+        "onePersonSharePercent": 29.2
+      },
+      {
+        "code": "31230",
+        "name": "경기도 김포시",
+        "total": 191653,
+        "onePerson": 55522,
+        "onePersonSharePercent": 29.0
+      },
+      {
+        "code": "31023",
+        "name": "경기도 분당구",
+        "total": 181780,
+        "onePerson": 52677,
+        "onePersonSharePercent": 29.0
+      },
+      {
+        "code": "23080",
+        "name": "인천광역시 서구",
+        "total": 261188,
+        "onePerson": 75328,
+        "onePersonSharePercent": 28.8
+      },
+      {
+        "code": "31250",
+        "name": "경기도 광주시",
+        "total": 160550,
+        "onePerson": 45804,
+        "onePersonSharePercent": 28.5
+      },
+      {
+        "code": "31040",
+        "name": "경기도 안양시",
+        "total": 227335,
+        "onePerson": 64523,
+        "onePersonSharePercent": 28.4
+      },
+      {
+        "code": "31190",
+        "name": "경기도 용인시",
+        "total": 421152,
+        "onePerson": 114353,
+        "onePersonSharePercent": 27.2
+      },
+      {
+        "code": "23040",
+        "name": "인천광역시 연수구",
+        "total": 158326,
+        "onePerson": 42346,
+        "onePersonSharePercent": 26.7
+      },
+      {
+        "code": "31192",
+        "name": "경기도 기흥구",
+        "total": 166149,
+        "onePerson": 44147,
+        "onePersonSharePercent": 26.6
+      },
+      {
+        "code": "31060",
+        "name": "경기도 광명시",
+        "total": 114276,
+        "onePerson": 30319,
+        "onePersonSharePercent": 26.5
+      },
+      {
+        "code": "31130",
+        "name": "경기도 남양주시",
+        "total": 282498,
+        "onePerson": 74161,
+        "onePersonSharePercent": 26.3
+      },
+      {
+        "code": "26040",
+        "name": "울산광역시 북구",
+        "total": 85231,
+        "onePerson": 22302,
+        "onePersonSharePercent": 26.2
+      },
+      {
+        "code": "31042",
+        "name": "경기도 동안구",
+        "total": 128113,
+        "onePerson": 32893,
+        "onePersonSharePercent": 25.7
+      },
+      {
+        "code": "31104",
+        "name": "경기도 일산서구",
+        "total": 106247,
+        "onePerson": 26473,
+        "onePersonSharePercent": 24.9
+      },
+      {
+        "code": "31170",
+        "name": "경기도 의왕시",
+        "total": 61774,
+        "onePerson": 15127,
+        "onePersonSharePercent": 24.5
+      },
+      {
+        "code": "31193",
+        "name": "경기도 수지구",
+        "total": 135446,
+        "onePerson": 29770,
+        "onePersonSharePercent": 22.0
+      },
+      {
+        "code": "31110",
+        "name": "경기도 과천시",
+        "total": 27111,
+        "onePerson": 4671,
+        "onePersonSharePercent": 17.2
+      }
+    ]
+  },
+  "singleHouseholds": {
+    "total": 8244308,
+    "byType": [
+      {
+        "label": "단독주택",
+        "count": 3163712
+      },
+      {
+        "label": "아파트",
+        "count": 3008550
+      },
+      {
+        "label": "연립주택",
+        "count": 149391
+      },
+      {
+        "label": "다세대 주택",
+        "count": 807358
+      },
+      {
+        "label": "비주거용 건물 내 주택",
+        "count": 140205
+      },
+      {
+        "label": "주택 이외의 거처",
+        "count": 975092
+      }
+    ],
+    "byAge": [
+      {
+        "age": "20세미만",
+        "total": 48196,
+        "male": 21896,
+        "female": 26300
+      },
+      {
+        "age": "20~24세",
+        "total": 456531,
+        "male": 204430,
+        "female": 252101
+      },
+      {
+        "age": "25~29세",
+        "total": 887766,
+        "male": 468169,
+        "female": 419597
+      },
+      {
+        "age": "30~34세",
+        "total": 880713,
+        "male": 533654,
+        "female": 347059
+      },
+      {
+        "age": "35~39세",
+        "total": 562128,
+        "male": 362902,
+        "female": 199226
+      },
+      {
+        "age": "40~44세",
+        "total": 507537,
+        "male": 325110,
+        "female": 182427
+      },
+      {
+        "age": "45~49세",
+        "total": 490728,
+        "male": 309152,
+        "female": 181576
+      },
+      {
+        "age": "50~54세",
+        "total": 588736,
+        "male": 356728,
+        "female": 232008
+      },
+      {
+        "age": "55~59세",
+        "total": 650421,
+        "male": 371794,
+        "female": 278627
+      },
+      {
+        "age": "60~64세",
+        "total": 715605,
+        "male": 366542,
+        "female": 349063
+      },
+      {
+        "age": "65~69세",
+        "total": 747424,
+        "male": 330629,
+        "female": 416795
+      },
+      {
+        "age": "70~74세",
+        "total": 562479,
+        "male": 205339,
+        "female": 357140
+      },
+      {
+        "age": "75~79세",
+        "total": 448857,
+        "male": 125194,
+        "female": 323663
+      },
+      {
+        "age": "80~84세",
+        "total": 370854,
+        "male": 78378,
+        "female": 292476
+      },
+      {
+        "age": "85세이상",
+        "total": 326333,
+        "male": 61874,
+        "female": 264459
+      }
+    ]
+  },
+  "sources": [
+    {
+      "title": "행정구역(시군구)별/1세별 주민등록인구",
+      "url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1B04006_M_2025"
+    },
+    {
+      "title": "세대구성 및 가구원수별 가구(일반가구) - 시군구",
+      "url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1JC1516_Y_2025"
+    },
+    {
+      "title": "성, 연령 및 거처의 종류별 1인가구 - 시군구",
+      "url": "https://kosis.kr/statHtml/statHtml.do?orgId=101&tblId=DT_1PL1509_Y_2025"
+    }
+  ]
+}

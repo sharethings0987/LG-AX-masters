@@ -13,6 +13,7 @@
     .tabs{display:flex;gap:8px;margin:18px 0}.tabs button.active{background:#a8467a;color:#fff;border-color:#a8467a}
     .note,.status,.card{background:#fff;border:1px solid #e3d9f0;border-radius:10px;padding:14px;margin:10px 0}
     .note,.status{font-size:13px;color:#625b6e}.card h2{margin-bottom:5px}.meta{font-size:12px;color:#7d7490;margin:3px 0 10px}
+    .header-links{display:flex;gap:12px;flex-wrap:wrap}
     .content{white-space:pre-wrap;overflow-wrap:anywhere}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
     .conditions{background:#f8f4fa}.pager{display:flex;justify-content:center;gap:8px;margin:18px 0}
     .hidden{display:none}.error{color:#9e263e}.conditions-list{margin-top:8px;padding:10px;background:#f8f4fa;border-radius:6px}
@@ -23,7 +24,10 @@
   <main class="wrap">
     <header>
       <div><div class="meta">인생그램 · 공공정보</div><h1>혜택과 주거 공고</h1></div>
-      <a href="another_life_v8C.html">게임으로 돌아가기</a>
+      <nav class="header-links" aria-label="페이지 이동">
+        <a href="statistics.html">KOSIS 통계</a>
+        <a href="another_life_v8C.html">게임으로 돌아가기</a>
+      </nav>
     </header>
     <p class="note">공식 API에서 제공하는 정보를 보여줍니다. 이 목록은 게임의 자격 판정이나 정책 효과를 변경하지 않습니다. 신청 전에는 각 기관의 최신 공고와 자격 기준을 확인하세요.</p>
     <nav class="tabs" aria-label="공공정보 종류">

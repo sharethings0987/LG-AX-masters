@@ -410,6 +410,7 @@ const letters=()=>(typeof BE!='undefined'&&BE.letters())||lettersLocal();
 function vStart(){const L=letters();return `<div class="w"><div class="se" style="font-size:30px;font-weight:700">인생그램</div><div class="mu">20세부터 40세까지, 다른 사람의 삶을 살아보며 나에게 맞는 선택지를 찾는 시뮬레이션</div>
  <div class="pn" style="margin-top:16px"><h4>어떻게 시작할까요?</h4><button class="btn" data-a="new:other">🎲 다른 사람의 인생 살아보기<div class="mu" style="color:inherit;opacity:.8">완전 랜덤 캐릭터 · 내가 모르는 조건의 삶</div></button><button class="btn sec" data-a="new:form">🪞 내 인생에 적용해보기<div class="mu">지역·형편·진로·고민을 고르고, 나머지는 랜덤</div></button></div>
  <a class="btn sec" href="public-services.html">🏛️ 실시간 혜택·LH 임대공고 보기</a>
+ <a class="btn sec" href="statistics.html">📊 KOSIS 2025 인구·가구 통계 보기</a>
  <div class="pn"><h4>이렇게 진행돼요</h4><div class="lg">시간은 흐르고, 삶은 이야기로 쌓여요. 큰 갈림길에서만 멈춰 선택을 물어요.</div><div class="lg">목표는 정해져 있지 않아요. 마음속으로 정하고, 끝에 스스로 돌아봐요.</div></div>
  ${L.length?`<div class="pn"><h4>💌 내가 쓴 편지함</h4>${L.slice(0,5).map(l=>`<div class="lg"><span class="mu">${esc(l.to)} · ${esc(l.date)}</span><br>${esc(l.text)}</div>`).join('')}</div>`:''}</div>`+FT}
 function vForm(){const g=(k,t,o)=>`<div style="margin-top:12px"><b>${t}</b><div class="chips" style="margin-top:4px"><button class="chip ${FORM[k]==null||FORM[k]=='r'?'on':''}" data-a="f:${k}:r">🎲 랜덤</button>${o.map(x=>`<button class="chip ${FORM[k]==x[0]?'on':''}" data-a="f:${k}:${x[0]}">${x[1]}</button>`).join('')}</div></div>`;
