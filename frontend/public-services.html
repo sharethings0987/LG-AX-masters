@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>공공 혜택 · LH 임대공고 | 인생그램</title>
+  <style>
+    :root{font:15px/1.6 "Malgun Gothic","Apple SD Gothic Neo",sans-serif;color:#2b2438;background:#f5f0fb}
+    *{box-sizing:border-box}body{margin:0}.wrap{max-width:900px;margin:0 auto;padding:24px 16px 48px}
+    header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}
+    h1{font-size:24px;margin:0}h2{font-size:18px;margin:0}
+    a{color:#7d2c62}button,select{font:inherit;color:inherit;background:#fff;border:1px solid #d8cde4;border-radius:7px;padding:8px 12px;cursor:pointer}
+    .tabs{display:flex;gap:8px;margin:18px 0}.tabs button.active{background:#a8467a;color:#fff;border-color:#a8467a}
+    .note,.status,.card{background:#fff;border:1px solid #e3d9f0;border-radius:10px;padding:14px;margin:10px 0}
+    .note,.status{font-size:13px;color:#625b6e}.card h2{margin-bottom:5px}.meta{font-size:12px;color:#7d7490;margin:3px 0 10px}
+    .content{white-space:pre-wrap;overflow-wrap:anywhere}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .conditions{background:#f8f4fa}.pager{display:flex;justify-content:center;gap:8px;margin:18px 0}
+    .hidden{display:none}.error{color:#9e263e}.conditions-list{margin-top:8px;padding:10px;background:#f8f4fa;border-radius:6px}
+    @media(max-width:520px){header{align-items:flex-start;flex-direction:column}.tabs button{flex:1;padding:8px 4px}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header>
+      <div><div class="meta">인생그램 · 공공정보</div><h1>혜택과 주거 공고</h1></div>
+      <a href="another_life_v8C.html">게임으로 돌아가기</a>
+    </header>
+    <p class="note">공식 API에서 제공하는 정보를 보여줍니다. 이 목록은 게임의 자격 판정이나 정책 효과를 변경하지 않습니다. 신청 전에는 각 기관의 최신 공고와 자격 기준을 확인하세요.</p>
+    <nav class="tabs" aria-label="공공정보 종류">
+      <button type="button" class="active" data-tab="benefits">정부 혜택</button>
+      <button type="button" data-tab="lh">LH 임대공고</button>
+    </nav>
+    <section id="status" class="status" role="status" aria-live="polite"></section>
+    <section id="items" aria-live="polite"></section>
+    <div class="pager">
+      <button type="button" id="prev" disabled>이전</button>
+      <span id="page-label" class="meta"></span>
+      <button type="button" id="next" disabled>다음</button>
+    </div>
+  </main>
+  <script src="api-config.js"></script>
+  <script src="public-services.js"></script>
+</body>
+</html>

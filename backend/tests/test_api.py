@@ -1,7 +1,7 @@
 import pytest
 from fastapi.testclient import TestClient
 
-from app import db
+from app import db, public_data
 from app.main import app
 from app.schemas import PolicyIn
 
@@ -140,3 +140,74 @@ def test_root_redirects_to_a_variant(client):
     assert r.status_code == 307
     assert r.headers["location"] in {f"/another_life_v8{v}.html" for v in "ABC"}
     assert client.get(r.headers["location"]).status_code == 200
+
+
+def test_public_benefits_requires_server_key(client, monkeypatch):
+    monkeypatch.delenv("GOV24_SERVICE_KEY", raising=False)
+    r = client.get("/api/public/benefits")
+    assert r.status_code == 503
+    assert "인증키" in r.json()["detail"]
+
+
+def test_public_benefits_proxy_uses_server_key(client, monkeypatch):
+    monkeypatch.setenv("GOV24_SERVICE_KEY", "server-only-key")
+    captured = {}
+
+    async def fake_fetch(url, params, source):
+        captured.update(url=url, params=params, source=source)
+        return {"data": [{"서비스명": "테스트 혜택"}]}
+
+    monkeypatch.setattr(public_data, "_fetch_json", fake_fetch)
+    r = client.get("/api/public/benefits?page=2&per_page=10")
+    assert r.status_code == 200
+    assert r.json()["data"][0]["서비스명"] == "테스트 혜택"
+    assert captured["url"] == f"{public_data.GOV24_BASE_URL}/serviceList"
+    assert captured["params"]["serviceKey"] == "server-only-key"
+    assert captured["params"]["page"] == 2
+    assert captured["params"]["perPage"] == 10
+
+
+def test_benefit_conditions_proxy_filters_by_service_id(client, monkeypatch):
+    monkeypatch.setenv("GOV24_SERVICE_KEY", "server-only-key")
+    captured = {}
+
+    async def fake_fetch(url, params, source):
+        captured.update(url=url, params=params, source=source)
+        return {"data": []}
+
+    monkeypatch.setattr(public_data, "_fetch_json", fake_fetch)
+    r = client.get("/api/public/benefits/svc-123/conditions")
+    assert r.status_code == 200
+    assert captured["url"] == f"{public_data.GOV24_BASE_URL}/supportConditions"
+    assert captured["params"]["cond[서비스ID::EQ]"] == "svc-123"
+
+
+def test_lh_notices_proxy_formats_dates_and_limits_type(client, monkeypatch):
+    monkeypatch.setenv("LH_SERVICE_KEY", "lh-server-only-key")
+    captured = {}
+
+    async def fake_fetch(url, params, source):
+        captured.update(url=url, params=params, source=source)
+        return {"dsList": []}
+
+    monkeypatch.setattr(public_data, "_fetch_json", fake_fetch)
+    r = client.get(
+        "/api/public/lh-notices",
+        params={"page": 2, "per_page": 10, "start_date": "2025-01-02", "end_date": "2025-02-03"},
+    )
+    assert r.status_code == 200
+    assert captured["url"] == public_data.LH_URL
+    assert captured["params"]["serviceKey"] == "lh-server-only-key"
+    assert captured["params"]["UPP_AIS_TP_CD"] == "06"
+    assert captured["params"]["PAN_NT_ST_DT"] == "2025.01.02"
+    assert captured["params"]["CLSG_DT"] == "2025.02.03"
+    assert captured["params"]["PAGE"] == 2
+
+
+def test_lh_notices_rejects_reversed_date_range(client, monkeypatch):
+    monkeypatch.setenv("LH_SERVICE_KEY", "lh-server-only-key")
+    r = client.get(
+        "/api/public/lh-notices",
+        params={"start_date": "2025-02-03", "end_date": "2025-01-02"},
+    )
+    assert r.status_code == 422

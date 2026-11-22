@@ -47,7 +47,7 @@ uvicorn app.main:app --reload
 
 GitHub Pages는 정적 파일만 제공하므로 FastAPI 백엔드는 실행되지 않습니다.
 따라서 API 기반 정책 갱신, 편지 저장, 플레이 기록 기능은 사용할 수 없고, 게임의 내장 정책을 사용합니다.
-API 기능까지 공개하려면 백엔드를 별도 호스팅하고 프론트엔드의 API 주소 및 CORS 설정을 구성해야 합니다.
+API 기능까지 공개하려면 백엔드를 별도 호스팅하고 프론트엔드의 API 주소 및 CORS 설정을 구성해야 합니다. GitHub Pages에는 `frontend/public-services.html`도 배포되며, 게임의 「공공정보」 메뉴에서 정부24 혜택과 LH 임대공고 목록을 볼 수 있습니다. 이 목록은 게임의 정책 판정과 별도로 동작합니다.
 
 ## API
 
@@ -63,6 +63,26 @@ API 기능까지 공개하려면 백엔드를 별도 호스팅하고 프론트�
 | PATCH | `/api/plays/{id}` | 엔딩에서 고른 「마음속 목표」「고마웠던 것」 답 기록 |
 | GET | `/api/plays?player_id=` | 내 플레이 기록 |
 | GET | `/api/stats` | 버전별 플레이 수, 정책별 대상 수·획득 수·획득률 |
+| GET | `/api/public/benefits` | 정부24 공공서비스(혜택) 목록 |
+| GET | `/api/public/benefits/{service_id}/conditions` | 정부24 공공서비스 지원 조건 |
+| GET | `/api/public/lh-notices` | LH 임대주택 공고 목록 |
+
+공공 API 프록시는 키를 백엔드 환경변수에서만 읽습니다. 브라우저 코드나 GitHub Pages 저장소에 인증키를 넣지 마세요. 정부24와 LH API의 정확한 지원 대상·접수 기간은 각 카드의 공식 안내 링크에서 확인해야 합니다.
+
+- [행정안전부 대한민국 공공서비스(혜택) 정보 API](https://www.data.go.kr/data/15113968/openapi.do)
+- [한국토지주택공사 분양임대공고문 조회 API](https://www.data.go.kr/data/15058530/openapi.do)
+
+### GitHub Pages + Render 백엔드 배포
+
+GitHub Pages는 백엔드 프로세스를 실행할 수 없습니다. 저장소 루트의 `render.yaml`은 Render Blueprint로 FastAPI 서비스를 **Free 플랜**에 생성하도록 준비되어 있습니다.
+
+1. Render에서 **New → Blueprint**를 선택하고 GitHub 저장소를 연결합니다. Root Directory는 별도로 지정하지 않습니다.
+2. Blueprint가 `render.yaml`을 감지하면 `lg-ax-masters-api` 서비스를 만들고 배포합니다.
+3. Render 서비스의 **Environment** 설정에서 `GOV24_SERVICE_KEY`와 `LH_SERVICE_KEY`를 발급받은 키로 등록합니다. 키는 Blueprint나 GitHub에 저장하지 않습니다.
+4. 배포가 완료되면 서비스 URL의 `/api/health`가 `{"ok": true, ...}`를 반환하는지 확인합니다.
+5. 발급된 기본 URL을 `frontend/api-config.js`의 `window.AL_API_BASE_URL` 값에 설정하고 `main`에 푸시합니다. `/api` 경로는 URL에 붙이지 않습니다. Pages 배포가 끝나면 게임의 「공공정보」 메뉴에서 목록을 확인합니다.
+
+Render Free 서비스는 일정 시간 요청이 없으면 일시 중지되어 첫 요청이 느릴 수 있고, 파일시스템이 임시 저장소이므로 편지·플레이 기록은 재시작·재배포·일시 중지 후 사라질 수 있습니다. 영구 기록이 필요하면 유료 영구 디스크나 외부 데이터베이스로 바꿔야 합니다. `api-config.js`의 백엔드 주소를 설정하기 전까지 GitHub Pages는 백엔드 API를 사용할 수 없습니다.
 
 **플레이어 식별**: 로그인 없이, 브라우저가 처음 접속할 때 만든 익명 ID(`localStorage`의 `al_pid`)를 씁니다.
 기기·브라우저가 바뀌면 다른 사람으로 보입니다. ID는 비밀번호가 아니라서, 남의 ID를 알면 그 사람의 편지를 읽을 수 있습니다.
@@ -136,5 +156,7 @@ python -m app.seed
 | `AL_ADMIN_TOKEN` | 없음 (관리 API 꺼짐) | 정책 수정용 토큰 |
 | `AL_CORS_ORIGINS` | `*` | 허용 출처, 쉼표로 구분. 배포 시 실제 도메인으로 좁힐 것 |
 | `AL_FRONTEND_DIR` | `frontend/` | 정적 서빙할 폴더 |
+| `GOV24_SERVICE_KEY` | 없음 | 정부24 공공서비스 API 인증키 |
+| `LH_SERVICE_KEY` | 없음 | LH 분양임대공고 API 인증키 |
 
 ※ 이벤트·정책은 프로토타입용 예시입니다. 실제 대상·조건·금액은 온통청년·복지로·고용24·정부24에서 확인해야 합니다.

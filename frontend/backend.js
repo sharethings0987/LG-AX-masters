@@ -4,7 +4,8 @@
  */
 const BE = (() => {
   // 서버(uvicorn)가 이 페이지를 직접 서빙하면 같은 출처, HTML을 파일로 열었으면 로컬 서버를 찾는다.
-  const API = location.protocol.startsWith('http') ? '' : 'http://127.0.0.1:8000';
+  const API = (window.AL_API_BASE_URL || (location.protocol.startsWith('http') ? '' : 'http://127.0.0.1:8000'))
+    .replace(/\/+$/, '');
   const newId = () => (self.crypto && crypto.randomUUID) ? crypto.randomUUID()
     : 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
   const PID = (() => {
