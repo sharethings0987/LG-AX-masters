@@ -197,7 +197,7 @@ def test_lh_notices_proxy_formats_dates_and_limits_type(client, monkeypatch):
     )
     assert r.status_code == 200
     assert captured["url"] == public_data.LH_URL
-    assert captured["params"]["serviceKey"] == "lh-server-only-key"
+    assert captured["params"]["ServiceKey"] == "lh-server-only-key"
     assert captured["params"]["UPP_AIS_TP_CD"] == "06"
     assert captured["params"]["PAN_NT_ST_DT"] == "2025.01.02"
     assert captured["params"]["CLSG_DT"] == "2025.02.03"

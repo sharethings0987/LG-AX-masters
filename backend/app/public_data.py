@@ -93,7 +93,7 @@ async def list_lh_notices(
     return await _fetch_json(
         LH_URL,
         {
-            "serviceKey": key,
+            "ServiceKey": key,
             "PG_SZ": per_page,
             "PAGE": page,
             "UPP_AIS_TP_CD": "06",
