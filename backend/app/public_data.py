@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/public", tags=["public-data"])
 
 GOV24_BASE_URL = "https://api.odcloud.kr/api/gov24/v3"
-LH_URL = "https://apis.data.go.kr/B552555/lhLeaseNoticeInfo1"
+LH_URL = "https://apis.data.go.kr/B552555/lhLeaseNoticeInfo1/lhLeaseNoticeInfo1"
 
 
 def _service_key(name: str, label: str) -> str:
@@ -93,7 +93,7 @@ async def list_lh_notices(
     return await _fetch_json(
         LH_URL,
         {
-            "ServiceKey": key,
+            "serviceKey": key,
             "PG_SZ": per_page,
             "PAGE": page,
             "UPP_AIS_TP_CD": "06",

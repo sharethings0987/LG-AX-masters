@@ -196,8 +196,9 @@ def test_lh_notices_proxy_formats_dates_and_limits_type(client, monkeypatch):
         params={"page": 2, "per_page": 10, "start_date": "2025-01-02", "end_date": "2025-02-03"},
     )
     assert r.status_code == 200
-    assert captured["url"] == public_data.LH_URL
-    assert captured["params"]["ServiceKey"] == "lh-server-only-key"
+    assert captured["url"] == "https://apis.data.go.kr/B552555/lhLeaseNoticeInfo1/lhLeaseNoticeInfo1"
+    assert captured["params"]["serviceKey"] == "lh-server-only-key"
+    assert "ServiceKey" not in captured["params"]
     assert captured["params"]["UPP_AIS_TP_CD"] == "06"
     assert captured["params"]["PAN_NT_ST_DT"] == "2025.01.02"
     assert captured["params"]["CLSG_DT"] == "2025.02.03"
