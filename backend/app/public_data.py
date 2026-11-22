@@ -24,14 +24,16 @@ def _upstream_error_code(response: httpx.Response) -> str | None:
         payload = None
 
     if isinstance(payload, dict):
-        header = payload.get("cmmMsgHeader")
-        if isinstance(header, dict):
-            for name in ("returnAuthMsg", "returnReasonCode"):
-                value = header.get(name)
-                if isinstance(value, str) and re.fullmatch(r"[A-Za-z0-9_.-]{1,80}", value):
-                    return value
+        envelope = payload.get("OpenAPI_ServiceResponse", payload)
+        if isinstance(envelope, dict):
+            header = envelope.get("cmmMsgHeader", envelope)
+            if isinstance(header, dict):
+                for name in ("errMsg", "returnAuthMsg", "returnReasonCode"):
+                    value = header.get(name)
+                    if isinstance(value, str) and re.fullmatch(r"[A-Za-z0-9_.-]{1,80}", value):
+                        return value
 
-    for name in ("returnAuthMsg", "returnReasonCode"):
+    for name in ("errMsg", "returnAuthMsg", "returnReasonCode"):
         match = re.search(rf"<{name}>\s*([A-Za-z0-9_.-]{{1,80}})\s*</{name}>", response.text)
         if match:
             return match.group(1)

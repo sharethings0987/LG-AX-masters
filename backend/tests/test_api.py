@@ -232,7 +232,15 @@ def test_lh_upstream_error_code_is_reported_without_exposing_key(client, monkeyp
             request = public_data.httpx.Request("GET", url)
             return public_data.httpx.Response(
                 403,
-                json={"cmmMsgHeader": {"returnAuthMsg": "SERVICE_ACCESS_DENIED_ERROR"}},
+                json={
+                    "OpenAPI_ServiceResponse": {
+                        "cmmMsgHeader": {
+                            "errMsg": "SERVICE_ACCESS_DENIED_ERROR",
+                            "returnAuthMsg": "등록되지 않은 서비스키",
+                            "returnReasonCode": "30",
+                        }
+                    }
+                },
                 request=request,
             )
 
