@@ -299,17 +299,15 @@ body.sw{margin:0;padding:0;background:#15181c;overflow:hidden;color:#1f2a2e}
 .pl-floor{position:absolute;left:0;right:0;top:690px;bottom:0;background:#b7b3a6}
 .pl-safe{position:absolute;left:0;right:0;top:0;height:14px;background:#f2c230}
 .pl-dots{position:absolute;left:0;right:0;top:14px;height:16px;background:radial-gradient(circle,#e6b52a 3px,transparent 4px) 0 0/16px 16px}
-.pl-name{position:absolute;left:16px;top:180px;width:350px;height:118px;border-radius:10px;background:#fff;border:3px solid #3a3f47;padding:10px 16px;box-shadow:0 4px 12px rgba(0,0,0,.15)}
-.pl-name small{display:block;font-size:12px;color:var(--mu)}.pl-name>b{display:block;font:700 38px/1.2 "NEXON Lv2 Gothic","Noto Sans KR",sans-serif}
-.pl-name .nx{font-size:14px;color:#3a3f47}.pl-name .nx b{font-size:18px}
-.pl-name .bar{position:absolute;left:0;right:0;bottom:0;height:8px;background:#3a3f47;border-radius:0 0 7px 7px}
-.pl-arr{position:absolute;left:880px;top:190px;width:384px;padding:8px 14px;border-radius:6px;background:#14110d;color:#ff9b2f;box-shadow:0 4px 10px rgba(0,0,0,.3)}
-.pl-arr span{display:block;font-size:11px;color:#c98a3a}.pl-arr b{font:700 16px "NEXON Lv2 Gothic","Noto Sans KR",sans-serif;text-shadow:0 0 6px rgba(255,140,30,.7)}
-.pl-card{position:absolute;left:420px;top:200px;width:440px;padding:22px 26px;border-radius:14px;background:rgba(255,255,255,.96);box-shadow:0 12px 32px rgba(0,0,0,.28);text-align:center;transition:opacity .3s}
+/* 2.5단계: 시작 화면은 위에서부터 노선도+LED → Another Station 박스(맨 위 헤더 줄에 열차 도착 안내) 순서로 가로 가운데에 쌓는다 */
+#stage.st-start #route{left:199px;top:182px;width:882px}
+.pl-card{position:absolute;left:199px;top:330px;width:882px;padding:0 40px 28px;border-radius:14px;background:rgba(255,255,255,.97);box-shadow:0 12px 32px rgba(0,0,0,.28);text-align:center;overflow:hidden;transition:opacity .3s}
 #plt.arrive .pl-card{opacity:0}
-.pl-card .logo{font:700 38px/1.1 "Outfit","NEXON Lv2 Gothic","Noto Sans KR",sans-serif;letter-spacing:-.5px;color:#1f2a2e}
-.pl-card p{margin:12px 0 0;font-size:15px;line-height:1.7;color:#3a4246}
-.pl-card .btn{display:block;width:100%;margin-top:16px;padding:12px;border:0;background:#1f2a2e;color:#fff;font:700 16px "NEXON Lv2 Gothic","Noto Sans KR",sans-serif;border-radius:10px;cursor:pointer}
+.pl-card .pl-arr{display:flex;align-items:baseline;gap:14px;margin:0 -40px 22px;padding:10px 22px;background:#14110d;color:#ff9b2f;text-align:left}
+.pl-arr span{font-size:12px;color:#c98a3a}.pl-arr b{font:700 17px "NEXON Lv2 Gothic","Noto Sans KR",sans-serif;text-shadow:0 0 6px rgba(255,140,30,.7)}
+.pl-card .logo{font:700 54px/1.1 "Outfit","NEXON Lv2 Gothic","Noto Sans KR",sans-serif;letter-spacing:-.5px;color:#1f2a2e}
+.pl-card p{margin:14px 0 0;font-size:18px;line-height:1.7;color:#3a4246}
+.pl-card .btn{display:block;width:60%;margin:20px auto 0;padding:16px;border:0;background:#1f2a2e;color:#fff;font:700 20px "NEXON Lv2 Gothic","Noto Sans KR",sans-serif;border-radius:12px;cursor:pointer}
 /* ===== 1단계: 폰 타임라인 ===== */
 #tl .tli{padding:2px 0 6px}
 #tl .tli.cont{padding-top:0}
@@ -1223,8 +1221,6 @@ function platformHTML() {
     <div class="pl-track"><div id="pl-train"><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
     <div class="pl-doors">${panes}</div>
     <div class="pl-floor"><div class="pl-safe"></div><div class="pl-dots"></div></div>
-    <div class="pl-name"><small>${ROUTE_NAME}</small><b>${AGE_START}세역</b><div class="nx">다음 역 <b class="en">${AGE_START + 1}</b>세 →</div><i class="bar"></i></div>
-    <div class="pl-arr"><span>열차 도착 안내</span><b>${DEST_NAME} · 곧 도착합니다</b></div>
     <div class="pl-card" id="plc"></div>
   </div>`;
 }
@@ -1326,8 +1322,8 @@ function barsHTML(g) {
 function heroStart() {
   // TODO(subway-conflict): 1단계 지시로 시작 카드는 로고·소개·탑승 버튼만 둔다. v8-C 시작 화면의 「내가 쓴 편지함」 목록과
   //   공공정보·KOSIS 링크는 빠졌다(public-services.html·statistics.html 파일은 그대로 있음). 편지함을 어디서 보여 줄지 정해야 한다.
-  return `<div class="logo en">${GAME_NAME}</div>
-    <p>${ageWord(AGE_START)} 살 역에서 ${ageWord(AGE_END)} 살 종착역까지,<br>한 정거장마다 1년.<br>지하철에 앉아 휴대폰으로 남의 ${YEARS}년을 살아 봅니다.</p>
+  return `<div class="pl-arr"><span>열차 도착 안내</span><b>${DEST_NAME} · 곧 도착합니다</b></div><div class="logo en">${GAME_NAME}</div>
+    <p>${ageWord(AGE_START)} 살 역에서 ${ageWord(AGE_END)} 살 종착역까지, 한 정거장마다 1년.<br>지하철에 앉아 휴대폰으로 남의 ${YEARS}년을 살아 봅니다.</p>
     <button class="btn" data-a="new:other">🎲 랜덤 인생으로 탑승하기</button>`;
 }
 function heroPro() {
@@ -1645,6 +1641,7 @@ draw = function () {
 
   const adCard = () => { card.className = 'ad'; card.innerHTML = `<div class="big">이 자리에<br>당신이 살아볼<br><span class="en">${YEARS}</span>년이 실립니다</div><div class="mu" style="margin-top:10px">${ROUTE_NAME} · ${AGE_START}세 → ${AGE_END}세 종점</div>`; };
   $s('plt').hidden = !(S === 'start' || !G || UI.starting);
+  $s('stage').classList.toggle('st-start', !$s('plt').hidden); // 시작 화면: 노선도를 스크린도어 위 가운데로 내린다
   $s('emg').style.visibility = S === 'pro' && !UI.boarding ? 'hidden' : ''; // 첫 페이지 패널 뒤로 비치지 않게
 
   if (S === 'start' || !G) {
