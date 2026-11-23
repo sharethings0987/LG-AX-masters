@@ -434,8 +434,8 @@ const POL={
  rent:{n:'청년월세 지원사업',w:'온통청년',h:'월세를 지원해주는 사업이 있다던데?',d:'월세 부담을 낮춰주는 모집형 사업 (연도별 공고·신청기간 확인).',req:[A(19,34),H(['월세']),LOW(55)],fx:{money:10}},
  hben:{n:'청년 주거급여 분리지급',w:'복지로',h:'부모님과 따로 살면 주거급여를 따로 받을 수 있대.',d:'부모와 떨어져 거주하는 청년의 임차료 부담 완화.',req:[A(18,30),H(['월세']),LOW(40)],fx:{money:8}},
  jeonse:{n:'청년전용 버팀목전세자금대출',w:'온통청년',h:'청년 전용 전세 대출이 따로 있다더라.',d:'전세자금 마련과 대출 상환 부담을 낮추는 상품.',req:[A(19,39),H(['전세'])],fx:{money:6,burn:-3}},
- happy:{n:'행복주택·청년 매입임대주택',w:'온통청년',h:'청년 공공임대에 신청해볼 수 있다던데?',d:'주거비 절감 기회를 주는 공공임대주택.',req:[A(20,40),H(['월세','본가'])],fx:{money:8,burn:-3}},
- newlywed:{n:'신혼부부 전용 전세자금대출',w:'온통청년',h:'신혼부부 전용 대출이 있다더라.',d:'신혼집 마련을 위한 전용 전세자금 대출.',req:[A(25,40),FL('married','혼인 상태')],fx:{money:8,burn:-3}},
+ happy:{n:'행복주택·청년 매입임대주택',w:'온통청년',h:'청년 공공임대에 신청해볼 수 있다던데?',d:'주거비 절감 기회를 주는 공공임대주택.',req:[A(20,40),['주거: 독립했거나 독립을 고민 중',g=>g.h=='월세'||(g.h=='본가'&&!!g.f.indepTalk)]],fx:{money:8,burn:-3}},
+ newlywed:{ctx:{rent:1},n:'신혼부부 전용 전세자금대출',w:'온통청년',h:'신혼부부 전용 대출이 있다더라.',d:'신혼집 마련을 위한 전용 전세자금 대출.',req:[A(25,40),FL('married','혼인 상태')],fx:{money:8,burn:-3}},
  sunshine:{n:'햇살론유스',w:'복지로',h:'급할 때 쓸 수 있는 청년용 정책금융이 있대.',d:'생활비가 급한 청년을 위한 정책서민금융 대출.',req:[A(19,34),LOW(30)],fx:{money:12,self:2}},
  credit:{n:'신용회복위원회 채무조정·상담',w:'복지로',h:'빚 때문에 힘들면 채무조정 상담이 가능하대.',d:'부채 관리와 상환계획 조정 상담.',req:[A(20,40),LOW(22)],fx:{money:10,burn:-8}},
  mind:{n:'전국민 마음투자 지원사업',w:'복지로',h:'마음이 힘들 땐 상담을 지원해주는 곳이 있대.',d:'전문 심리상담 연계 지원.',req:[A(18,40),['스트레스가 높은 상태',g=>g.st.burn>=60]],fx:{burn:-18,self:4}},
@@ -447,7 +447,7 @@ const POL={
  restart:{n:'희망리턴패키지',w:'정부24',h:'폐업해도 재도전을 도와주는 패키지가 있대.',d:'폐업 후 재창업·취업 전환 지원.',req:[FL('bust','폐업 경험')],fx:{money:6,self:6,burn:-6}},
  taxrent:{n:'월세 세액공제(연말정산)',w:'정부24',h:'연말정산 때 월세도 공제된다던데?',d:'월세 지출에 대한 세액공제 (적용 연도·조건 확인).',req:[A(25,40),H(['월세']),EMP],fx:{money:6}}
 };
-const PK=Object.keys(POL);for(const k in POL){const P=POL[k];P.ok=g=>P.req.every(r=>r[1](g))}
+const PK=Object.keys(POL);for(const k in POL){const P=POL[k];P.ok=g=>P.req.every(r=>r[1](g))&&ctxOk(P,g)}
 const fxT=fx=>Object.keys(fx).map(k=>k=='money'?`자산 +${fx[k]*10}만원`:LB[k]?`${LB[k]} ${fx[k]>0?'+':''}${fx[k]}`:'').filter(Boolean).join(' · ');
 /* ===== 결정 이벤트 (선택지는 일상의 선택. 정책 정답을 알려주지 않음) · ok:[결과문,효과,지연(개월)] ===== */
 const EV=[
@@ -459,7 +459,7 @@ const EV=[
  {t:'휴학하고 일한다',ok:['한 학기 휴학하고 일하기로 했다. 졸업이 늦어진다.',{money:10,self:-1,leave:6}]}]},
 {id:'career',a:[20,25],c:g=>g.job=='대학생'&&!(g.edu&&g.edu.onLeave),w:'선배',t:'진로 고민',x:'「전공이 나랑 맞는지 모르겠어.」 선배에게 털어놓자 이런저런 조언이 돌아왔다.',ch:[
  {t:'학교 진로센터에 가본다',ok:['상담을 받으니 방향이 조금 잡혔다.',{self:5,prep:1,rum:'career'}]},{t:'일단 다닌다',ok:['달라진 건 없다.',{}]},{t:'동아리·대외활동에 뛰어든다',ok:['사람을 만나니 길이 보이는 것 같다.',{soc:7,self:3}]}]},
-{id:'indep',a:[20,30],c:g=>g.h=='본가'&&g.age>=21,w:'엄마',t:'독립할까',x:'「출퇴근 힘들지? 집에서 다니는 게 낫긴 한데…」 독립 생각이 자꾸 난다.',ch:[
+{id:'indep',a:[20,30],c:g=>g.h=='본가'&&g.age>=21,on:g=>{g.f.indepTalk=1},w:'엄마',t:'독립할까',x:'「출퇴근 힘들지? 집에서 다니는 게 낫긴 한데…」 독립 생각이 자꾸 난다.',ch:[
  {t:'월세방을 구한다',need:{money:25},ok:['첫 독립. 자유롭지만 매달 월세가 빠져나간다. 친구가 얘기했다. 「월세 지원이란 게 있던데…」',{h:'월세',self:4,money:-6,hp:2,rum:'hben'}]},{t:'본가에서 계속 산다',ok:['돈은 아꼈지만 답답함이 남는다.',{money:2,self:-1}]}]},
 {id:'relocate',a:[22,36],c:g=>JB[g.job].e&&g.job!='창업'&&g.h=='본가'&&g.me.rg!='서울',w:'회사',t:'근무지가 멀다',x:'출퇴근이 왕복 세 시간이다. 회사 근처로 옮길까 고민된다.',ch:[
  {t:'회사 근처로 이사한다',need:{money:20},ok:['시간은 벌었지만 월세가 생겼다.',{h:'월세',money:-8,burn:-3}]},{t:'계속 통근한다',ok:['지하철에서 잠을 보충한다.',{burn:4,money:2}]}]},
@@ -502,13 +502,13 @@ const EV=[
  {t:'용기 내어 만난다',pre:'약속 장소로 가는 길이 길게 느껴졌다.',p:.5,ok:['대화가 이어졌다. 다음 약속을 잡았다.',{soc:8,partner:1,hp:4},1],ko:['어색하게 끝났다.',{soc:-2},1]},{t:'지금은 나에게 집중한다',ok:['나쁘지 않다. 외롭긴 하다.',{self:2,soc:-1}]}]},
 {id:'fight',max:3,c:g=>g.f.partner&&!g.f.married,w:'{p}',t:'사소한 말다툼',x:'「요즘 너 나한테 신경 안 쓰는 거 같아.」 맞는 말이라 더 아프다.',ch:[
  {t:'일단 사과하고 시간을 낸다',ok:['화해했다. 서로를 조금 더 알았다.',{soc:5,burn:2,hp:2}]},{t:'나도 힘들다고 솔직히 말한다',p:.6,ok:['한참 이야기하다 같이 울었다. 더 단단해졌다.',{soc:8,hp:3}],ko:['대화가 엇갈렸다. 냉전이 길어졌다.',{soc:-5,hp:-3}]},{t:'일단 피한다',ok:['조용히 지나갔지만 찜찜하다.',{soc:-3}]}]},
-{id:'marry',a:[27,40],c:g=>g.f.partner&&!g.f.married,w:'{p}',t:'결혼 이야기',x:'앞으로의 일을 이야기하는 날이 왔다. 「우리 어떻게 할까?」',ch:[
+{id:'marry',a:[27,40],c:g=>g.f.partner&&!g.f.married,on:g=>{g.f.marTalk=1},w:'{p}',t:'결혼 이야기',x:'앞으로의 일을 이야기하는 날이 왔다. 「우리 어떻게 할까?」',ch:[
  {t:'결혼을 준비한다',need:{money:30},ok:['준비할 게 많다. 비용도 만만치 않다.',{married:1,money:-12,hp:5,rum:'newlywed'}]},{t:'조금 더 지켜본다',ok:['서로의 속도를 확인했다.',{self:1}]}]},
-{id:'house',a:[28,40],c:g=>g.h=='월세'||g.h=='본가',w:'공인중개사',t:'집 문제',x:'계약 만기가 다가온다. 전세 사기 뉴스가 자꾸 눈에 걸린다.',ch:[
+{id:'house',a:[28,40],c:g=>g.h=='월세',w:'공인중개사',t:'집 문제',x:'계약 만기가 다가온다. 전세 사기 뉴스가 자꾸 눈에 걸린다.',ch:[
  {t:'대출을 받아 전세로 옮긴다',need:{money:25},ok:['새 집이 생겼다. 이자가 빠져나간다.',{h:'전세',money:-6,burn:4,hp:3,rum:'jeonse'}]},{t:'공공임대를 알아본다',ok:['서류가 많지만 해볼 만하다.',{rum:'happy'}]},{t:'지금 집에 계속 산다',ok:['당분간은 마음이 편하다.',{money:-2}]}]},
 {id:'buy',a:[33,40],c:g=>g.h=='전세'&&g.st.money>=55,w:'공인중개사',t:'내 집 마련',x:'모은 돈으로 집을 살 수 있을 것 같다. 대출이 걱정이다.',ch:[
  {t:'과감하게 매수한다',ok:['내 집이 생겼다. 이자는 무겁지만 뿌듯하다.',{h:'자가',money:-18,burn:5,hp:6,debt:1500}]},{t:'조금 더 기다린다',ok:['마음의 여유를 택했다.',{self:1}]}]},
-{id:'baby',a:[29,40],c:g=>g.f.married&&!g.f.kid,w:'{p}',t:'임신 소식',x:'「우리 아이가 생겼어.」',ch:[
+{id:'baby',a:[29,40],ctx:{kid:1},c:g=>g.f.married&&!g.f.kid,w:'{p}',t:'임신 소식',x:'「우리 아이가 생겼어.」',ch:[
  {t:'기쁘게 맞이한다',ok:['삶의 속도가 달라진다. 언니가 말했다. 「아이 태어나면 받는 지원이 있어」',{kid:1,money:-8,soc:3,hp:6,rum:'birth'}]},{t:'아직은 준비가 안 됐다고 말한다',ok:['대화가 길어졌다.',{}]}]},
 {id:'leaveE',c:g=>g.f.kid&&!g.f.leavedone&&JB[g.job].e,w:'{b}',t:'육아 시기의 근무',x:'아이를 키우며 일하는 게 쉽지 않다. 회사 눈치도 보인다.',ch:[
  {t:'휴직을 낸다',ok:['소득은 줄었지만 아이 곁에 있다. 선배 엄마가 귀띔했다.',{burn:-10,money:-4,hp:3,rum:'leave',leavedone:1}]},{t:'병행하며 버틴다',ok:['버티는 하루가 이어진다.',{burn:8,self:-2,leavedone:1}]}]},
@@ -562,6 +562,39 @@ const MI=[
 {id:'m_book',w:'서점',t:'새로운 취미 클래스',x:['동네 클래스 포스터를 봤다. 도자기, 글쓰기, 러닝…','퇴근길에 소모임 모집 글을 봤다.'],ch:[{t:'신청해본다',need:{money:8},ok:['낯선 사람들과 새로운 시간을 보냈다.',{money:-4,soc:6,hp:3}]},{t:'나중에 하자고 넘긴다',ok:['언젠가는.',{}]}]},
 {id:'m_sleep',w:'나',t:'모처럼의 휴일',x:['아무 일정이 없는 휴일이다.','오늘은 푹 쉬어도 되는 날이다.'],ch:[{t:'아무것도 안 하고 쉰다',ok:['몸이 풀렸다.',{burn:-6}]},{t:'미뤄둔 일을 처리한다',ok:['개운하지만 피곤하다.',{self:3,burn:2}]},{t:'친구를 만난다',ok:['수다로 충전했다.',{soc:5,money:-2,hp:2}]}]}
 ];
+/* ===== 상황 맞춤 검사 ctxOk: 모든 이벤트·정책 카드가 지금 상황과 맞는지 키워드로 한 번 더 확인한다 =====
+ * 제목·설명(t·x·n·d·h·summary 등)에 키워드가 있으면 그 조건을 강제한다. 이벤트별로 ctx:{규칙이름:1}을 주면 그 규칙은 건너뛴다
+ * (예: 임신 소식 이벤트는 자녀 규칙을 건너뛴다 — 그 이벤트가 임신 플래그를 만든다).
+ * 경로: pickDecision(큐·일반·소소한 이벤트) · 소문(addRum·rumor 후보) · 도감 알림(POL.ok) · youth-quiz(백엔드 정책) */
+const RG_SIDO={서울:['서울'],'경기·인천':['경기','인천'],'비수도권 대도시':['부산','대구','대전','울산','광주'],'지방 소도시':['충북','충청북','충남','충청남','경북','경상북','경남','경상남','전북','전라북','전남','전라남','강원','제주']};
+const SIDO_RE=/(서울|경기|인천|부산|대구|대전|울산|광주|세종|충청북|충북|충청남|충남|경상북|경북|경상남|경남|전라북|전북|전라남|전남|강원|제주)/g;
+const empOf=g=>!!(JB[g.job]&&JB[g.job].e);
+const CTX=[
+ {k:'kid',re:/자녀|출산|임신|육아|신생아|다자녀|양육|부모급여|첫만남|산모|난임|영유아|보육/,ok:g=>!!(g.f.kid||g.f.preg),probe:g=>{g.f.kid=0;g.f.preg=0}},
+ {k:'prewed',re:/예비\s?신혼|예비부부|결혼\s?준비/,ok:g=>!!(g.f.married||(g.f.partner&&g.f.marTalk)),probe:g=>{g.f.married=0;g.f.marTalk=0}},
+ {k:'wed',re:/신혼|혼인|배우자|기혼|부부/,ok:g=>!!g.f.married||(/예비\s?신혼|예비부부/.test(g._ctxT||'')&&!!(g.f.partner&&g.f.marTalk)),probe:g=>{g.f.married=0}},
+ {k:'buy',re:/주택\s?구입|구입\s?자금|주택담보|주담대|생애\s?최초|디딤돌|내 집 마련|보금자리론|특례\s?구입|매매/,ok:g=>g.age>=27&&g.h!='자가'&&g.st.money>=45,probe:g=>{g.age=24}},
+ {k:'rent',re:/전세|월세|전월세|임차|임대|버팀목|보증금|주거급여/,ok:g=>g.h!='본가'||!!g.f.indepTalk,probe:g=>{g.h='본가';g.f.indepTalk=0}},
+ {k:'emp',re:/재직|근로자|근로청년|직장인|휴직급여|육아휴직|돌봄휴가|연말정산|중소기업 취업|입사/,ok:empOf,probe:g=>{g.job='취준생'}},
+ {k:'seek',re:/구직|취업\s?준비|취준|실업급여|구직급여|미취업|취업지원|취업성공/,ok:g=>(JB[g.job]&&JB[g.job].s==1)||g.job=='쉬는중'||!!g.f.laid||(g.job=='대학생'&&g.edu&&!g.edu.done&&g.edu.semDone>=g.edu.sems-2),probe:g=>{g.job='중견·중소'}},
+ {k:'stu',re:/대학생|대학\s?재학|학자금|장학금|등록금|재학생|휴학|복학|캠퍼스|대학일자리/,ok:g=>g.job=='대학생'&&!!g.edu&&!g.edu.done,probe:g=>{g.job='중견·중소';g.edu=null}},
+ {k:'army',re:/장병|전역|입대|입영|병역|군 복무|군복무|제대/,ok:g=>g.job=='군 복무'||!!(g.mil&&g.mil.done&&g.m-g.mil.end<=12),probe:g=>{g.mil=null}},
+];
+function ctxText(ev){return [ev.t,ev.x,ev.n,ev.d,ev.h,ev.name,ev.summary,ev.support,ev.target].map(v=>Array.isArray(v)?v.join(' '):v||'').join(' ')}
+function ctxOk(ev,g){g=g||G;if(!ev||!g)return true;const T=ctxText(ev),skip=ev.ctx||{};g._ctxT=T;
+ try{for(const r of CTX){if(skip[r.k]||!r.re.test(T))continue;if(!r.ok(g))return false}
+  // 나이 범위 「만 19~34세」·「만 34세 이하」
+  let m=/만\s?(\d{2})\s?세?\s?[~∼\-]\s?(?:만\s?)?(\d{2})\s?세/.exec(T);if(m&&(g.age<+m[1]||g.age>+m[2]))return false;
+  m=/만\s?(\d{2})\s?세\s?이하/.exec(T);if(m&&g.age>+m[1])return false;
+  m=/만\s?(\d{2})\s?세\s?이상/.exec(T);if(m&&g.age<+m[1])return false;
+  // 지역 한정: 제목(정책 이름)에 시·도 이름이 있으면 캐릭터 지역과 맞아야 한다
+  const nm=String(ev.n||ev.name||ev.t||''),hit=nm.match(SIDO_RE);
+  if(hit&&!skip.region){const mine=g.yq&&g.yq.sidoName?[g.yq.sidoName.slice(0,2)]:(RG_SIDO[g.me.rg]||[]);if(!hit.some(h=>mine.some(x=>h.startsWith(x)||x.startsWith(h))))return false}
+  return true}finally{delete g._ctxT}}
+/* 자체 검사: 키워드가 있는데 그 이벤트 자신의 조건(c·req)이 해당 상황을 막지 않으면 콘솔에 경고한다(ctxOk가 대신 막아 주지만, 데이터를 고칠 곳을 알려 준다). */
+function ctxAudit(){const base=()=>({age:28,job:'중견·중소',h:'월세',m:60,hm:40,jsM:null,edu:null,mil:null,prep:0,sy:0,pn:'',st:{health:70,mood:55,soc:50,self:55,burn:50,money:55},me:{q:3,rg:'서울',sex:'M'},f:{partner:1,married:1,kid:1,preg:1,marTalk:1,indepTalk:1,first1:1,laid:1,pet:0},fr:[{bond:50,n:'친구'}],yq:null});
+ const items=EV.map(e=>[e.id,e,g=>!e.c||e.c(g)]).concat(MI.map(e=>[e.id,e,g=>!e.c||e.c(g)])).concat(PK.map(k=>[k,POL[k],g=>POL[k].req.every(r=>r[1](g))]));
+ items.forEach(([id,e,own])=>{const T=ctxText(e);CTX.forEach(r=>{if((e.ctx||{})[r.k]||!r.re.test(T))return;const g=base();r.probe(g);try{if(!r.ok(g)&&own(g))console.warn(`[ctxOk] 「${id}」: 「${(T.match(r.re)||[''])[0]}」 키워드가 있는데 자체 조건(c/req)에 ${r.k} 조건이 없습니다. ctxOk가 대신 막습니다.`)}catch(er){}})})}
 const CARE={'취업':['job'],'주거':['house'],'돈':['money'],'관계·마음':['rel','mind']};
 const SPD=[0,1500,750,370,170];
 const FT='<footer>※ 이벤트·정책은 프로토타입용 예시이며 실제 대상·조건·금액은 연도와 지자체마다 다릅니다. 반드시 공식 사이트(.go.kr)에서 확인하세요 · <a href="https://www.youthcenter.go.kr" target="_blank">온통청년</a> · <a href="https://www.bokjiro.go.kr" target="_blank">복지로</a> · <a href="https://www.work24.go.kr" target="_blank">고용24</a> · <a href="https://www.gov.kr" target="_blank">정부24</a></footer>';
@@ -663,7 +696,7 @@ function eduTick(){const g=G,e=g.edu,mm=mo(),L=LS();if(!e||e.done||g.m<e.start)r
 function armyEv(forced){const g=G,L=LS(),st=g.job=='대학생'&&g.edu&&!g.edu.done,ch=[{t:'이번에 입대한다',act:()=>enlist('plan')}];
  if(!forced)ch.push({t:st?'1년 더 다니고 간다':'1년 미룬다',act:()=>{g.milDefer=(g.milDefer||0)+1;addLine('입대를 1년 미뤘다.','n',null,'c',2)}});
  const after1=st&&g.edu.semDone<=2;
- return{id:'army_t',w:'병무청',t:forced?'입영 통지서':'입대 시기',
+ return{id:'army_t',ctx:{army:1},w:'병무청',t:forced?'입영 통지서':'입대 시기',
   x:forced?`만 ${L.ARMY_LAST_AGE}세, 더는 미룰 수 없다. 입영 통지서가 도착했다.`:(st?`${g.edu.semDone/2}학년을 마쳤다. 언제 입대할까.`:'병무청에서 입영 안내 문자가 왔다. 언제 갈까.'),ch,
   autoW:()=>forced?[1]:st?(after1?[L.ARMY_STUDENT_SPLIT.after1,L.ARMY_STUDENT_SPLIT.after2]:[1,0]):[.55,.45]}}
 function enlist(why){const g=G,L=LS(),prev=g.job;g.mil={start:g.m,end:g.m+L.ARMY_MONTHS,prev,why};
@@ -684,7 +717,7 @@ function chapOf(g){g=g||G;if(!g)return '';if(g.job=='군 복무')return CHAP['�
 function freshLine(pool){if(!pool||!pool.length)return null;const rc=G.recentL||(G.recentL=[]),c=pool.filter(x=>!rc.includes(x[0]));if(!c.length)return null;const L=ri(c);rc.push(L[0]);if(rc.length>10)rc.shift();return L}
 /* 자동결정: 결정마다 정한 가중치(autoW, 통계 확률)로 고른다. 없으면 고를 수 있는 것 중 무작위. */
 function autoIdx(e){const ok=e.ch.map((c,i)=>i).filter(i=>!lock(e.ch[i]));if(!ok.length)return 0;if(e.autoW){const w=e.autoW(G);return pickW(ok.map(i=>[i,Math.max(0,w[i]||0)+1e-6]))}return ri(ok)}
-function addRum(k,src){if(!PK.includes(k)||G.done[k]||G.rumor.some(r=>r.k==k)||(G.sr&&G.sr.k==k))return;G.heard[k]=1;src=src||ri(G.fr).n;G.rumor.push({id:++G.tid,k,ttl:8,src});addLine(`💡 ${src}에게서 들은 이야기: 「${POL[k].h}」 — 서랍에 메모해 뒀다.`,'n',null,'u',2)}
+function addRum(k,src){if(!PK.includes(k)||!ctxOk(POL[k],G)||G.done[k]||G.rumor.some(r=>r.k==k)||(G.sr&&G.sr.k==k))return;G.heard[k]=1;src=src||ri(G.fr).n;G.rumor.push({id:++G.tid,k,ttl:8,src});addLine(`💡 ${src}에게서 들은 이야기: 「${POL[k].h}」 — 서랍에 메모해 뒀다.`,'n',null,'u',2)}
 function chg(fx,s=1){for(const k in fx){const v=fx[k];
  if(k=='prep')G.prep=Math.max(0,G.prep+v*s);else if(LB[k])G.st[k]=clf(G.st[k]+v*s);else if(k=='hp')G.st.mood=clf(G.st.mood+v*s*.6);else if(k=='free')G.st.burn=clf(G.st.burn-v*.4*s);
  else if(k=='money')G.cash+=v*10*s;else if(k=='debt'){G.debt+=v}else if(k=='rum')addRum(v);else if(k=='job')setJob(v);else if(k=='hire')hire();else if(k=='h')G.h=v;
@@ -742,15 +775,15 @@ function tickMonth(){
 }
 function pickDecision(){
  const qi=(G.fq||[]).findIndex(x=>x.due<=G.m);
- if(qi>=0){const x=G.fq.splice(qi,1)[0],ev=typeof x.ev=='function'?x.ev():x.ev;if(ev){if(EV.includes(ev))G.used[ev.id]=(G.used[ev.id]||0)+1;return makeDec(ev)}}
+ if(qi>=0){const x=G.fq.splice(qi,1)[0],ev=typeof x.ev=='function'?x.ev():x.ev;if(ev&&!ctxOk(ev,G))console.info('[ctxOk] 상황이 바뀌어 대기 중이던 이벤트를 건너뜀:',ev.id);else if(ev){if(EV.includes(ev))G.used[ev.id]=(G.used[ev.id]||0)+1;return makeDec(ev)}}
  const al=PK.find(k=>G.known[k]&&!G.done[k]&&!G.alert[k]&&POL[k].ok(G));
  if(al){G.alert[al]=1;const P=POL[al];return makeDec({id:'alert',w:'📌 도감',t:'저장해둔 제도',x:`예전에 알아둔 「${P.n}」. 지금 상황이 조건에 맞을 수 있어요.`,ch:[{t:'지금 확인해본다',act:()=>acquire(al)},{t:'나중에 하자',ok:['미뤘다.',{}]}]})}
  const cand=PK.filter(k=>POL[k].ok(G)&&!G.done[k]&&!G.miss[k]&&!G.heard[k]);
  if(cand.length&&R()<.16+G.st.soc/500){const k=ri(cand),P=POL[k],f=ri(G.fr),fi=G.fr.indexOf(f);G.heard[k]=1;genFeed(fi,k,'요즘 알아보는 중 👀 '+P.h);
   return makeDec({id:'rumor',w:f.n,t:'지나가듯 들은 소문',x:`${f.n}이(가) 말했다. 「${P.h}」`,ch:[{t:'바로 검색해본다',act:()=>{G.rumor.push({id:++G.tid,k,ttl:8,src:f.n});startSr(G.rumor[G.rumor.length-1].id)}},{t:'일단 메모만 해둔다',act:()=>{G.rumor.push({id:++G.tid,k,ttl:8,src:f.n});addLine('메모해뒀다. 시간 날 때 알아봐야지. (서랍 확인)','n')}},{t:'그냥 흘려듣는다',act:()=>{G.miss[k]=1;addLine('그냥 흘려들었다.','n')}}]})}
  const army=G.job=='군 복무',ARMY_EV=['mom','scam','envy','wedf'],ARMY_MI=['m_sns','m_rain','m_parent','m_old','m_sleep'];
- const major=EV.filter(e=>(!army||ARMY_EV.includes(e.id))&&(!e.a||G.age>=e.a[0]&&G.age<=e.a[1])&&(!e.c||e.c(G))&&(G.used[e.id]||0)<(e.max||1));
- const micro=MI.filter(e=>(!army||ARMY_MI.includes(e.id))&&(!e.c||e.c(G))&&!G.recent.includes(e.id));let ev=null;
+ const major=EV.filter(e=>(!army||ARMY_EV.includes(e.id))&&(!e.a||G.age>=e.a[0]&&G.age<=e.a[1])&&(!e.c||e.c(G))&&ctxOk(e,G)&&(G.used[e.id]||0)<(e.max||1));
+ const micro=MI.filter(e=>(!army||ARMY_MI.includes(e.id))&&(!e.c||e.c(G))&&ctxOk(e,G)&&!G.recent.includes(e.id));let ev=null;
  if(major.length&&(R()<.62||!micro.length)){ev=pickW(major.map(x=>[x,(x.pr||1)*(G.care&&x.tag&&G.care.includes(x.tag)?2.2:1)]));G.used[ev.id]=(G.used[ev.id]||0)+1;if(ev.on)ev.on(G)}
  else if(micro.length){ev=ri(micro);G.recent.push(ev.id);if(G.recent.length>6)G.recent.shift()}
  if(ev)makeDec(ev)}
@@ -997,6 +1030,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b
  else if(k=='lsave'){const t=(($('ltr')||{}).value||'').trim();if(!t)return tst('한 줄이라도 남겨보세요');const to=LTO=='me'?'5년 뒤의 나에게':`${ageWord(AGE_END,true)}의 ${G.me.n}에게`,L=lettersLocal();L.unshift({to,text:t,date:new Date().toLocaleDateString('ko-KR')});let ok=1;try{localStorage.setItem('al_letters',JSON.stringify(L.slice(0,20)))}catch(er){ok=0}
   if(typeof BE!='undefined')BE.saveLetter(to,t,ok);else tst(ok?'💌 편지를 저장했어요. 처음 화면의 편지함에서 볼 수 있어요':'이 환경에서는 저장되지 않아요. 복사해서 보관해주세요')}
 });
+ctxAudit();
 window.addEventListener('error',e=>{const a=$('app');if(a)a.insertAdjacentHTML('afterbegin','<div class="pn">오류: '+e.message+'</div>')});
 draw();
 </script>

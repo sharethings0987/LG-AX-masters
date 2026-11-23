@@ -212,6 +212,35 @@ class Character:
     sido: str
     employment: str
     married: bool
+    kid: bool = False
+    house: str = "parents"  # parents(본가) · monthly(월세) · jeonse(전세) · owner(자가)
+
+
+# 이름·설명의 키워드로 보는 상황 조건. 공공데이터의 대상 코드만으로는 「아이가 없는데 신생아 특례 대출」 같은 정책이 걸러지지 않는다.
+CTX_KID = re.compile(r"자녀|출산|임신|육아|신생아|다자녀|양육|부모급여|첫만남|산모|난임|영유아|보육")
+CTX_WED = re.compile(r"신혼|혼인|배우자|기혼|부부|결혼")
+CTX_BUY = re.compile(r"주택\s?구입|구입\s?자금|주택담보|주담대|생애\s?최초|디딤돌|내 집 마련|보금자리론|특례\s?구입|매매")
+CTX_RENT = re.compile(r"전세|월세|전월세|임차|버팀목|보증금")
+CTX_EMP = re.compile(r"재직|근로자|근로청년|직장인|휴직급여|육아휴직")
+CTX_SEEK = re.compile(r"구직|미취업|취업\s?준비|실업급여")
+
+
+def context_ok(p: Policy, ch: Character) -> bool:
+    """정책 이름·설명에 자녀·신혼·주택 구입·재직·구직 같은 말이 있으면 캐릭터 상황과 맞는지 본다."""
+    text = f"{p.name} {p.summary}"
+    if CTX_KID.search(text) and not ch.kid:
+        return False
+    if CTX_WED.search(text) and not ch.married:
+        return False
+    if CTX_BUY.search(text) and (ch.age < 27 or ch.house == "owner"):
+        return False
+    if CTX_RENT.search(text) and ch.house == "parents":
+        return False
+    if CTX_EMP.search(text) and ch.employment not in ("employed", "freelancer", "founder"):
+        return False
+    if CTX_SEEK.search(text) and ch.employment not in ("unemployed", "student"):
+        return False
+    return True
 
 
 def _age_text(p: Policy) -> str:
@@ -261,7 +290,7 @@ def fits(p: Policy, ch: Character) -> bool:
         return False
     if (p.marriage == MARRIED and not ch.married) or (p.marriage == SINGLE and ch.married):
         return False
-    return True
+    return context_ok(p, ch)
 
 
 def checks(p: Policy, ch: Character) -> list[str]:
@@ -424,6 +453,8 @@ async def youth_quiz(
     sido: str = Query(..., pattern=r"^\d{2}$", description="시도 코드 2자리 (예: 11 서울, 41 경기)"),
     employment: Literal["unemployed", "employed", "freelancer", "founder", "student"] = Query(...),
     married: bool = Query(False),
+    kid: bool = Query(False, description="자녀(임신 포함)가 있는가"),
+    house: Literal["parents", "monthly", "jeonse", "owner"] = Query("parents", description="거주 형태"),
     exclude: str = Query("", max_length=4000, description="이미 나온 정책 번호나 이름(쉼표로 구분)"),
     seed: int | None = Query(None, description="같은 문제를 다시 만들 때 쓰는 값(테스트용)"),
 ):
@@ -431,7 +462,7 @@ async def youth_quiz(
         raise HTTPException(422, "알 수 없는 시도 코드입니다.")
     policies = await get_policies()
     skip = frozenset(x.strip() for x in exclude.split(",") if x.strip())
-    quiz = pick_policy(policies, situation, Character(age, sido, employment, married), random.Random(seed), skip)
+    quiz = pick_policy(policies, situation, Character(age, sido, employment, married, kid, house), random.Random(seed), skip)
     if quiz is None:
         raise HTTPException(404, "지금 상황에 맞는 정책을 찾지 못했습니다.")
     return quiz

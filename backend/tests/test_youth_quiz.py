@@ -75,6 +75,15 @@ def test_student_only_policy_fits_students():
     assert fits(p, Character(20, "11", "student", False))
 
 
+def test_context_keywords_need_matching_situation():
+    newborn, = normalize([row("1", "신생아 특례 구입자금 대출")], TODAY)
+    assert not fits(newborn, Character(30, "11", "employed", True, kid=False, house="jeonse"))
+    assert fits(newborn, Character(30, "11", "employed", True, kid=True, house="jeonse"))
+    rent, = normalize([row("2", "청년 월세 지원")], TODAY)
+    assert not fits(rent, Character(22, "11", "employed", False, house="parents"))
+    assert fits(rent, Character(22, "11", "employed", False, house="monthly"))
+
+
 def test_search_has_exactly_one_official_result():
     p, = normalize([row("1", "청년미래적금")], TODAY)
     for seed in range(10):

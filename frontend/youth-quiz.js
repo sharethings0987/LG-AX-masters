@@ -47,6 +47,7 @@
   const state = g => {
     if (!g.yq) g.yq = { next: FIRST_MONTH, count: 0, seen: [], ready: null, loading: false, hint: null, cur: null };
     if (!g.yq.sido) g.yq.sido = pick(REGION_SIDO[g.me.rg] || ['11']);
+    g.yq.sidoName = SIDO[g.yq.sido];
     return g.yq;
   };
 
@@ -64,7 +65,11 @@
   }
 
   // 받아 둔 정책이 지금 캐릭터에도 그대로 맞는지 (나이·직업·결혼이 바뀌면 버린다)
-  const profile = g => [g.age, employment(g), g.f.married ? 1 : 0].join('|');
+  const profile = g => [g.age, employment(g), g.f.married ? 1 : 0, g.f.kid ? 1 : 0, g.h].join('|');
+  const HOUSE = { 본가: 'parents', 월세: 'monthly', 전세: 'jeonse', 자가: 'owner' };
+  // 백엔드가 걸러 주지 못한 경우(예전 서버·GitHub Pages)에도 엔진의 ctxOk로 한 번 더 거른다: 자녀·신혼·주택 구입·재직 등 키워드
+  const policyFits = (g, P) => typeof ctxOk !== 'function' ||
+    ctxOk({ n: P.name, t: P.name, d: P.summary, support: P.support, target: P.target, x: P.age && P.age !== '나이 제한 없음' ? P.age : '' }, g);
   const meText = g => `만 ${g.age}세 · ${SIDO[state(g).sido]} · ${EMP_LABEL[employment(g)]}${g.f.married ? ' · 기혼' : ''}`;
 
   function prefetch(g) {
@@ -74,7 +79,8 @@
     q.loading = true;
     const params = new URLSearchParams({
       situation: sit, age: String(g.age), sido: q.sido, employment: employment(g),
-      married: g.f.married ? 'true' : 'false', exclude: q.seen.slice(-40).join(','),
+      married: g.f.married ? 'true' : 'false', kid: g.f.kid ? 'true' : 'false', house: HOUSE[g.h] || 'parents',
+      exclude: q.seen.slice(-40).join(','),
     });
     const ctl = typeof AbortController !== 'undefined' ? new AbortController() : null;
     const timer = ctl && setTimeout(() => ctl.abort(), FETCH_TIMEOUT);
@@ -82,6 +88,10 @@
       .then(r => r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status)))
       .then(data => {
         if (G !== g || !data || !data.policy || !Array.isArray(data.results) || data.results.length < 2) return;
+        if (!policyFits(g, data.policy)) {
+          console.info('[ctxOk] 지금 상황과 맞지 않는 청년정책을 걸러냄:', data.policy.name);
+          q.seen.push(data.policy.id); q.next = g.m + 1; return;
+        }
         q.ready = { data, sit, profile: profile(g), m: g.m };
       })
       .catch(e => {
@@ -240,7 +250,7 @@
     const g = G;
     if (g && !g.auto && g.yq && g.yq.ready) {
       const ready = g.yq.ready;
-      if (ready.profile === profile(g) && g.m - ready.m <= 6) return announce(g, ready);
+      if (ready.profile === profile(g) && g.m - ready.m <= 6 && policyFits(g, ready.data.policy)) return announce(g, ready);
       g.yq.ready = null; // 상황이 바뀌어 맞지 않는 정책은 버린다
     }
     return origPick.apply(this, arguments);
