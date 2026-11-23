@@ -1789,4 +1789,77 @@ draw();
   }, 300);
 })();
 </script>
+<script>
+/* 개발용 디버그 패널: 주소에 ?debug=1 을 붙이면 화면 오른쪽 아래에 뜬다(평소에는 없음).
+ * 나이 점프(자동결정으로 빠르게 진행)·조건 지정 다시 뽑기·이벤트 강제 발생·상태 값 설정·플래그 보기. */
+(() => {
+  if (!/[?&]debug=1\b/.test(location.search)) return;
+  const box = document.createElement('div');
+  box.id = 'dbg';
+  box.style.cssText = 'position:fixed;right:8px;bottom:8px;z-index:99;width:300px;max-height:92vh;overflow:auto;background:rgba(20,24,30,.94);color:#e8f5ea;font:12px/1.5 monospace;padding:8px 10px;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.4)';
+  document.body.appendChild(box);
+  const inp = 'background:#2e353d;color:#fff;border:1px solid #47505a;border-radius:4px;font:inherit;padding:1px 4px';
+  const btn = 'background:#3a4450;color:#fff;border:1px solid #5a6570;border-radius:4px;font:inherit;padding:1px 6px;cursor:pointer;margin:1px';
+  let open = true;
+  const sel = (id, opts) => `<select id="${id}" style="${inp}">${opts.map(o => `<option value="${o[0]}">${o[1]}</option>`).join('')}</select>`;
+  function render() {
+    if (!open) { box.innerHTML = `<button style="${btn}" data-d="tog">🐞 debug</button>`; return; }
+    const g = G, keys = ['health', 'mood', 'soc', 'self', 'burn', 'money'];
+    const info = g ? `<div><b>${esc(g.me.n)}</b> ${g.me.sex === 'M' ? '남' : '여'} · ${g.me.rg} · q${g.me.q} · ${g.age}세 ${mo()}월 (m=${g.m})</div>
+      <div>직업: <b>${g.job}</b> · 거주 ${g.h} · 취준 ${JB[g.job].s && g.jsM != null ? (g.m - g.jsM) + '개월' : '-'}</div>
+      <div>학적: ${g.edu ? `${g.edu.type} ${g.edu.semDone}/${g.edu.sems}학기${g.edu.onLeave ? ' 휴학' : ''}${g.edu.done ? ' 졸업' : ''}` : '-'} · 군: ${g.mil ? (g.mil.done ? '전역' : '복무') : '-'}</div>
+      <div>연인: ${g.pn || '-'} · 결정: ${g.dec ? esc(g.dec.e.id) : '-'}</div>
+      <div style="word-break:break-all">G.f: ${esc(JSON.stringify(g.f))}</div>` : '<div>게임 시작 전</div>';
+    box.innerHTML = `<div style="display:flex;justify-content:space-between"><b>🐞 debug</b><button style="${btn}" data-d="tog">접기</button></div>${info}
+      <hr style="border-color:#444">
+      <div>나이 <button style="${btn}" data-d="y1">+1년</button> <input id="dAge" type="number" min="20" max="35" value="${g ? Math.min(35, g.age + 1) : 25}" style="${inp};width:48px"> <button style="${btn}" data-d="yto">로 이동</button></div>
+      <div>다시 뽑기 ${sel('dSex', [['r', '성별?'], ['M', '남'], ['F', '여']])} ${sel('dQ', [['r', '형편?'], [1, 'q1'], [2, 'q2'], [3, 'q3'], [4, 'q4'], [5, 'q5']])} ${sel('dRg', [['r', '지역?']].concat(RG.map(r => [r, r])))} <button style="${btn}" data-d="new">뽑기</button></div>
+      <div>이벤트 ${sel('dEv', EV.concat(MI).map(e => [e.id, e.id + ' · ' + e.t]))} <button style="${btn}" data-d="ev">발생</button> <label><input id="dForce" type="checkbox">조건 무시</label></div>
+      <div>상태 ${sel('dSt', keys.map(k => [k, barLabel(k)]))} <input id="dVal" type="number" min="0" max="100" value="50" style="${inp};width:48px"> <button style="${btn}" data-d="st">설정</button></div>
+      <div>${g ? keys.map(k => `${barLabel(k)} ${rd(g.st[k])}`).join(' · ') : ''}</div>`;
+  }
+  // 자동결정으로 조용히 m개월 진행한다(화면은 끝나고 한 번만 그림)
+  function jump(months) {
+    if (!G || S !== 'play') return tst('탑승 후에 쓸 수 있어요');
+    const keep = draw, end = Math.min(TOTAL_M - 1, G.m + months); draw = () => {};
+    try {
+      let guard = 0;
+      while (G.m < end && S === 'play' && guard++ < 3000) {
+        if (G.dec) { pickC(autoIdx(G.dec.e)); continue; }
+        if (MOD) { MOD = null; G.sr = null; if (G.yq) G.yq.cur = null; continue; }
+        tickMonth();
+      }
+    } finally { draw = keep; }
+    UI.lastAge = G.age; draw(); loop();
+  }
+  // 재정 막대 값 → 순자산(nwBar의 역함수)
+  function setMoney(v) { const nw = v >= 25 ? Math.pow((v - 25) / .55, 2) : -Math.pow((25 - v) / 2, 2); G.cash = Math.max(0, nw); G.debt = Math.max(0, -nw); recalc(); }
+  box.addEventListener('click', e => {
+    const b = e.target.closest('[data-d]'); if (!b) return; const a = b.dataset.d, v = id => (document.getElementById(id) || {}).value;
+    if (a === 'tog') open = !open;
+    else if (a === 'y1') jump(12 - (G ? G.m % 12 : 0));
+    else if (a === 'yto') { const t = +v('dAge'); if (G) jump((t - AGE_START) * 12 - G.m); }
+    else if (a === 'new') {
+      const sex = v('dSex') === 'r' ? (R() < .5 ? 'M' : 'F') : v('dSex'), q = v('dQ') === 'r' ? undefined : +v('dQ'), rg = v('dRg') === 'r' ? ri(RG) : v('dRg');
+      clearTimeout(TM); MOD = null;
+      newGame('other', {}, {n: ri(sex === 'M' ? NM_M : NM_F), sex, rg, q: q || pickW([[1, 2], [2, 3], [3, 4], [4, 3], [5, 2]])});
+      draw();
+    }
+    else if (a === 'ev') {
+      if (!G || S !== 'play') return tst('탑승 후에 쓸 수 있어요');
+      const ev = EV.concat(MI).find(x => x.id === v('dEv')); if (!ev) return;
+      const okNow = (!ev.c || ev.c(G)) && (typeof ctxOk !== 'function' || ctxOk(ev, G));
+      if (!okNow && !document.getElementById('dForce').checked) return tst('지금 상황에서는 조건이 맞지 않아요(조건 무시를 켜면 강제로 띄움)');
+      MOD = null; G.dec = null; if (ev.on) ev.on(G); G.used[ev.id] = (G.used[ev.id] || 0) + 1; makeDec(ev); draw();
+    }
+    else if (a === 'st') {
+      if (!G) return; const k = v('dSt'), n = clf(+v('dVal'));
+      if (k === 'money') setMoney(n); else G.st[k] = n; draw();
+    }
+    render();
+  });
+  setInterval(() => { if (!box.contains(document.activeElement)) render(); }, 1000);
+  render();
+})();
+</script>
 </body></html>
