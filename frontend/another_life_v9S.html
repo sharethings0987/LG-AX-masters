@@ -334,33 +334,73 @@ details.dm{border-bottom:1px solid var(--ln);padding:6px 0}details.dm summary{cu
 .endlogo{font:700 22px "Outfit","NEXON Lv2 Gothic","Noto Sans KR",sans-serif;padding:14px 22px 0;color:var(--ac)}
 #foot .en{font-weight:700}
 </style></head><body><div id="app"></div><div id="toast"></div>
+<script src="life-stats.js"></script>
 <script>
 const $=i=>document.getElementById(i),R=Math.random,ri=a=>a[Math.floor(R()*a.length)],clf=v=>Math.max(0,Math.min(100,v)),rr=(a,b)=>a+Math.floor(R()*(b-a+1)),rd=Math.round;
 const pickW=a=>{let t=a.reduce((s,x)=>s+x[1],0),r=R()*t;for(const x of a){if((r-=x[1])<0)return x[0]}return a[0][0]};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+/* ===== 나이 구간: 20세 1월 출발 → 36세 1월 종착역 도착 시 종료 ===== */
+const AGE_START=20,AGE_END=36,TOTAL_M=(AGE_END-AGE_START)*12;
+/* 나이 → 고유어 (스무, 서른여섯 …). bare=true면 「스물」처럼 단독형 */
+function ageWord(n,bare){const T=['','열','스물','서른','마흔','쉰'],O=['','하나','둘','셋','넷','다섯','여섯','일곱','여덟','아홉'],O2=['','한','두','세','네','다섯','여섯','일곱','여덟','아홉'];const t=Math.floor(n/10),o=n%10;if(bare)return(t===2&&o===0?'스물':T[t])+O[o];return(t===2&&o===0?'스무':T[t])+O2[o]}
 const LB={health:'건강',mood:'행복',soc:'관계',self:'자신감',burn:'피로'},BC={health:'#2f8f5f',mood:'#c9902a',soc:'#8a1c3b',self:'#2a6fd0',burn:'#b3312d'};
 const ROLE={health:'몸 상태. 피로가 오래 높으면 떨어져요.',mood:'요즘의 마음. 관계·자신감·피로에 따라 서서히 움직여요.',soc:'곁에 있는 사람들. 높을수록 도움이 되는 소식도 잘 들려요.',self:'스스로를 믿는 힘. 면접·시험 같은 도전에 영향.',burn:'지친 정도. 높으면 퇴사·질병 위험이 커져요.'};
-const NM=['지원','도윤','하린','서진','소라','민호','예준','수아','지후','다은','현우','유나','태민','채원','재윤','나연'],PN=['도현','서연','민재','지안','하은','준서'],SUR=['김','이','박','최','정'];
+const NM_M=['도윤','민호','예준','지후','현우','태민','재윤','준서','민재','도현','시우','하준','주원','건우','지원'],NM_F=['하린','서진','소라','수아','다은','유나','채원','나연','서연','지안','하은','예린','윤서','지민','소윤'];
+const NM=NM_M.concat(NM_F),PN=NM,SUR=['김','이','박','최','정'];
 const RG=['서울','경기·인천','비수도권 대도시','지방 소도시'],PATHL={대학생:'대학 재학 중',직장:'고졸 후 취업 2년차',준비:'시험 준비 중'};
 const FAML=['빠듯한 집안 형편','평범한 집안 형편','여유 있는 집안 형편'];
 const HC=['#3b2a20','#7a4b2a','#1e1e2a','#2a2a55','#c25b7a','#5a4a4a','#22303c'],SC=['#4a6fa5','#e58f4a','#7fb77e','#8a63d2','#ff8fb1','#f2b36b','#5aa9c9','#d9695f'];
 const PHC=[['#ffd1dc','#ffb3c6'],['#cde7ff','#a7d3ff'],['#d8f5e3','#a8e6c3'],['#fff1b8','#ffd86b'],['#e6d9ff','#c9b3ff'],['#ffe0c2','#ffbf86']];
 const SP=['....hhhh....','...hhhhhh...','..hhhhhhhh..','..hssssssh..','..hsessesh..','..hssssssh..','...ssmmss...','....ssss....','..cccaaccc..','.ccccaacccc.','.cc.cccc.cc.','.cc.cccc.cc.'];
-const av=(c,z=44)=>{c=c||['#666','#aaa','#fff'];const P={h:c[0],s:'#ffd9b5',e:'#2b2340',m:'#e05a7a',c:c[1],a:c[2]};let r='';SP.forEach((row,y)=>[...row].forEach((ch,x)=>{if(P[ch])r+=`<rect x="${x}" y="${y}" width="1" height="1" fill="${P[ch]}"/>`}));return `<svg class="av" width="${z}" height="${z}" viewBox="0 0 12 12" shape-rendering="crispEdges">${r}</svg>`};
+/* ===== 외모(look): 성별·머리 모양·머리 색·피부·상의·하의·소품. 어디서 그려도 같은 사람으로 보이게 이 객체 하나로 그린다. ===== */
+const HC_DYE=['#b5651d','#d9b36c','#8a3b5c','#6b7a8f'],SKIN=['#ffe0c4','#f6cfa8','#e2b48a','#c99a6e'];
+const HAIR={M:['short','twoblock','perm','long','bangs'],F:['bob','ponytail','long','bun','bangs','perm']};
+const TOPS=['tee','hood','shirt','knit','jacket','mtm'],BOTS={M:['jeans','slacks','shorts','jeans'],F:['jeans','slacks','skirt','shorts','skirt']},ACC=['none','none','none','glasses','cap','bag'],BOTC=['#3a4a6a','#2b2b33','#6b5a48','#4a5060','#8a7a6a'];
+function genLook(sex,base){base=base||{};return{sex,hair:base.hair||ri(HAIR[sex]),hairCol:base.hairCol||(R()<.2?ri(HC_DYE):ri(HC)),skin:base.skin||ri(SKIN),top:ri(TOPS),topCol:ri(SC),bottom:ri(BOTS[sex]),botCol:ri(BOTC),acc:base.acc||ri(ACC)}}
+function pxShade(hex,d){const n=parseInt(String(hex).replace('#',''),16);if(isNaN(n))return hex;const c=v=>Math.max(0,Math.min(255,v+d));return '#'+((1<<24)+(c(n>>16)<<16)+(c((n>>8)&255)<<8)+c(n&255)).toString(16).slice(1)}
+/* 머리·얼굴 그리기: 머리 폭 8칸(x0~x0+7), 얼굴 y0+2~y0+5 */
+function pxHead(g,L,x0,y0,o){o=o||{};const P=(x,y,w,h,c)=>{for(let j=y;j<y+h;j++)for(let i=x;i<x+w;i++)if(g[j]&&i>=0&&i<g[j].length)g[j][i]=c};
+ const hc=L.hairCol,sk=L.skin,st=L.hair,cap=L.acc==='cap';
+ if(st==='long'||st==='bob'){P(x0-1,y0+2,1,st==='long'?7:4,hc);P(x0+8,y0+2,1,st==='long'?7:4,hc);if(st==='bob'){P(x0-2,y0+2,1,4,hc);P(x0+9,y0+2,1,4,hc)}}
+ P(x0,y0+2,8,4,sk);
+ P(x0,y0,8,1,hc);P(x0-1,y0+1,10,1,hc);
+ if(st==='short'||st==='perm'||st==='bangs'||st==='ponytail'||st==='bun'){P(x0-1,y0+2,1,st==='bangs'?3:1,hc);P(x0+8,y0+2,1,st==='bangs'?3:1,hc)}
+ if(st==='bangs')P(x0,y0+2,8,1,hc);
+ if(st==='twoblock'){P(x0,y0+2,3,1,hc);P(x0-1,y0+2,1,2,pxShade(hc,40));P(x0+8,y0+2,1,2,pxShade(hc,40))}
+ if(st==='perm'){P(x0+1,y0+2,1,1,hc);P(x0+3,y0+2,1,1,hc);P(x0+5,y0+2,1,1,hc);P(x0+7,y0+2,1,1,hc)}
+ if(st==='ponytail'){P(x0+9,y0+1,1,5,hc);P(x0+8,y0+1,1,1,hc)}
+ if(st==='bun'){P(x0+7,y0-1<0?y0:y0-1,2,2,hc);P(x0+8,y0,2,2,hc)}
+ if(cap){P(x0-1,y0,10,2,o.capCol||'#e5383b');P(x0-2,y0+2,6,1,o.capCol||'#e5383b')}
+ const ey=y0+3,eye='#2b2340';if(o.sleep){P(x0+1,ey,2,1,eye);P(x0+5,ey,2,1,eye)}else{P(x0+2,ey,1,1,eye);P(x0+5,ey,1,1,eye)}
+ if(L.acc==='glasses'&&!o.sleep){P(x0+1,ey,1,1,'#333');P(x0+3,ey,2,1,'#333');P(x0+6,ey,1,1,'#333');P(x0+1,ey-1,3,1,'#333');P(x0+4,ey-1,3,1,'#333')}
+ P(x0+3,y0+5,2,1,'#e05a7a')}
+/* 작은 아바타(12×12). 외모 객체를 받으면 그 사람을, 예전 [머리,옷,포인트] 배열이면 예전 방식으로 그린다. */
+function avLook(L,z){const g=Array.from({length:12},()=>Array(12).fill(null));pxHead(g,L,2,0,{});
+ const P=(x,y,w,h,c)=>{for(let j=y;j<y+h;j++)for(let i=x;i<x+w;i++)if(g[j]&&i>=0&&i<12)g[j][i]=c};
+ P(4,6,4,1,L.skin);P(2,7,8,1,L.topCol);P(1,8,10,4,L.topCol);
+ if(L.top==='hood')P(3,7,6,1,pxShade(L.topCol,-40));if(L.top==='shirt'){P(5,7,2,2,'#fff')}if(L.top==='jacket'){P(5,7,2,5,'#f4f4f4')}if(L.top==='knit')P(1,10,10,1,pxShade(L.topCol,30));
+ if(L.acc==='bag'){P(3,7,1,5,'#7a4b2a');P(8,7,1,5,'#7a4b2a')}
+ let r='';g.forEach((row,y)=>row.forEach((c,x)=>{if(c)r+=`<rect x="${x}" y="${y}" width="1" height="1" fill="${c}"/>`}));
+ return `<svg class="av" width="${z}" height="${z}" viewBox="0 0 12 12" shape-rendering="crispEdges">${r}</svg>`}
+const av=(c,z=44)=>{if(c&&c.sex)return avLook(c,z);c=c||['#666','#aaa','#fff'];const P={h:c[0],s:'#ffd9b5',e:'#2b2340',m:'#e05a7a',c:c[1],a:c[2]};let r='';SP.forEach((row,y)=>[...row].forEach((ch,x)=>{if(P[ch])r+=`<rect x="${x}" y="${y}" width="1" height="1" fill="${P[ch]}"/>`}));return `<svg class="av" width="${z}" height="${z}" viewBox="0 0 12 12" shape-rendering="crispEdges">${r}</svg>`};
 /* 직업: inc=월 수입(만원), d=연간 변화 */
 const JB={'대학생':{inc:30,d:{burn:2}},'취준생':{s:1,inc:15,d:{burn:4,self:-3}},'공시생':{s:1,inc:10,d:{burn:4,self:-3}},'쉬는중':{inc:5,d:{burn:-4,soc:-4,self:-3}},
+ '진로탐색':{inc:0,d:{}},'재수생':{inc:10,d:{burn:4,self:-2}},'군 복무':{inc:100,d:{burn:2,soc:-1}},
  '대기업':{e:1,inc:400,d:{burn:8,self:1}},'스타트업':{e:1,inc:300,d:{burn:9,self:1}},'중견·중소':{e:1,inc:270,d:{burn:6,self:1}},'프리랜서':{e:1,inc:220,d:{burn:4}},'공무원':{e:1,inc:280,d:{burn:1,self:2}},'창업':{e:1,inc:160,d:{burn:9,self:2}}};
-const CHJOB={대학생:'대학생',직장:'중견·중소',준비:'공시생'};
-const SNSL={대학생:[['학식 인증샷 과제 지옥','🍚📚'],['동기들이랑 MT 청춘이다','🏕️🔥'],['교환학생 지원 완료','✈️🎒']],취준생:[['오늘의 카페 취업 준비 중','☕💻'],['면접 보러 가는 길 🍀','🚇👔'],['산책 중 문득','🌳']],공시생:[['D-100 오늘도 출석','📚✍️'],['독서실 1등으로 도착','🌅📖'],['합격 기원 떡 받았다','🍡']],쉬는중:[['오랜만에 산책','🌿'],['집 앞 하늘','🌆'],['고양이랑 하루','🐱']],
+
+const SNSL={대학생:[['학식 인증샷 과제 지옥','🍚📚'],['동기들이랑 MT 청춘이다','🏕️🔥'],['교환학생 지원 완료','✈️🎒']],취준생:[['오늘의 카페 취업 준비 중','☕💻'],['면접 보러 가는 길 🍀','🚇👔'],['산책 중 문득','🌳']],공시생:[['D-100 오늘도 출석','📚✍️'],['독서실 1등으로 도착','🌅📖'],['합격 기원 떡 받았다','🍡']],쉬는중:[['오랜만에 산책','🌿'],['집 앞 하늘','🌆'],['고양이랑 하루','🐱']],'군 복무':[['첫 휴가 나왔다','🪖🏠'],['전역까지 D-100','📆'],['면회 와 준 친구들','🍗🥤']],재수생:[['재수 학원 등원','📚'],['모의고사 끝','✍️'],['오늘의 공부 인증','⏱️']],
  대기업:[['성과급 들어온 날 🎉','🍣🥂'],['연휴엔 오사카','✈️🏯'],['사원증 샷','🪪🏢']],스타트업:[['서비스 출시!','🚀🎊'],['오늘도 팀 회식','🍻🍗'],['성장하는 중','📈💻']],'중견·중소':[['점심 맛집 발견','🍜'],['주말엔 등산','⛰️🥾'],['소소하지만 확실한 행복','☕🍰']],프리랜서:[['워케이션 중','🌴💻'],['오늘 작업 인증','🎨🖥️'],['내 일정은 내가 정한다','🗓️☕']],공무원:[['칼퇴 후 운동','🏃💪'],['주말엔 가족과','🌳🧺'],['합격 인증','🎉📜']],창업:[['대표 명함 새로 팠다','💼✨'],['투자 미팅 다녀옴','🤝📊'],['우리 팀 최고','👏🏢']]};
 const GEN=[['주말 카페','☕🌆'],['맛집 도장깨기','🍜🍣'],['우리 집 막내','🐶'],['여름휴가','🏖️☀️'],['오늘의 하늘','🌇'],['운동 시작!','🏋️'],['단풍 구경','🍁'],['생일 케이크','🎂🎈']];
-const TRUE={대학생:[['사실 등록금 대출이 쌓이고 있어.',0],['요즘 동기들이랑 진짜 재밌어.',1]],취준생:[['서류 탈락이 열 번 넘었어. 괜히 조용한 게 아니야.',0],['요즘 스터디 덕분에 마음이 좀 편해졌어.',1]],공시생:[['1점 차이로 떨어져서 속상해.',0],['매일 규칙적으로 사니까 몸은 오히려 좋아졌어.',1]],쉬는중:[['한동안 아무것도 하기 싫었어.',0],['이번 주에 처음으로 밖에 나가봤어. 작은 일이지만 기뻐.',1]],
+const TRUE={대학생:[['사실 등록금 대출이 쌓이고 있어.',0],['요즘 동기들이랑 진짜 재밌어.',1]],취준생:[['서류 탈락이 열 번 넘었어. 괜히 조용한 게 아니야.',0],['요즘 스터디 덕분에 마음이 좀 편해졌어.',1]],공시생:[['1점 차이로 떨어져서 속상해.',0],['매일 규칙적으로 사니까 몸은 오히려 좋아졌어.',1]],쉬는중:[['한동안 아무것도 하기 싫었어.',0],['이번 주에 처음으로 밖에 나가봤어. 작은 일이지만 기뻐.',1]],'군 복무':[['군대 시간은 왜 이렇게 안 가냐.',0],['동기들이랑 의외로 잘 맞아. 전역하면 다 같이 여행 가기로 했어.',1]],재수생:[['다들 대학 가니까 혼자 멈춘 것 같아.',0],['이번엔 진짜 될 것 같아. 점수가 오르고 있어.',1]],
  대기업:[['사실 너무 지쳐서 퇴사 고민 중이야.',0],['일은 힘든데 팀이 좋아서 버틸 만해.',1]],스타트업:[['월 200시간 일해. 스톡옵션은 아직 종이일 뿐이야.',0],['출시하고 사용자 후기 읽는 맛에 살아.',1]],'중견·중소':[['성장이 안 보여서 불안해.',0],['야근 없는 삶이 이렇게 좋은 줄 몰랐어.',1]],프리랜서:[['수입이 들쭉날쭉해서 불안해.',0],['내 시간으로 사는 게 생각보다 잘 맞아.',1]],공무원:[['민원이 너무 힘들어.',0],['안정이 주는 여유가 크더라. 취미도 생겼어.',1]],창업:[['통장 잔고가 두 달치야.',0],['팀원들과 만든 게 처음 팔렸어!',1]]};
 /* ===== 일상 한 줄 (이야기의 숨결) : [문장, 톤(g/b/n), 효과] ===== */
 const AMB={
  대학생:[['과제 마감이 세 개 겹친 주. 커피가 식사가 됐다.','n',{burn:1}],['시험 끝나고 {f0}이(가) 치킨을 샀다. 인생 별거 없다 싶었다.','g',{hp:1}],['학점 확인하고 잠깐 말이 없어졌다.','b',{self:-1}],['도서관 창가 자리가 오늘은 비어 있었다. 작은 행운.','g'],['알바 끝나고 막차를 놓쳐 한 시간을 걸었다.','b',{burn:1}],['동아리방에서 누가 기타를 쳤다. 시험기간의 낭만.','n']],
  취준생:[['자소서 「지원동기」 칸 앞에서 한 시간째 멈춰 있다.','b'],['서류 탈락 메일. 정중한데 차갑다.','b',{self:-2}],['스터디 끝나고 {f1}이(가) 사준 김밥이 이상하게 맛있었다.','g',{soc:1}],['면접 후기 글을 새벽까지 읽었다. 읽을수록 불안하다.','b',{burn:1}],['증명사진을 다시 찍었다. 웃는 표정이 어색하다.','n'],['채용 사이트 알림이 하루에 열 개씩 온다. 대부분 나와 무관하다.','n'],['오랜만에 산책했다. 취업 생각이 잠깐 사라졌다.','g',{burn:-2}]],
  공시생:[['독서실 같은 자리에 앉았다. 벽의 얼룩이 낯익다.','n'],['기출을 돌리고 오답노트를 썼다. 점수는 오르락내리락.','n'],['점심시간 스터디 친구들과의 수다가 하루의 유일한 낙이다.','g',{soc:1}],['명절 친척들의 「아직도 공부하니?」가 귀에 맴돈다.','b',{self:-1}],['모의고사 점수가 처음으로 합격선을 넘었다.','g',{self:2}]],
+ 진로탐색:[['졸업식 사진을 다시 넘겨 봤다.','n']],
+ 재수생:[['재수 학원 자습실 같은 자리. 아침 일곱 시부터 앉아 있다.','n'],['모의고사 점수가 처음으로 올랐다.','g',{self:2}],['대학에 간 친구의 새내기 사진을 봤다. 폰을 엎어 두었다.','b',{self:-1}],['엄마가 싸 준 도시락을 자습실 복도에서 먹었다.','n',{hp:1}],['단어장을 넘기다 버스 정류장을 지나쳤다.','n'],['같은 반 재수생과 편의점 컵라면으로 짧게 웃었다.','g',{soc:1}],['수능 D-100 현수막이 걸렸다.','n',{burn:1}]],
+ '군 복무':[['훈련 끝나고 생활관에 누우니 하루가 끝났다.','n',{burn:1}],['이번 달 군 월급이 들어왔다. 생각보다 쏠쏠하다.','g',{money:1}],['휴가 날짜를 달력에 동그라미 쳤다.','g',{hp:1}],['선임이 PX에서 냉동식품을 사 줬다.','g',{soc:1}],['야간 근무 중 별이 유난히 많았다.','n'],['동기들과 전역 후 계획을 이야기했다.','g',{soc:1}],['부모님께 짧은 편지를 썼다.','n',{soc:1}]],
  쉬는중:[['창밖으로 해가 지는 걸 하루 종일 지켜봤다.','n'],['메신저를 열었다 닫았다.','b',{soc:-1}],['오랜만에 요리를 해 먹었다. 조금 사람 같았다.','g',{hp:1}],['엄마가 반찬을 문 앞에 두고 갔다. 말은 하지 않았다.','n']],
  대기업:[['회의록, 보고서, 회식이 이어졌다.','n',{burn:1}],['월급날은 즐겁고 월요일은 무겁다.','n'],['{b}이(가) 「이 정도는 기본」이라며 파일을 던졌다.','b',{burn:2}],['점심에 팀원들과 간 식당이 의외로 맛집이었다.','g',{hp:1}],['엘리베이터에서 임원과 둘이 탔다. 십 초가 한 시간 같았다.','b'],['연말 평가 시즌이 다가온다. 모두가 조용히 예민하다.','n',{burn:1}]],
  스타트업:[['스프린트가 끝나면 또 스프린트다.','n',{burn:1}],['대표가 방향을 또 바꿨다. 어제의 야근이 사라졌다.','b',{burn:2}],['배포 성공! 팀 슬랙이 박수 이모지로 가득 찼다.','g',{hp:2}],['「우리는 가족 같은 회사」라는 말이 어쩐지 불안하다.','n'],['새벽 두 시 장애 대응. 피자가 도착했다.','n',{burn:2}]],
@@ -375,7 +415,7 @@ const ONB={대기업:[[1,'첫 출근. 사원증이 목에 걸렸다. 어색하�
  '중견·중소':[[1,'첫 출근. 사수가 친절해서 한숨 돌렸다.','g'],[3,'업무가 손에 익기 시작했다.','g',{self:2}],[9,'회식에서 내 이름이 처음으로 불렸다. 칭찬이었다.','g',{hp:2}],[14,'1년. 월급은 그대로고 나는 조금 단단해졌다.','n']],
  공무원:[[1,'첫 발령. 서류 더미 속에서 길을 찾는 중이다.','n'],[4,'첫 민원인이 고맙다고 했다. 이상하게 오래 기억에 남는다.','g',{hp:2}],[10,'조직 문화에 적응했다. 안정과 답답함이 공존한다.','n'],[14,'1년. 칼퇴 후 운동이 일상이 되었다.','g',{burn:-3}]],
  프리랜서:[[1,'첫 의뢰 계약서에 서명했다. 이제 진짜 혼자다.','n'],[3,'정산이 한 달 늦어졌다. 통장을 자주 확인한다.','b',{burn:2}],[8,'단골이 생겼다. 「다음에도 부탁드려요」라는 문자에 힘이 났다.','g',{self:3}],[14,'1년. 일정은 내가 짜지만 쉬는 날도 내가 정해야 한다.','n']]};
-const CHAP={대학생:'캠퍼스의 마지막 학기들',취준생:'면접장을 오가는 계절',공시생:'독서실의 시간',쉬는중:'잠시 멈춘 시간',대기업:'큰 조직의 일원으로',스타트업:'빠르게 흔들리는 회사에서','중견·중소':'작지만 내 자리','프리랜서':'내 시간표로 사는 중',공무원:'안정과 답답함 사이',창업:'대표라는 이름의 무게'};
+const CHAP={진로탐색:'다음 정거장 앞에서',재수생:'다시 한 번, 재수 학원','군 복무':'군복 입은 시간',대학생:'캠퍼스의 마지막 학기들',취준생:'면접장을 오가는 계절',공시생:'독서실의 시간',쉬는중:'잠시 멈춘 시간',대기업:'큰 조직의 일원으로',스타트업:'빠르게 흔들리는 회사에서','중견·중소':'작지만 내 자리','프리랜서':'내 시간표로 사는 중',공무원:'안정과 답답함 사이',창업:'대표라는 이름의 무게'};
 /* ===== 정책 (PDF 「빅이벤트×복지정책 매칭표」 기반 · 예시 데이터) ===== */
 const SITE={온통청년:'youthcenter.go.kr',복지로:'bokjiro.go.kr',고용24:'work24.go.kr',정부24:'gov.kr'};
 const A=(a,b)=>[`만 ${a}~${b}세`,g=>g.age>=a&&g.age<=b],J=(l,t)=>[t||('상황: '+l.join('·')),g=>l.includes(g.job)],LOW=m=>[`소득·자산이 낮은 편`,g=>g.st.money<m],H=l=>['주거: '+l.join('·'),g=>l.includes(g.h)],FL=(k,t)=>[t,g=>!!g.f[k]],EMP=['재직 중',g=>JB[g.job].e==1];
@@ -411,13 +451,13 @@ const PK=Object.keys(POL);for(const k in POL){const P=POL[k];P.ok=g=>P.req.every
 const fxT=fx=>Object.keys(fx).map(k=>k=='money'?`자산 +${fx[k]*10}만원`:LB[k]?`${LB[k]} ${fx[k]>0?'+':''}${fx[k]}`:'').filter(Boolean).join(' · ');
 /* ===== 결정 이벤트 (선택지는 일상의 선택. 정책 정답을 알려주지 않음) · ok:[결과문,효과,지연(개월)] ===== */
 const EV=[
-{id:'firstjob',a:[20,21],c:g=>g.job=='대학생'||g.job=='공시생',w:'동기',t:'알바 제안',x:'「편의점 알바 같이 할래? 시급 괜찮아.」',ch:[
+{id:'firstjob',a:[20,21],c:g=>g.job=='대학생'||g.job=='공시생'||g.job=='재수생',w:'동기',t:'알바 제안',x:'「편의점 알바 같이 할래? 시급 괜찮아.」',ch:[
  {t:'해본다',ok:['첫 월급의 맛. 대신 시간이 줄었다.',{money:8,burn:2,self:2,hp:1}]},{t:'공부와 쉬는 시간에 쓴다',ok:['여유는 있지만 통장은 가볍다.',{burn:-2}]}]},
-{id:'tuition',a:[20,23],max:2,c:g=>g.job=='대학생',w:'학과 사무실',t:'등록금 고지서',x:['이번 학기 등록금 고지서가 나왔다.','등록금 납부 기간이다. 숫자가 눈에 들어오지 않는다.'],ch:[
+{id:'tuition',a:[20,26],max:2,c:g=>g.job=='대학생'&&!(g.edu&&g.edu.onLeave),w:'학과 사무실',t:'등록금 고지서',x:['이번 학기 등록금 고지서가 나왔다.','등록금 납부 기간이다. 숫자가 눈에 들어오지 않는다.'],ch:[
  {t:'학자금대출을 받는다',ok:['빚은 늘었지만 학업은 이어간다.',{money:-4,burn:3,debt:300}]},
  {t:'알바를 늘려 번다',ok:['통장은 숨통이 트였다. 동기가 지나가듯 말했다. 「너 그거 신청했어? 장학금」',{money:8,burn:6,rum:'scholar'}]},
- {t:'휴학하고 일한다',ok:['돈은 벌었지만 졸업이 늦어진다.',{money:10,self:-1}]}]},
-{id:'career',a:[20,23],c:g=>g.job=='대학생',w:'선배',t:'진로 고민',x:'「전공이 나랑 맞는지 모르겠어.」 선배에게 털어놓자 이런저런 조언이 돌아왔다.',ch:[
+ {t:'휴학하고 일한다',ok:['한 학기 휴학하고 일하기로 했다. 졸업이 늦어진다.',{money:10,self:-1,leave:6}]}]},
+{id:'career',a:[20,25],c:g=>g.job=='대학생'&&!(g.edu&&g.edu.onLeave),w:'선배',t:'진로 고민',x:'「전공이 나랑 맞는지 모르겠어.」 선배에게 털어놓자 이런저런 조언이 돌아왔다.',ch:[
  {t:'학교 진로센터에 가본다',ok:['상담을 받으니 방향이 조금 잡혔다.',{self:5,prep:1,rum:'career'}]},{t:'일단 다닌다',ok:['달라진 건 없다.',{}]},{t:'동아리·대외활동에 뛰어든다',ok:['사람을 만나니 길이 보이는 것 같다.',{soc:7,self:3}]}]},
 {id:'indep',a:[20,30],c:g=>g.h=='본가'&&g.age>=21,w:'엄마',t:'독립할까',x:'「출퇴근 힘들지? 집에서 다니는 게 낫긴 한데…」 독립 생각이 자꾸 난다.',ch:[
  {t:'월세방을 구한다',need:{money:25},ok:['첫 독립. 자유롭지만 매달 월세가 빠져나간다. 친구가 얘기했다. 「월세 지원이란 게 있던데…」',{h:'월세',self:4,money:-6,hp:2,rum:'hben'}]},{t:'본가에서 계속 산다',ok:['돈은 아꼈지만 답답함이 남는다.',{money:2,self:-1}]}]},
@@ -529,12 +569,19 @@ const FT='<footer>※ 이벤트·정책은 프로토타입용 예시이며 실�
 let S='start',G=null,FORM={},MOD=null,TT,TM,LTO=null,FFN=0;
 const tst=t=>{const e=$('toast');e.textContent=t;e.style.opacity=1;clearTimeout(TT);TT=setTimeout(()=>{e.style.opacity=0},4200)};
 const txt=s=>(Array.isArray(s)?ri(s):s).replace(/\{f(\d|b)\}/g,(_,i)=>i=='b'?G.fr.slice().sort((a,b)=>b.bond-a.bond)[0].n:G.fr[i].n).replace(/\{p\}/g,G.pn||'연인').replace(/\{b\}/g,G.boss||'팀장');
-const mo=()=>((2+G.m)%12)+1;
+const mo=()=>G.m%12+1;
 const nwBar=()=>{const nw=G.cash-G.debt;return clf(nw>=0?25+.55*Math.sqrt(nw):25-2*Math.sqrt(-nw))};
 const recalc=()=>{G.st.money=nwBar()};
-function genChar(o={}){const q=o.q||pickW([[1,2],[2,3],[3,4],[4,3],[5,2]]);return{n:o.n,rg:o.rg||ri(RG),q,path:o.path||pickW([['대학생',6],['직장',2],['준비',2]]),cols:[ri(HC),ri(SC),ri(['#fff','#ffe08a','#ffd86b'])]}}
-function mkFriend(n){const c=genChar({n});c.job=CHJOB[c.path];c.bond=rr(15,35);c.log=[];c.stories=[];c.ix=0;fy(c,1);return c}
-function fy(f,init){const old=f.job;if(!init){if(f.job=='대학생'&&G.m>=47)f.job=ri(['취준생','취준생','공시생','프리랜서']);
+function genChar(o={}){const q=o.q||pickW([[1,2],[2,3],[3,4],[4,3],[5,2]]),sex=o.sex||(R()<.5?'M':'F'),look=o.look||genLook(sex);
+ /* path는 백엔드 플레이 기록 계약(문자열) 때문에 남겨 둔다. 첫 진로 선택에서 정해진다. cols는 예전 코드와 호환되게 look을 가리킨다. */
+ return{n:o.n,sex,rg:o.rg||ri(RG),q,path:o.path||'미정',look,cols:look}}
+function mkFriend(n,sex){const c=genChar({n,sex});c.job=pickW([['대학생',.74],['중견·중소',.1],['취준생',.07],['공시생',.05],['프리랜서',.04]]);
+ c.gradM=c.job=='대학생'?pickW([[48,5],[60,2],[30,2]]):0;c.bond=rr(15,35);c.log=[];c.stories=[];c.ix=0;fy(c,1);return c}
+function fy(f,init){const old=f.job;if(!init){
+ /* 남자 친구들의 군 복무(18개월). 늦어도 23세 중에는 입대한다. */
+ if(f.job=='군 복무'){if(G.m>=f.armyEnd)f.job=f.prevJob||'취준생'}
+ else if(f.sex=='M'&&!f.served&&G.age>=21&&(G.age>=23||R()<.45)){f.prevJob=f.job;f.job='군 복무';f.armyEnd=G.m+(window.LIFE?LIFE.ARMY_MONTHS:18);f.served=1;if(f.prevJob=='대학생')f.gradM+=18}
+ else if(f.job=='대학생'&&G.m>=(f.gradM||48))f.job=ri(['취준생','취준생','공시생','프리랜서']);
  else if(JB[f.job].s&&R()<.3)f.job=pickW([['대기업',2],['중견·중소',4],['스타트업',2],['공무원',f.job=='공시생'?4:.5],['프리랜서',1]]);
  else if(JB[f.job].e&&R()<.08)f.job=ri(['취준생','쉬는중','창업','프리랜서']);
  else if(f.job=='쉬는중'&&R()<.3)f.job='취준생'}
@@ -542,22 +589,106 @@ function fy(f,init){const old=f.job;if(!init){if(f.job=='대학생'&&G.m>=47)f.j
 function newStory(f){}
 function genFeed(fi,k,cap,kind){const f=G.fr[fi];kind=kind||(k?'info':pickW([['ach',3],['daily',4],['event',2]]));const s=kind=='ach'?ri(SNSL[f.job]):kind=='event'?ri(EVC):ri(GEN);G.feed.unshift({id:++G.pid,fi,age:G.age,m:G.m,o:++G.oc,kind,cap:cap||s[0],e:(cap&&k)?'💡📄':s[1],pc:ri(PHC),l:rr(20,320),k,cms:seedCms(fi)});G.feed=G.feed.slice(0,14)}
 function newGame(mode,fm={},as){
- const nm=NM.slice().sort(()=>R()-.5),o={n:nm[0]};
+ const used=new Set(),pickName=s=>{const p=(s=='M'?NM_M:NM_F).filter(n=>!used.has(n));const n=ri(p.length?p:NM);used.add(n);return n};
+ const sex0=(as&&as.sex)||(R()<.5?'M':'F'),o={sex:sex0};o.n=as?as.n:pickName(sex0);if(as)used.add(as.n);
  if(mode=='my'){if(fm.rg&&fm.rg!='r')o.rg=fm.rg;if(fm.q&&fm.q!='r')o.q={low:rr(1,2),mid:3,high:rr(4,5)}[fm.q];if(fm.path&&fm.path!='r')o.path=fm.path}
- if(as){o.n=as.n;o.rg=as.rg;o.q=as.q;o.path=as.path}
+ if(as){o.rg=as.rg;o.q=as.q;o.look=as.look}
  const me=genChar(o),q=me.q;
- G={mode,me,care:CARE[fm.care]||null,job:CHJOB[me.path],age:20,m:0,hm:me.path=='직장'?-24:-99,
-  st:{health:rr(74,86),mood:rr(50,64),soc:rr(42,60),self:rr(42,58)+q,burn:rr(10,22),money:0},cash:q*50+rr(0,40),debt:q<=2?rr(200,500):q==3?rr(0,200):0,prep:0,sy:0,f:{first1:me.path=='직장'?1:0},h:'본가',
+ G={mode,me,care:CARE[fm.care]||null,job:'진로탐색',age:AGE_START,m:0,hm:-99,edu:null,mil:null,fq:[],recentL:[],retakes:0,
+  st:{health:rr(74,86),mood:rr(50,64),soc:rr(42,60),self:rr(42,58)+q,burn:rr(10,22),money:0},cash:q*50+rr(0,40),debt:q<=2?rr(200,500):q==3?rr(0,200):0,prep:0,sy:0,f:{first1:0},h:'본가',
   used:{},recent:[],done:{},miss:{},chk:{},heard:{},known:{},elig:{},alert:{},rumor:[],feed:[],log:[],sq:[],hl:[],map:[],dec:null,sr:null,auto:false,speed:1,paused:false,cd:2,tid:0,pid:0,yr:{n:0,mood:0,best:null},
-  fr:nm.filter(n=>n!=me.n).slice(0,5).map(mkFriend),care_:0,sid:0,oc:0,mys:null};
+  fr:Array.from({length:5},()=>{const s=R()<.5?'M':'F';return mkFriend(pickName(s),s)}),care_:0,sid:0,oc:0,mys:null};
  recalc();genFeed(0);genFeed(1);G.fr.forEach((f,i)=>{if(i<3)spawnOne(i)});S='pro';MOD=null;FFN=0}
 function setJob(j){const e=JB[j].e;G.job=j;if(e){G.hm=G.m;G.f.first1=1;G.f.laid=0;if(!G.boss)G.boss=ri(SUR)+' 팀장'}G.sy=0}
 function hire(){const nj=G.job=='공시생'?'공무원':pickW([['대기업',G.me.q>=4?3.5:2],['중견·중소',4],['스타트업',2.5],['프리랜서',.8]]);setJob(nj);G.prep=0;chg({self:10,money:6,hp:4});addLine(`🎉 ${nj}에 ${nj=='공무원'?'합격했다':nj=='프리랜서'?'자리를 잡았다':'합격했다. 입사 날짜가 정해졌다'}.`,'g',null,'c',5);(ONB[nj]||[]).forEach(o=>G.sq.push({due:G.m+o[0],t:o[1],tone:o[2],fx:o[3]}))}
+/* ===== 20세 1월 진로 선택 · 학업 · 휴학 · 군 복무 (확률과 기간은 life-stats.js) ===== */
+const LS=()=>window.LIFE;
+/* 반드시 띄워야 하는 결정은 큐에 넣는다(쿨다운 없이 다음 달에 뜬다). ev는 이벤트 객체나, 뜰 때 만드는 함수. */
+function queueEv(ev,due,tag){(G.fq=G.fq||[]).push({ev,due:due==null?G.m:due,tag})}
+function firstChoice(t){if(!G.firstChoice)G.firstChoice=t}
+function careerEv(again){const g=G,m=g.me,male=m.sex=='M'&&!g.mil;
+ const ch=[{t:'4년제 대학에 입학한다',act:()=>{firstChoice('4년제');tryAdmit('univ4')}},{t:'전문대(2~3년제)에 간다',act:()=>{firstChoice('전문대');tryAdmit('college')}},
+  {t:'재수한다',act:()=>{firstChoice('재수');startRetake()}},{t:'바로 취업한다',act:()=>{firstChoice('취업');startWork()}}];
+ if(male)ch.push({t:'먼저 군대에 간다',act:()=>{firstChoice('군입대');enlist('first')}});
+ return{id:'career0',w:again?'재수 학원':'담임 선생님',t:again?`${g.age}세 1월, 다시 다음 정거장`:'고3 겨울, 다음 정거장',
+  x:again?'1년을 다시 준비했다. 이번에는 어느 열차를 탈까.':'졸업식이 끝났다. 친구들은 저마다 다른 열차를 탄다. 나는 어디로 갈까.',ch,
+  autoW:()=>{const w=LS().careerWeights(m.rg,m.q,m.sex);if(again)w[2]*=.25;return male?w:w.slice(0,4)}}}
+function tryAdmit(type){const g=G,m=g.me,p=LS().admitP(type,m.rg,m.q,g.retakes||0),nm=type=='univ4'?'4년제':'전문대';
+ if(R()<p){enroll(type);return}
+ addLine(`${nm} 입시 결과가 나왔다. 불합격이다.`,'b',{self:-4},'c',4);
+ const ch=[{t:'재수한다',act:()=>startRetake()},{t:'바로 취업한다',act:()=>startWork()}];
+ if(type=='univ4')ch.unshift({t:'전문대(2~3년제)에 지원한다',act:()=>tryAdmit('college')});
+ if(m.sex=='M'&&!g.mil)ch.push({t:'먼저 군대에 간다',act:()=>enlist('first')});
+ const fw=LS().failWeights(m.q,m.sex),w={'전문대':fw.college,'재수':fw.retake,'바로':fw.job,'먼저':fw.army}; // 불합격 뒤 자동결정 비중(life-stats.js)
+ makeDec({id:'career_fail',w:'입시 결과',t:'불합격 통보',x:`${nm} 합격자 명단에 내 이름이 없다. 다음 선택을 해야 한다.`,ch,autoW:()=>ch.map(c=>w[c.t.slice(0,c.t.startsWith('전문대')?3:2)]||1)})}
+function enroll(type){const g=G,m=g.me,L=LS(),sems=type=='univ4'?8:(R()<L.COLLEGE3_P?6:4);
+ g.edu={type,start:Math.floor(g.m/12)*12+2,sems,semDone:0,leaveM:0,onLeave:false,leaveEnd:0,defer:0,deferPlan:false,gradM:null,done:false,leaveOffer:R()<L.LEAVE_P[m.sex],leaveAsked:false,leaves:0};
+ m.path=type=='univ4'?'4년제':'전문대';setJob('대학생');
+ addLine(`🎓 ${type=='univ4'?'4년제 대학':`전문대(${sems/2}년제)`}에 합격했다. 3월에 입학한다.`,'g',{self:6,hp:3},'c',5);
+ // 형편이 빠듯하면 등록금 고민이 바로 따라온다(학자금 대출·장학금 소문과 연결된 기존 이벤트)
+ if(m.q<=2){const ev=EV.find(e=>e.id=='tuition');if(ev)queueEv(ev,g.m+1)}}
+function startRetake(){const g=G;g.retakes=(g.retakes||0)+1;g.me.path='재수';setJob('재수생');
+ addLine(`재수를 하기로 했다. ${g.me.q>=4?'학원비 걱정은 덜하다.':'학원비가 마음에 걸린다.'} 1년 뒤 다시 도전한다.`,'n',g.me.q>=4?{self:1}:{burn:3,money:-3},'c',4);
+ queueEv(()=>careerEv(true),Math.floor(g.m/12)*12+12)}
+function startWork(){const g=G,L=LS();g.me.path='취업';
+ if(R()<L.HS_JOB_P){const nj=pickW([['중견·중소',6],['스타트업',1.5],['프리랜서',.8]]);setJob(nj);g.prep=0;
+  addLine(`고교 졸업 후 바로 ${nj}에서 일을 시작했다.`,'g',{self:4,money:4},'c',5);(ONB[nj]||[]).forEach(o=>g.sq.push({due:g.m+o[0],t:o[1],tone:o[2],fx:o[3]}))}
+ else{setJob('취준생');addLine('바로 일하기로 했다. 첫 일자리를 찾는 중이다.','n',null,'c',4)}}
+/* 학기: 3월·9월 개강, 8월·2월에 한 학기를 마친다. 졸업은 정규 학기 + 휴학·군 복무만큼 뒤로 밀린다. */
+const nextSem=m=>{for(let x=m+1;;x++)if(x%12==2||x%12==8)return x};
+function startLeave(months){const g=G,e=g.edu;if(!e||e.done||g.job!='대학생'||e.onLeave)return;
+ e.onLeave=true;e.leaveEnd=nextSem(g.m+Math.max(1,months)-1);e.leaveM+=e.leaveEnd-g.m;e.leaves++}
+function leaveEv(){const g=G,L=LS(),len=()=>pickW(L.LEAVE_LEN);
+ const go=(t,fx)=>()=>{const n=len();startLeave(n);addLine(`${t} (${Math.round((g.edu.leaveEnd-g.m)/6)/2}년 휴학)`,'n',fx,'c',4)};
+ return{id:'leave_t',w:'학과 사무실',t:'휴학할까',x:`${Math.ceil(g.edu.semDone/2)}학년을 지나는 중이다. 잠깐 멈추고 다른 걸 해 볼까.`,ch:[
+  {t:'어학연수를 다녀온다',need:{money:30},act:go('어학연수를 떠났다.',{money:-15,self:5,prep:1,hp:3})},
+  {t:'인턴·자격증으로 스펙을 쌓는다',act:go('휴학하고 스펙을 쌓기로 했다.',{prep:2,burn:3,self:2})},
+  {t:'생활비를 번다',act:go('휴학하고 일을 하기로 했다.',{money:10,burn:4})},
+  {t:'그냥 쉰다',act:go('휴학하고 숨을 고르기로 했다.',{burn:-15,hp:3})},
+  {t:'계속 다닌다',ok:['휴학하지 않고 학기를 이어 가기로 했다.',{self:1}]}],autoW:()=>[.8,1.2,1,.8,1.1]}}
+function deferEv(){const g=G,L=LS();return{id:'defer_t',w:'취업 게시판',t:'졸업을 미룰까',x:'마지막 학기가 다가온다. 졸업생보다 재학생 신분이 채용에 유리하다는 말이 돈다.',ch:[
+  {t:'졸업을 미룬다(유예)',act:()=>{g.edu.deferPlan=true;addLine('졸업 유예를 신청하기로 했다.','n',{burn:2},'c',3)}},
+  {t:'제때 졸업한다',ok:['제때 졸업하기로 했다.',{self:1}]}],autoW:()=>[L.DEFER_P,1-L.DEFER_P]}}
+function graduate(){const g=G,e=g.edu;e.done=true;e.gradM=g.m;const nj=pickW([['취준생',6],['공시생',2],['프리랜서',1]]);setJob(nj);
+ addLine(`🎓 졸업했다(${g.age}세 ${mo()}월). 이제 진짜 사회로 나간다 (${nj}).`,'n',{self:3},'c',5)}
+function eduTick(){const g=G,e=g.edu,mm=mo(),L=LS();if(!e||e.done||g.m<e.start)return;
+ if(e.onLeave){if(g.m>=e.leaveEnd){e.onLeave=false;addLine(e.armyBack?'복학했다. 군복을 벗고 다시 캠퍼스로.':'복학했다. 캠퍼스가 조금 낯설다.','n',{self:1},'c',3);e.armyBack=0;if(R()<L.LEAVE_AGAIN_P)e.leaveAsked=false}return}
+ if(e.defer>0){e.defer--;if(!e.defer)graduate();return}
+ if(mm!=8&&mm!=2)return;
+ e.semDone++;
+ if(e.semDone>=e.sems){if(e.deferPlan){e.defer=L.DEFER_MONTHS;addLine('졸업을 미뤘다. 학적은 남겨 두고 취업 준비를 한다.','n',null,'c',3)}else graduate();return}
+ if(g.me.sex=='M'&&!g.mil&&mm==2&&(e.semDone==2||e.semDone==4))queueEv(()=>armyEv(e.semDone>=4||g.age>=L.ARMY_LAST_AGE),g.m,'army');
+ else if(e.leaveOffer&&!e.leaveAsked&&e.semDone>=2&&e.semDone<=e.sems-2&&R()<.5){e.leaveAsked=true;queueEv(leaveEv,g.m)}
+ if(e.semDone==e.sems-1&&!e.deferAsked){e.deferAsked=true;queueEv(deferEv,g.m)}}
+function armyEv(forced){const g=G,L=LS(),st=g.job=='대학생'&&g.edu&&!g.edu.done,ch=[{t:'이번에 입대한다',act:()=>enlist('plan')}];
+ if(!forced)ch.push({t:st?'1년 더 다니고 간다':'1년 미룬다',act:()=>{g.milDefer=(g.milDefer||0)+1;addLine('입대를 1년 미뤘다.','n',null,'c',2)}});
+ const after1=st&&g.edu.semDone<=2;
+ return{id:'army_t',w:'병무청',t:forced?'입영 통지서':'입대 시기',
+  x:forced?`만 ${L.ARMY_LAST_AGE}세, 더는 미룰 수 없다. 입영 통지서가 도착했다.`:(st?`${g.edu.semDone/2}학년을 마쳤다. 언제 입대할까.`:'병무청에서 입영 안내 문자가 왔다. 언제 갈까.'),ch,
+  autoW:()=>forced?[1]:st?(after1?[L.ARMY_STUDENT_SPLIT.after1,L.ARMY_STUDENT_SPLIT.after2]:[1,0]):[.55,.45]}}
+function enlist(why){const g=G,L=LS(),prev=g.job;g.mil={start:g.m,end:g.m+L.ARMY_MONTHS,prev,why};
+ if(g.edu&&!g.edu.done){g.edu.leaveM+=L.ARMY_MONTHS;if(g.edu.onLeave){g.edu.onLeave=false}}
+ if(g.me.path=='미정')g.me.path='군입대';
+ setJob('군 복무');addLine(`🪖 입대했다(${g.age}세 ${mo()}월). ${L.ARMY_MONTHS}개월 뒤 전역이다.`,'n',{burn:3,soc:-3},'c',5);
+ [[1,'훈련소를 수료했다. 처음 받은 군 월급이 통장에 찍혔다.','n',{money:2}],[5,'첫 휴가를 나왔다. 집밥이 이렇게 맛있었나.','g',{hp:3,burn:-4}],[11,'진급했다. 후임이 생겼다.','n',{self:2}],[L.ARMY_MONTHS-2,'말년 휴가. 전역 후 계획을 세워 본다.','g',{hp:2}]].forEach(o=>g.sq.push({due:g.m+o[0],t:o[1],tone:o[2],fx:o[3]}))}
+function discharge(){const g=G,mil=g.mil;mil.done=1;
+ if(g.edu&&!g.edu.done){setJob('대학생');g.edu.onLeave=true;g.edu.armyBack=1;g.edu.leaveEnd=nextSem(g.m-1);addLine('🎖️ 전역했다. 다음 학기에 복학한다.','g',{self:4,hp:4},'c',5)}
+ else if(mil.prev=='재수생'||mil.prev=='진로탐색'){setJob('진로탐색');addLine('🎖️ 전역했다. 다시 다음 정거장을 정할 때다.','g',{self:3,hp:4},'c',5);queueEv(()=>careerEv(true),g.m)}
+ else if(JB[mil.prev]&&JB[mil.prev].e){const back=R()<.6;setJob(back?mil.prev:'취준생');addLine(back?`🎖️ 전역했다. 다시 ${mil.prev}에서 일한다.`:'🎖️ 전역했다. 새 일자리를 찾기로 했다.','g',{self:3,hp:4},'c',5)}
+ else{setJob(mil.prev&&mil.prev!='군 복무'?mil.prev:'취준생');addLine('🎖️ 전역했다. 원래 하던 일로 돌아간다.','g',{self:3,hp:4},'c',5)}}
+/* 노선도·카드의 챕터 문구: 실제 학기·휴학·군 복무 상태에 맞춘다 */
+function chapOf(g){g=g||G;if(!g)return '';if(g.job=='군 복무')return CHAP['군 복무'];
+ if(g.job=='대학생'&&g.edu&&!g.edu.done){const e=g.edu;if(e.onLeave)return '잠시 멈춘 학적';if(e.defer>0)return '졸업을 미루는 중';if(e.sems-e.semDone<=2)return '캠퍼스의 마지막 학기들';if(e.semDone<4)return '새내기의 캠퍼스';return '전공을 쌓는 시간'}
+ return CHAP[g.job]||''}
+/* 같은 일상 문장이 연달아 나오지 않게: 최근 10줄은 다시 고르지 않는다. 남은 게 없으면 그 달은 생략한다. */
+function freshLine(pool){if(!pool||!pool.length)return null;const rc=G.recentL||(G.recentL=[]),c=pool.filter(x=>!rc.includes(x[0]));if(!c.length)return null;const L=ri(c);rc.push(L[0]);if(rc.length>10)rc.shift();return L}
+/* 자동결정: 결정마다 정한 가중치(autoW, 통계 확률)로 고른다. 없으면 고를 수 있는 것 중 무작위. */
+function autoIdx(e){const ok=e.ch.map((c,i)=>i).filter(i=>!lock(e.ch[i]));if(!ok.length)return 0;if(e.autoW){const w=e.autoW(G);return pickW(ok.map(i=>[i,Math.max(0,w[i]||0)+1e-6]))}return ri(ok)}
 function addRum(k,src){if(!PK.includes(k)||G.done[k]||G.rumor.some(r=>r.k==k)||(G.sr&&G.sr.k==k))return;G.heard[k]=1;src=src||ri(G.fr).n;G.rumor.push({id:++G.tid,k,ttl:8,src});addLine(`💡 ${src}에게서 들은 이야기: 「${POL[k].h}」 — 서랍에 메모해 뒀다.`,'n',null,'u',2)}
 function chg(fx,s=1){for(const k in fx){const v=fx[k];
  if(k=='prep')G.prep=Math.max(0,G.prep+v*s);else if(LB[k])G.st[k]=clf(G.st[k]+v*s);else if(k=='hp')G.st.mood=clf(G.st.mood+v*s*.6);else if(k=='free')G.st.burn=clf(G.st.burn-v*.4*s);
  else if(k=='money')G.cash+=v*10*s;else if(k=='debt'){G.debt+=v}else if(k=='rum')addRum(v);else if(k=='job')setJob(v);else if(k=='hire')hire();else if(k=='h')G.h=v;
- else if(k=='_b'){const f=G.fr[v[0]];f.bond=clf(f.bond+v[1])}else{G.f[k]=v;if(k=='partner'&&!G.pn)G.pn=ri(PN)}}
+ else if(k=='_b'){const f=G.fr[v[0]];f.bond=clf(f.bond+v[1])}else if(k=='leave'){startLeave(v)}else{G.f[k]=v;if(k=='partner'&&!G.pn){const ps=(G.me.sex=='M'?NM_F:NM_M).filter(n=>n!=G.me.n&&!G.fr.some(f=>f.n==n));G.pn=ri(ps.length?ps:PN);G.plook=genLook(G.me.sex=='M'?'F':'M')}}}
  if(G.cash<0){G.debt-=G.cash;G.cash=0}recalc()}
 const tone=fx=>{let s=0;for(const k in fx){const v=fx[k];if(k=='burn')s-=v;else if(['mood','hp','soc','self','health','money'].includes(k))s+=v;else if(k=='hire')s+=8}return s>1?'g':s<-1?'b':'n'};
 /* 친구 반응 알림: 방금 추가한 줄을 알림으로 표시하고 알림 대기열에 넣는다(타임라인에는 안 나오고 기록 탭에는 남음). */
@@ -566,10 +697,11 @@ function addLine(t,tn,fx,tag,w,fi){t=txt(t);if(fx)chg(fx);G.log.unshift({age:G.a
  const wt=w||(tn=='g'||tn=='b'?1.5:1);if(!G.yr.best||wt>=G.yr.best.w)G.yr.best={w:wt,t}}
 /* ===== 월 단위 진행 ===== */
 function tickMonth(){
- G.m++;const pa=G.age;G.age=20+Math.floor(G.m/12);const s=1/12,J=JB[G.job];
- let inc=J.inc,sup=G.job=='대학생'?G.me.q*16:(J.s||G.job=='쉬는중')?G.me.q*8:0;
+ G.m++;const pa=G.age;G.age=AGE_START+Math.floor(G.m/12);const s=1/12,J=JB[G.job];
+ let inc=J.inc,sup=G.job=='대학생'?G.me.q*16:(J.s||G.job=='쉬는중'||G.job=='재수생')?G.me.q*8:0;
  let cost=150+({본가:0,월세:G.me.rg=='서울'?85:65,전세:45,자가:90}[G.h])+(G.f.kid?55:0)+(G.f.pet?8:0)-(G.f.married?20:0);
  if(G.h=='본가')cost-=20;
+ if(G.job=='군 복무')cost=20+(G.f.kid?55:0); // 복무 중에는 생활비가 거의 들지 않는다
  G.cash+=inc+sup-cost;if(G.cash<0){G.debt-=G.cash;G.cash=0}else if(G.debt>0&&G.cash>150){const p=Math.min(G.debt,20);G.debt-=p;G.cash-=p}G.debt*=1.0015;
  chg(J.d,s);const t=G.st;
  t.burn=clf(t.burn-t.burn*.012);t.self=clf(t.self+(50-t.self)*.01);t.soc=clf(t.soc+(45-t.soc)*.012-.05);
@@ -577,8 +709,14 @@ function tickMonth(){
  t.mood=clf(t.mood+((t.soc*.3+t.self*.25+(100-t.burn)*.2+t.health*.15+t.money*.1)*.9-t.mood)*.07);
  if(JB[G.job].s==1){G.prep+=.08;G.sy+=s}
  recalc();G.yr.n++;G.yr.mood+=t.mood;
- if(G.job=='대학생'&&G.m>=47){const nj=pickW([['취준생',6],['공시생',2],['프리랜서',1]]);setJob(nj);addLine(`졸업했다. 이제 진짜 사회로 나간다 (${nj}).`,'n',null,'c',4)}
- else if(JB[G.job].s==1&&G.sy>=3&&t.self<35){setJob('쉬는중');addLine('오래된 구직에 지쳐 잠시 멈추기로 했다.','b',null,'u',3)}
+ /* 학업(학기·휴학·졸업)과 군 복무 */
+ if(G.job=='대학생'&&G.edu&&!G.edu.done)eduTick();
+ else if(G.job=='군 복무'&&G.mil&&!G.mil.done&&G.m>=G.mil.end)discharge();
+ if(G.me.sex=='M'&&!G.mil&&G.job!='군 복무'&&G.job!='진로탐색'&&!(G.fq||[]).some(x=>x.tag=='army')&&!(G.dec&&G.dec.e.id=='army_t')){const L=LS();
+  // 대학생이 아니면 21세부터 매년 1월 입대 시기를 고른다. 늦어도 23세 중에는 입대(11월에 입영 통지)
+  if(G.job!='대학생'&&mo()==1&&G.age>=21)queueEv(()=>armyEv(G.age>=L.ARMY_LAST_AGE),G.m,'army');
+  else if(G.age>=L.ARMY_LAST_AGE&&mo()>=11)queueEv(()=>armyEv(true),G.m,'army')}
+ if(JB[G.job].s==1&&G.sy>=3&&t.self<35){setJob('쉬는중');addLine('오래된 구직에 지쳐 잠시 멈추기로 했다.','b',null,'u',3)}
  else if(JB[G.job].e&&t.burn>=92){setJob('쉬는중');chg({burn:-30,self:-8});addLine('더는 버틸 수 없어 일을 그만두었다.','b',null,'u',4)}
  /* 예약된 이야기 */
  G.sq=G.sq.filter(q=>{if(q.due>G.m)return true;if(q.act){q.act();return false}addLine(q.t,q.tone||tone(q.fx||{}),q.fx,q.tag,q.w,q.fi);if(q.nt)notiLast();if(q.after)q.after();return false});
@@ -588,31 +726,35 @@ function tickMonth(){
    else if(j=='쉬는중'||j=='취준생')addLine(`${f.n}이(가) 일을 그만뒀다고 한다. 올리던 사진과는 다른 사정이 있었나 보다.`,'n',null,'u',2)}})}
  if(G.m%12==0&&G.m>0){G.map.push({age:pa,mood:G.yr.mood/G.yr.n,e:JEM[G.job],t:G.yr.best?G.yr.best.t:'조용한 한 해였다.'});G.yr={n:0,mood:0,best:null}}
  /* 일상 */
- const H=HOL[mo()];
- if(H&&R()<.55)addLine(...ri(H));
- else if(R()<.8){let L;
-  if(t.burn>75&&R()<.5)L=ri(STL.burn);else if(G.st.money<22&&R()<.5)L=ri(STL.poor);else if(t.soc<28&&R()<.5)L=ri(STL.lonely);else if(t.mood>72&&t.burn<40&&R()<.4)L=ri(STL.good);else L=ri(AMB[G.job]);
-  addLine(L[0],L[1],L[2])}
+ const H=HOL[mo()];let DL=null;
+ if(H&&R()<.55)DL=freshLine(H);
+ if(!DL&&R()<.8){let P;
+  if(t.burn>75&&R()<.5)P=STL.burn;else if(G.st.money<22&&R()<.5)P=STL.poor;else if(t.soc<28&&R()<.5)P=STL.lonely;else if(t.mood>72&&t.burn<40&&R()<.4)P=STL.good;else P=AMB[G.job]||AMB.쉬는중;
+  DL=freshLine(P)}
+ if(DL)addLine(DL[0],DL[1],DL[2]);
  if(R()<.4)genFeed(rr(0,4));spawnStories();
  /* 소문 유효기간 */
  G.rumor.forEach(r=>r.ttl--);G.rumor.filter(r=>r.ttl<=0).forEach(r=>{G.miss[r.k]=1;addLine(`「${POL[r.k].n}」… 알아보려던 사이 시기를 놓쳐버렸다.`,'b',null,'u',2)});G.rumor=G.rumor.filter(r=>r.ttl>0);
  if(G.m%2==0)PK.forEach(k=>{if(POL[k].ok(G))G.elig[k]=1});
- if(G.m>=240){S='end';if(typeof BE!='undefined')BE.savePlay();draw();return}
+ if(G.m>=TOTAL_M){S='end';if(typeof BE!='undefined')BE.savePlay();draw();return}
  /* 결정 */
- if(!G.dec){if(G.cd>0)G.cd--;else pickDecision()}
+ if(!G.dec){if((G.fq||[]).some(x=>x.due<=G.m))pickDecision();else if(G.cd>0)G.cd--;else pickDecision()}
 }
 function pickDecision(){
+ const qi=(G.fq||[]).findIndex(x=>x.due<=G.m);
+ if(qi>=0){const x=G.fq.splice(qi,1)[0],ev=typeof x.ev=='function'?x.ev():x.ev;if(ev){if(EV.includes(ev))G.used[ev.id]=(G.used[ev.id]||0)+1;return makeDec(ev)}}
  const al=PK.find(k=>G.known[k]&&!G.done[k]&&!G.alert[k]&&POL[k].ok(G));
  if(al){G.alert[al]=1;const P=POL[al];return makeDec({id:'alert',w:'📌 도감',t:'저장해둔 제도',x:`예전에 알아둔 「${P.n}」. 지금 상황이 조건에 맞을 수 있어요.`,ch:[{t:'지금 확인해본다',act:()=>acquire(al)},{t:'나중에 하자',ok:['미뤘다.',{}]}]})}
  const cand=PK.filter(k=>POL[k].ok(G)&&!G.done[k]&&!G.miss[k]&&!G.heard[k]);
  if(cand.length&&R()<.16+G.st.soc/500){const k=ri(cand),P=POL[k],f=ri(G.fr),fi=G.fr.indexOf(f);G.heard[k]=1;genFeed(fi,k,'요즘 알아보는 중 👀 '+P.h);
   return makeDec({id:'rumor',w:f.n,t:'지나가듯 들은 소문',x:`${f.n}이(가) 말했다. 「${P.h}」`,ch:[{t:'바로 검색해본다',act:()=>{G.rumor.push({id:++G.tid,k,ttl:8,src:f.n});startSr(G.rumor[G.rumor.length-1].id)}},{t:'일단 메모만 해둔다',act:()=>{G.rumor.push({id:++G.tid,k,ttl:8,src:f.n});addLine('메모해뒀다. 시간 날 때 알아봐야지. (서랍 확인)','n')}},{t:'그냥 흘려듣는다',act:()=>{G.miss[k]=1;addLine('그냥 흘려들었다.','n')}}]})}
- const major=EV.filter(e=>(!e.a||G.age>=e.a[0]&&G.age<=e.a[1])&&(!e.c||e.c(G))&&(G.used[e.id]||0)<(e.max||1));
- const micro=MI.filter(e=>(!e.c||e.c(G))&&!G.recent.includes(e.id));let ev=null;
+ const army=G.job=='군 복무',ARMY_EV=['mom','scam','envy','wedf'],ARMY_MI=['m_sns','m_rain','m_parent','m_old','m_sleep'];
+ const major=EV.filter(e=>(!army||ARMY_EV.includes(e.id))&&(!e.a||G.age>=e.a[0]&&G.age<=e.a[1])&&(!e.c||e.c(G))&&(G.used[e.id]||0)<(e.max||1));
+ const micro=MI.filter(e=>(!army||ARMY_MI.includes(e.id))&&(!e.c||e.c(G))&&!G.recent.includes(e.id));let ev=null;
  if(major.length&&(R()<.62||!micro.length)){ev=pickW(major.map(x=>[x,(x.pr||1)*(G.care&&x.tag&&G.care.includes(x.tag)?2.2:1)]));G.used[ev.id]=(G.used[ev.id]||0)+1;if(ev.on)ev.on(G)}
  else if(micro.length){ev=ri(micro);G.recent.push(ev.id);if(G.recent.length>6)G.recent.shift()}
  if(ev)makeDec(ev)}
-function makeDec(ev){G.dec={e:ev,w:txt(ev.w),t:ev.t,x:txt(ev.x),age:G.age,mo:mo(),hid:false};G.cd=rr(3,6);if(G.auto)setTimeout(()=>{if(G.dec){const ok=G.dec.e.ch.map((c,i)=>i).filter(i=>!lock(G.dec.e.ch[i]));pickC(ri(ok.length?ok:[0]));draw()}},ffDelay())}
+function makeDec(ev){G.dec={e:ev,w:txt(ev.w),t:ev.t,x:txt(ev.x),age:G.age,mo:mo(),hid:false};G.cd=rr(3,6);if(G.auto)setTimeout(()=>{if(G.dec){pickC(autoIdx(G.dec.e));draw()}},ffDelay())}
 const ffDelay=()=>FFN?20:700;
 const lock=c=>c.need&&Object.keys(c.need).some(k=>G.st[k]<c.need[k]);
 function pickC(i){const d=G.dec;if(!d)return;const c=d.e.ch[i];if(lock(c))return tst('조건이 부족해 지금은 고를 수 없어요');
@@ -655,7 +797,7 @@ function loop(){clearTimeout(TM);if(S!='play'||!G)return;
 function draw(){const a=$('app');a.innerHTML=S=='start'?vStart():S=='form'?vForm():S=='pro'?vPro():S=='play'?vPlay():vEnd()}
 const lettersLocal=()=>{try{return JSON.parse(localStorage.getItem('al_letters')||'[]')}catch(e){return[]}};
 const letters=()=>(typeof BE!='undefined'&&BE.letters())||lettersLocal();
-function vStart(){const L=letters();return `<div class="w"><div class="se" style="font-size:30px;font-weight:700">Another Station</div><div class="mu">20세부터 40세까지, 다른 사람의 삶을 살아보며 나에게 맞는 선택지를 찾는 시뮬레이션</div>
+function vStart(){const L=letters();return `<div class="w"><div class="se" style="font-size:30px;font-weight:700">Another Station</div><div class="mu">${AGE_START}세부터 ${AGE_END}세까지, 다른 사람의 삶을 살아보며 나에게 맞는 선택지를 찾는 시뮬레이션</div>
  <div class="pn" style="margin-top:16px"><h4>어떻게 시작할까요?</h4><button class="btn" data-a="new:other">🎲 다른 사람의 인생 살아보기<div class="mu" style="color:inherit;opacity:.8">완전 랜덤 캐릭터 · 내가 모르는 조건의 삶</div></button><button class="btn sec" data-a="new:form">🪞 내 인생에 적용해보기<div class="mu">지역·형편·진로·고민을 고르고, 나머지는 랜덤</div></button></div>
  <a class="btn sec" href="public-services.html">🏛️ 실시간 혜택·LH 임대공고 보기</a>
  <a class="btn sec" href="statistics.html">📊 KOSIS 2025 인구·가구 통계 보기</a>
@@ -663,12 +805,12 @@ function vStart(){const L=letters();return `<div class="w"><div class="se" style
  ${L.length?`<div class="pn"><h4>💌 내가 쓴 편지함</h4>${L.slice(0,5).map(l=>`<div class="lg"><span class="mu">${esc(l.to)} · ${esc(l.date)}</span><br>${esc(l.text)}</div>`).join('')}</div>`:''}</div>`+FT}
 function vForm(){const g=(k,t,o)=>`<div style="margin-top:12px"><b>${t}</b><div class="chips" style="margin-top:4px"><button class="chip ${FORM[k]==null||FORM[k]=='r'?'on':''}" data-a="f:${k}:r">🎲 랜덤</button>${o.map(x=>`<button class="chip ${FORM[k]==x[0]?'on':''}" data-a="f:${k}:${x[0]}">${x[1]}</button>`).join('')}</div></div>`;
  return `<div class="w"><div class="se" style="font-size:24px;font-weight:700">내 인생에 적용해보기</div><div class="pn" style="margin-top:12px"><div class="mu">고른 항목만 반영되고, 나머지는 랜덤이에요.</div>${g('rg','사는 지역',RG.map(r=>[r,r]))}${g('q','집안 형편',[['low','빠듯한 편'],['mid','보통'],['high','여유 있는 편']])}${g('path','20세의 길',[['대학생','대학 재학'],['직장','바로 취업'],['준비','시험 준비']])}${g('care','요즘 가장 큰 고민 (관련 사건이 더 자주 와요)',Object.keys(CARE).map(c=>[c,c]))}<button class="btn" data-a="new:go">이 조건으로 시작</button><button class="btn sec" data-a="home">← 처음으로</button></div></div>`}
-function vPro(){const m=G.me,P={서울:'서울에서 자랐다. 모든 게 가깝고 모든 게 비싸다.','경기·인천':'경기·인천에서 자랐다. 서울까지 한 시간 반, 출퇴근이라는 단어가 일찍 익숙했다.','비수도권 대도시':'지방 대도시에서 자랐다. 서울의 기회는 늘 조금 멀리 있었다.','지방 소도시':'지방 소도시에서 자랐다. 학원도 일자리도 선택지가 적었다.'}[m.rg],F=m.q<=2?'집 형편은 빠듯했다. 용돈이라는 말이 낯설다.':m.q==3?'평범한 가정이다. 큰 걱정은 없지만 큰 여유도 없다.':'넉넉한 편이다. 하지만 기대도 그만큼 컸다.',T={대학생:'대학 2학년의 3월이다.',직장:'고등학교를 마치고 일을 시작한 지 2년째다.',준비:'대학 대신 시험 준비를 택했다. 주변 시선이 마음에 걸린다.'}[m.path];
- return `<div class="w"><div class="pn id"><div class="mu">신원 기록 · 20세</div><div class="post" style="margin-top:8px">${av(m.cols,64)}<div><div class="se" style="font-size:24px;font-weight:700">${m.n}</div><div class="mu">${m.rg} · ${PATHL[m.path]}</div></div></div><p>${P}</p><p>${F}</p><p>${T}</p></div>
+function vPro(){const m=G.me,P={서울:'서울에서 자랐다. 모든 게 가깝고 모든 게 비싸다.','경기·인천':'경기·인천에서 자랐다. 서울까지 한 시간 반, 출퇴근이라는 단어가 일찍 익숙했다.','비수도권 대도시':'지방 대도시에서 자랐다. 서울의 기회는 늘 조금 멀리 있었다.','지방 소도시':'지방 소도시에서 자랐다. 학원도 일자리도 선택지가 적었다.'}[m.rg],F=m.q<=2?'집 형편은 빠듯했다. 용돈이라는 말이 낯설다.':m.q==3?'평범한 가정이다. 큰 걱정은 없지만 큰 여유도 없다.':'넉넉한 편이다. 하지만 기대도 그만큼 컸다.',T='고등학교 졸업식을 마친 1월이다. 친구들은 대학으로, 일터로, 재수 학원으로 흩어진다.';
+ return `<div class="w"><div class="pn id"><div class="mu">신원 기록 · 20세</div><div class="post" style="margin-top:8px">${av(m.cols,64)}<div><div class="se" style="font-size:24px;font-weight:700">${m.n}</div><div class="mu">${m.rg} · 고교 졸업</div></div></div><p>${P}</p><p>${F}</p><p>${T}</p></div>
  <div class="pn"><h4>화면 보는 법</h4><div class="lg"><b>가운데</b> 내 이야기가 위에서부터 쌓여요. 갈림길에서는 선택 창이 떠요.</div><div class="lg"><b>왼쪽</b> 나와 상태, 돈.</div><div class="lg"><b>오른쪽</b> 가족·친구, 친구들의 피드, 정책 서랍, 인생 지도.</div><div class="lg">위의 속도 버튼으로 시간을 빠르게 하거나 멈출 수 있어요. 목표는 마음속으로 정해두세요.</div></div><button class="btn" data-a="begin">${m.n}의 스무 살 시작</button></div>`}
 function bars(){return Object.keys(LB).map(k=>`<div class="sb" title="${ROLE[k]}"><label>${LB[k]}</label><div class="bar"><i style="width:${G.st[k]}%;background:${BC[k]}"></i></div><em>${rd(G.st[k])}</em></div>`).join('')}
-function vPlay(){const d=G.dec,pc=G.m/240*100;
- return `<div class="tb"><div><div class="ttl">Another Station <span class="mu">20→40</span></div></div><div><div class="age">${G.age}<small>세 ${mo()}월</small></div><div class="pbar"><i style="width:${pc}%"></i></div></div>
+function vPlay(){const d=G.dec,pc=G.m/TOTAL_M*100;
+ return `<div class="tb"><div><div class="ttl">Another Station <span class="mu">${AGE_START}→${AGE_END}</span></div></div><div><div class="age">${G.age}<small>세 ${mo()}월</small></div><div class="pbar"><i style="width:${pc}%"></i></div></div>
  <div class="ctl"><button class="${G.paused?'on':''}" data-a="pause">${G.paused?'▶ 재개':'⏸ 멈춤'}</button>${[1,2,3,4].map(s=>`<button class="${!G.paused&&G.speed==s&&!FFN?'on':''}" data-a="sp:${s}">${[1,2,4,8][s-1]}×</button>`).join('')}<button data-a="ff">다음 결정까지 »</button><button class="${G.auto?'on':''}" data-a="auto">자동 결정</button><button data-a="home">나가기</button></div></div>
  <div class="g"><div>${pLeft()}</div><div class="cc">${pCenter()}</div><div>${pRight()}</div></div>${FT}${modal()}`}
 function pLeft(){const m=G.me,nw=rd(G.cash-G.debt);
@@ -686,7 +828,7 @@ function pRight(){const m=G.me;
  const feed=G.feed.slice(0,3).map(p=>{const f=G.fr[p.fi],P=p.k&&POL[p.k];return `<div class="fe"><div class="post">${av(f.cols,26)}<b>${f.n}</b></div><div class="ph" style="background:linear-gradient(135deg,${p.pc[0]},${p.pc[1]})">${p.e}</div><div style="font-size:13px">${p.cap}</div><div class="act"><button class="${p.liked?'on':''}" data-a="like:${p.id}">❤️ ${p.l+(p.liked?1:0)}</button><button class="${p.cm?'on':''}" data-a="cm:${p.id}">💬</button>${P&&!G.done[p.k]?`<button data-a="tip:${p.id}">🔎</button>`:''}</div></div>`}).join('');
  const dr=PK.filter(k=>G.done[k]).length;
  const drawer=`${G.rumor.map(r=>`<div class="lg">💡 ${POL[r.k].h.slice(0,28)}… <span class="mu">⏳${r.ttl}개월</span><div class="act"><button data-a="srs:${r.id}">🔎 검색</button><button data-a="rx:${r.id}">✕</button></div></div>`).join('')}${PK.filter(k=>G.done[k]).map(k=>`<div class="lg" data-a="pol:${k}" style="cursor:pointer">✅ ${POL[k].n}</div>`).join('')}${PK.filter(k=>G.known[k]&&!G.done[k]).map(k=>`<div class="lg">📌 ${POL[k].n}</div>`).join('')}${!G.rumor.length&&!dr?'<div class="mu">소문이나 정보를 들으면 여기에 모여요.</div>':''}`;
- const map=Array.from({length:20},(_,i)=>{const c=G.map[i],cur=i==G.age-20;const col=c?(c.mood>62?'#5aa386':c.mood>45?'#d8b25a':'#c98a8a'):'';return `<i class="${cur?'cur':''}" style="${col?`background:${col}`:''}" title="${c?`${c.age}세 · ${c.t.replace(/"/g,'')}`:`${20+i}세`}" data-a="yr:${i}"></i>`}).join('');
+ const map=Array.from({length:AGE_END-AGE_START},(_,i)=>{const c=G.map[i],cur=i==G.age-AGE_START;const col=c?(c.mood>62?'#5aa386':c.mood>45?'#d8b25a':'#c98a8a'):'';return `<i class="${cur?'cur':''}" style="${col?`background:${col}`:''}" title="${c?`${c.age}세 · ${c.t.replace(/"/g,'')}`:`${AGE_START+i}세`}" data-a="yr:${i}"></i>`}).join('');
  return `<div class="pn"><h4>가족과 삶</h4>${fam}</div><div class="pn"><h4>친구들의 피드 <span>같은 해 스무 살이 된 사람들</span></h4><div class="stories"><button data-a="mys"><span class="ring me"><span class="pl">＋</span></span>내 스토리</button>${G.fr.map((f,i)=>`<button data-a="story:${i}"><span class="ring ${f.sseen?'old':''}">${av(f.cols,40)}</span>${f.n}</button>`).join('')}</div>${feed}</div>
  <div class="pn"><h4>또래들 <span>지금 이 나이에</span></h4>${peers}</div><div class="pn"><h4>정책 서랍 <span>${dr}/${PK.length}</span></h4>${drawer}</div><div class="pn"><h4>인생 지도 <span>한 칸 = 1년</span></h4><div class="mp">${map}</div><div class="mu" id="yrn" style="margin-top:6px">칸을 눌러 그해를 돌아봐요.</div></div>`}
 function modal(){if(MOD)return `<div class="ov"><div class="dc"><div class="bd">${modalBody()}</div></div></div>`;
@@ -699,27 +841,27 @@ function modalBodyOld(){const k=MOD.k;
  if(k=='my')return `<b>📝 내 스토리</b><div class="mu">지금 느끼는 걸 한 줄 남겨요. 이야기에도 기록되고, 친구가 보고 연락할 수도 있어요.</div><div class="chips" style="margin:8px 0">${['😊','😐','😮‍💨','😢'].map(e=>`<button class="chip ${MOD.mood==e?'on':''}" data-a="mood:${e}">${e}</button>`).join('')}</div><textarea id="mys" maxlength="140" placeholder="예) 남의 인생은 늘 편해 보이는데, 다들 비슷하게 흔들리나 보다."></textarea><button class="btn" data-a="mysave">올리기</button><button class="btn sec" data-a="close">닫기</button>`;
  if(k=='sr'){const s=G.sr,P=POL[s.k];return `<div class="mu">🔎 검색어</div><h3 class="se">${P.n}</h3><div class="mu">남은 시도 ${s.tries}번</div>${s.why?`<div style="color:var(--b);margin:6px 0">❌ ${s.why}</div>`:''}${s.opts.map((o,i)=>`<button class="res ${o.dead?'dead':''}" data-a="srp:${i}"><b>${o.t}</b><u>${o.u}</u></button>`).join('')}<button class="btn sec" data-a="srclose">나중에 다시 검색하기</button>`}
  if(k=='pol'){const P=POL[MOD.id];return `<div class="mu">${MOD.got?'✅ 챙겼어요!':'📋 확인해보니…'}</div><h3 class="se">${P.n}</h3><p>${P.d}</p><div><b>나는 대상일까?</b>${P.req.map(r=>`<div class="lg">${r[1](G)?'✔':'✖'} ${r[0]}</div>`).join('')}</div>${MOD.got?`<p>효과: ${fxT(P.fx)} · 행복 +3</p>`:'<p class="mu">지금은 조건이 맞지 않아요. 저장해두면 대상이 됐을 때 알려드려요.</p>'}<p class="mu">공식 확인처: <a href="https://www.${SITE[P.w]}" target="_blank">${P.w}</a> (실제 조건·금액은 공식 사이트에서 확인)</p>${MOD.got?'':`<button class="btn" data-a="ksave:${MOD.id}">📌 저장해두기</button>`}<button class="btn sec" data-a="close">닫기</button>`}
- if(k=='yr'){const c=G.map[MOD.i];return `<h3 class="se">${20+MOD.i}세의 한 해</h3><p>${c?c.t:'아직 오지 않은 해예요.'}</p><button class="btn sec" data-a="close">닫기</button>`}
+ if(k=='yr'){const c=G.map[MOD.i];return `<h3 class="se">${AGE_START+MOD.i}세의 한 해</h3><p>${c?c.t:'아직 오지 않은 해예요.'}</p><button class="btn sec" data-a="close">닫기</button>`}
  return `<div class="mu">😮‍💨 못 찾았어요</div><h3 class="se">${POL[MOD.id].n}</h3><p>검색에 시간만 날렸다. 이건 내 잘못이 아니라, 정보가 흩어져 있기 때문이기도 하다.</p><button class="btn sec" data-a="close">닫기</button>`}
 const QL=q=>q<=2?'빠듯한 형편':q==3?'평범한 형편':'여유 있는 형편';
-/* ===== 엔딩: 마흔 번째 생일 ===== */
+/* ===== 엔딩: 종착역(AGE_END세) ===== */
 function vEnd(){const m=G.me,el=Object.keys(G.elig),miss=el.filter(k=>!G.done[k]),done=Object.keys(G.done);if(!LTO)LTO=G.mode=='my'?'me':'ch';
  const top=G.log.filter(l=>0);const hl=G.map.map(c=>c.t);
- const sum=`마흔이 된 ${m.n}은(는) ${G.job=='쉬는중'?'잠시 쉬어가는 중이다':G.job+'으로 일하고 있다'}. ${G.h=='자가'?'내 집에서 ':G.h=='전세'?'전셋집에서 ':G.h=='월세'?'월세방에서 ':'본가에서 '}${G.pn?G.f.married?`${G.pn}와(과) 함께 가정을 이루고 `:`${G.pn}와(과) 함께 시간을 보내며 `:''}${G.f.kid?'아이를 키우고 ':''}${G.f.pet?'고양이와 함께 ':''}살아간다. ${G.fr.filter(f=>f.bond>=60).length?`곁에는 ${G.fr.filter(f=>f.bond>=60).map(f=>f.n).join(', ')}처럼 오래 이어진 사람들이 있다.`:'오래 이어진 인연은 많지 않지만, 하나하나가 소중하다.'}`;
- const to=LTO=='me'?'5년 뒤의 나에게':`마흔의 ${m.n}에게`;
- return `<div class="w"><div class="se" style="font-size:28px;font-weight:700">마흔 번째 생일</div><div class="mu">${m.n}의 스무 살부터 마흔까지</div>
+ const sum=`${ageWord(AGE_END,true)}이 된 ${m.n}은(는) ${G.job=='쉬는중'?'잠시 쉬어가는 중이다':G.job+'으로 일하고 있다'}. ${G.h=='자가'?'내 집에서 ':G.h=='전세'?'전셋집에서 ':G.h=='월세'?'월세방에서 ':'본가에서 '}${G.pn?G.f.married?`${G.pn}와(과) 함께 가정을 이루고 `:`${G.pn}와(과) 함께 시간을 보내며 `:''}${G.f.kid?'아이를 키우고 ':''}${G.f.pet?'고양이와 함께 ':''}살아간다. ${G.fr.filter(f=>f.bond>=60).length?`곁에는 ${G.fr.filter(f=>f.bond>=60).map(f=>f.n).join(', ')}처럼 오래 이어진 사람들이 있다.`:'오래 이어진 인연은 많지 않지만, 하나하나가 소중하다.'}`;
+ const to=LTO=='me'?'5년 뒤의 나에게':`${ageWord(AGE_END,true)}의 ${m.n}에게`;
+ return `<div class="w"><div class="se" style="font-size:28px;font-weight:700">${ageWord(AGE_END,true)} 번째 생일, 종착역</div><div class="mu">${m.n}의 ${ageWord(AGE_START)} 살부터 ${ageWord(AGE_END,true)}까지</div>
  <div class="pn id" style="margin-top:12px"><div class="post">${av(m.cols,64)}<div style="flex:1"><p style="margin:0">${sum}</p></div></div><div style="margin-top:10px">${bars()}</div></div>
  <div class="pn"><h4>인생 지도 <span>그해를 대표하는 순간</span></h4><div class="mp" style="grid-template-columns:repeat(5,1fr)">${G.map.map(c=>`<div style="border-radius:4px;padding:6px;font-size:12px;background:${c.mood>62?'rgba(90,163,134,.25)':c.mood>45?'rgba(216,178,90,.25)':'rgba(201,138,138,.25)'}"><b>${c.age}세</b><div class="mu">${esc(c.t.slice(0,34))}</div></div>`).join('')}</div></div>
- <div class="pn"><h4>스무 살 때 마음속에 정했던 것</h4><div class="mu">게임을 시작할 때 목표를 따로 적지 않았어요. 마음속에 정해둔 게 있었다면, 지금은 어떤가요?</div><div class="chips" style="margin-top:8px">${['이뤘다','절반쯤 이뤘다','다른 걸 얻었다','처음부터 정한 게 없다','아직 가는 중이다'].map(t=>`<button class="chip ${G.ans==t?'on':''}" data-a="ans:${t}">${t}</button>`).join('')}</div>${G.ans?`<p class="mu" style="margin-top:8px">${G.ans=='이뤘다'?'그 마음을 지켜낸 시간이었어요.':G.ans=='절반쯤 이뤘다'?'절반의 길을 걸어왔다는 건 나머지 절반도 갈 수 있다는 뜻이에요.':G.ans=='다른 걸 얻었다'?'계획에 없던 것이 삶을 채우기도 해요.':G.ans=='아직 가는 중이다'?'마흔은 끝이 아니라 다음 장의 시작이에요.':'정하지 않고 걸어온 것도 하나의 선택이에요.'}</p>`:''}</div>
+ <div class="pn"><h4>${ageWord(AGE_START)} 살 때 마음속에 정했던 것</h4><div class="mu">게임을 시작할 때 목표를 따로 적지 않았어요. 마음속에 정해둔 게 있었다면, 지금은 어떤가요?</div><div class="chips" style="margin-top:8px">${['이뤘다','절반쯤 이뤘다','다른 걸 얻었다','처음부터 정한 게 없다','아직 가는 중이다'].map(t=>`<button class="chip ${G.ans==t?'on':''}" data-a="ans:${t}">${t}</button>`).join('')}</div>${G.ans?`<p class="mu" style="margin-top:8px">${G.ans=='이뤘다'?'그 마음을 지켜낸 시간이었어요.':G.ans=='절반쯤 이뤘다'?'절반의 길을 걸어왔다는 건 나머지 절반도 갈 수 있다는 뜻이에요.':G.ans=='다른 걸 얻었다'?'계획에 없던 것이 삶을 채우기도 해요.':G.ans=='아직 가는 중이다'?`${ageWord(AGE_END,true)}은 끝이 아니라 다음 장의 시작이에요.`:'정하지 않고 걸어온 것도 하나의 선택이에요.'}</p>`:''}</div>
  <div class="pn"><h4>이 삶에서 고마웠던 것</h4><div class="chips">${['사람','선택의 용기','우연한 행운','내가 버틴 시간','도움이 된 제도'].map(t=>`<button class="chip ${G.thx==t?'on':''}" data-a="thx:${t}">${t}</button>`).join('')}</div></div>
  <div class="pn"><h4>🟡 정책 지도</h4><p>이 삶에서 지원제도 <b>${el.length}개</b>가 대상이 될 수 있었고, <b>${done.length}개</b>를 챙겼어요.</p>${miss.length?`<div class="mu">닿지 못한 제도 — 모르거나 찾지 못한 건 개인의 잘못이 아니라 정보가 흩어져 있기 때문이에요.</div><ul>${miss.map(k=>`<li><b>${POL[k].n}</b> <span class="mu">${G.heard[k]?'소문은 들었지만 못 찾음':'존재조차 몰랐음'} · <a href="https://www.${SITE[POL[k].w]}" target="_blank">${POL[k].w}</a></span></li>`).join('')}</ul>`:'<p>전부 챙겼다 👏</p>'}<div class="mu">현실에서도 온통청년·복지로·고용24에서 내 조건을 직접 확인해보세요.</div></div>
- <div class="pn"><h4>🤝 같은 해 스무 살이던 친구들의 마흔</h4>${G.fr.map(f=>`<div class="pr" style="cursor:default">${av(f.cols,36)}<div><b>${f.n}</b> <span class="mu">${QL(f.q)} · ${f.job}</span><div class="mu">${ri(TRUE[f.job])[0]}</div></div></div>`).join('')}</div>
+ <div class="pn"><h4>🤝 같은 해 ${ageWord(AGE_START)} 살이던 친구들의 ${ageWord(AGE_END,true)}</h4>${G.fr.map(f=>`<div class="pr" style="cursor:default">${av(f.cols,36)}<div><b>${f.n}</b> <span class="mu">${QL(f.q)} · ${f.job}</span><div class="mu">${ri(TRUE[f.job])[0]}</div></div></div>`).join('')}</div>
  <div class="pn"><h4>💌 ${to}</h4><div class="chips" style="margin-bottom:6px"><button class="chip ${LTO=='ch'?'on':''}" data-a="to:ch">${m.n}에게</button><button class="chip ${LTO=='me'?'on':''}" data-a="to:me">5년 뒤의 나에게</button></div><div class="chips" style="margin-bottom:6px">${['고생 많았어.','네 속도로 가도 돼.','몰랐던 게 아니라 아무도 안 알려줬던 거야.'].map((t,i)=>`<button class="chip" data-a="lp:${i}">${t}</button>`).join('')}</div><textarea id="ltr" maxlength="400" placeholder="여기에 편지를 써보세요. 힘들 때 다시 열어볼 수 있어요."></textarea><button class="btn" data-a="lsave">편지 저장하기</button></div>
  <div class="pn"><h4>🔁 다른 사람의 인생으로 다시 살아보기</h4><div class="chips">${G.fr.map((f,i)=>`<button class="chip" data-a="as:${i}">${f.n} (${QL(f.q)})</button>`).join('')}</div></div>
  <button class="btn" data-a="new:other">🎲 새 랜덤 인생</button><button class="btn sec" data-a="home">처음으로</button></div>`+FT}
 /* ===== 이벤트 위임 ===== */
 /* ===== v8 SNS 엔진 ===== */
-const JEM={'대학생':'🏫','취준생':'👔','공시생':'📖','쉬는중':'🛋️','대기업':'🏢','스타트업':'💻','중견·중소':'🏭','프리랜서':'☕','공무원':'🏛️','창업':'🏪'};
+const JEM={'진로탐색':'🧭','재수생':'📝','군 복무':'🪖','대학생':'🏫','취준생':'👔','공시생':'📖','쉬는중':'🛋️','대기업':'🏢','스타트업':'💻','중견·중소':'🏭','프리랜서':'☕','공무원':'🏛️','창업':'🏪'};
 const KIND={ach:'소식',daily:'일상',event:'모임',info:'정보'};
 const EVC=[['동기들이랑 모임','🍻🎉'],['가족 생일','🎂👨‍👩‍👧'],['지역 행사 다녀옴','🎪🌆'],['오랜만에 동창 모임','🥂📸'],['등산 모임','⛰️🥾']];
 const SERIAL={'공시생':['시험 D-30, 오늘도 출석','시험 D-7, 손이 떨려','시험 끝. 이제 결과를 기다려'],'취준생':['면접 시즌 1/3 시작','면접 2/3, 결과 기다리는 중','면접 시즌 끝. 해봤다는 게 중요해'],default:['새 도전 시작 🌱','중간 점검, 생각보다 힘들다','결과는 어땠을까, 일단 마무리']};
@@ -762,7 +904,7 @@ function answerStory(sid,i){const s=findStory(sid);if(!s||s.ans!=null)return;s.a
 const wx=()=>{const m=G.st.mood;return m>70?['☀️','맑음']:m>55?['🌤️','대체로 맑음']:m>40?['☁️','흐림']:['🌧️','비']};
 const moodCol=m=>m>62?'#5aa386':m>45?'#d8b25a':'#c98a8a';
 function ctlHTML(){return `<div class="ctl"><button class="${G.paused?'on':''}" data-a="pause">${G.paused?'▶ 재개':'⏸ 멈춤'}</button>${[1,2,3,4].map(s=>`<button class="${!G.paused&&G.speed==s&&!FFN?'on':''}" data-a="sp:${s}">${[1,2,4,8][s-1]}×</button>`).join('')}<button data-a="ff">다음 갈림길까지 »</button><button class="${G.auto?'on':''}" data-a="auto">자동 결정</button><button data-a="diary">일기장</button><button data-a="home">나가기</button></div>`}
-function tickBar(){return `<div class="ticks">${Array.from({length:20},(_,i)=>{const c=G.map[i],cur=i==G.age-20;return `<i class="${cur?'cur':''}" style="${c?`background:${moodCol(c.mood)}`:''}" data-a="yr:${i}" title="${20+i}세"></i>`}).join('')}</div>`}
+function tickBar(){return `<div class="ticks">${Array.from({length:AGE_END-AGE_START},(_,i)=>{const c=G.map[i],cur=i==G.age-AGE_START;return `<i class="${cur?'cur':''}" style="${c?`background:${moodCol(c.mood)}`:''}" data-a="yr:${i}" title="${AGE_START+i}세"></i>`}).join('')}</div>`}
 function ringHTML(){let h=`<div class="stories"><button data-a="mys"><span class="ring me"><span class="pl">${G.mys&&G.mys.exp>=G.m?G.mys.mood:'＋'}</span></span>내 스토리</button>`;
  G.fr.forEach((f,i)=>{const a=f.stories.filter(s=>s.exp>=G.m),un=a.some(s=>!s.seen),sr=a.find(s=>s.type=='serial');h+=`<button data-a="fst:${i}"><span class="ring ${a.length?(un?'':'old'):'old dim'}">${av(f.cols,40)}</span>${f.n}${sr?`<span class="bdg">${sr.part}/${sr.of}</span>`:''}</button>`});return h+'</div>'}
 function postHTML(p){const f=G.fr[p.fi],P=p.k&&POL[p.k];
@@ -792,9 +934,9 @@ function modalBody(){const k=MOD.k;
  if(k=='peer'){const f=G.fr[MOD.i],a=f.stories.filter(s=>s.exp>=G.m);return `<div class="post">${av(f.cols,56)}<div><div class="se" style="font-size:20px;font-weight:700">${f.n}</div><div class="mu">${f.rg} · ${QL(f.q)} · ${f.job}</div></div></div><p class="mu">친밀도 ${'♥'.repeat(Math.max(1,Math.ceil(f.bond/25)))}</p>${a.length?`<button class="btn sec" data-a="fst:${MOD.i}">스토리 보기 (${a.length})</button>`:''}${f.ping>G.m-6?'<div class="mu" style="margin-top:8px">최근에 안부를 물었어요.</div>':`<button class="btn" data-a="ping:${MOD.i}">💬 안부를 묻는다</button>`}<button class="btn sec" data-a="close">닫기</button>`}
  if(k=='diary')return `<h3 class="se" style="margin:0 0 8px">일기장</h3>${G.log.map(l=>`<div class="lg"><span class="mu">${l.age}세 ${l.mo}월</span> ${esc(l.t)}</div>`).join('')}<button class="btn sec" data-a="close">닫기</button>`;
  return modalBodyOld()}
-function vPro(){const m=G.me,P={서울:'서울에서 자랐다. 모든 게 가깝고 모든 게 비싸다.','경기·인천':'경기·인천에서 자랐다. 서울까지 한 시간 반, 출퇴근이라는 단어가 일찍 익숙했다.','비수도권 대도시':'지방 대도시에서 자랐다. 서울의 기회는 늘 조금 멀리 있었다.','지방 소도시':'지방 소도시에서 자랐다. 학원도 일자리도 선택지가 적었다.'}[m.rg],F=m.q<=2?'집 형편은 빠듯했다. 용돈이라는 말이 낯설다.':m.q==3?'평범한 가정이다. 큰 걱정은 없지만 큰 여유도 없다.':'넉넉한 편이다. 하지만 기대도 그만큼 컸다.',T={대학생:'대학 2학년의 3월이다.',직장:'고등학교를 마치고 일을 시작한 지 2년째다.',준비:'대학 대신 시험 준비를 택했다. 주변 시선이 마음에 걸린다.'}[m.path];
+function vPro(){const m=G.me,P={서울:'서울에서 자랐다. 모든 게 가깝고 모든 게 비싸다.','경기·인천':'경기·인천에서 자랐다. 서울까지 한 시간 반, 출퇴근이라는 단어가 일찍 익숙했다.','비수도권 대도시':'지방 대도시에서 자랐다. 서울의 기회는 늘 조금 멀리 있었다.','지방 소도시':'지방 소도시에서 자랐다. 학원도 일자리도 선택지가 적었다.'}[m.rg],F=m.q<=2?'집 형편은 빠듯했다. 용돈이라는 말이 낯설다.':m.q==3?'평범한 가정이다. 큰 걱정은 없지만 큰 여유도 없다.':'넉넉한 편이다. 하지만 기대도 그만큼 컸다.',T='고등학교 졸업식을 마친 1월이다. 친구들은 대학으로, 일터로, 재수 학원으로 흩어진다.';
  const guide=VARI=='A'?'<div class="lg"><b>한 줄기</b> 내 이야기와 친구들 소식이 시간순으로 한 흐름에 쌓여요.</div><div class="lg">위쪽 동그라미는 친구들의 스토리(2개월 뒤 사라져요). 갈림길이 오면 흐름이 멈추고 카드가 뜨는데, 거기서 바로 골라요.</div><div class="lg">오른쪽엔 오늘의 나, 챙겨둔 것, 곁의 사람들이 항상 보여요.</div>':'<div class="lg"><b>맨 위 필름스트립</b>이 스무 살부터 마흔까지의 1년 칸이에요. 지나간 해는 그해의 장면으로 채워져요.</div><div class="lg"><b>왼쪽</b> 이번 달 장면 카드. 갈림길이 오면 카드가 선택지로 바뀌어요.</div><div class="lg"><b>오른쪽</b> 친구들의 스토리와 피드, DM. <b>아래</b> 챙겨둔 것과 곁의 사람들.</div>';
- return `<div class="w"><div class="pn id"><div class="mu">나의 첫 페이지 · 20세</div><div class="post" style="margin-top:8px">${av(m.cols,64)}<div><div class="se" style="font-size:24px;font-weight:700">${m.n}</div><div class="mu">${m.rg} · ${PATHL[m.path]}</div></div></div><p>${P}</p><p>${F}</p><p>${T}</p></div><div class="pn"><h4>화면 보는 법</h4>${guide}<div class="lg">위의 속도 버튼으로 시간을 빠르게 하거나 멈출 수 있어요. 목표는 마음속으로 정해두세요.</div></div><button class="btn" data-a="begin">${m.n}의 스무 살 시작</button></div>`}
+ return `<div class="w"><div class="pn id"><div class="mu">나의 첫 페이지 · 20세</div><div class="post" style="margin-top:8px">${av(m.cols,64)}<div><div class="se" style="font-size:24px;font-weight:700">${m.n}</div><div class="mu">${m.rg} · 고교 졸업</div></div></div><p>${P}</p><p>${F}</p><p>${T}</p></div><div class="pn"><h4>화면 보는 법</h4>${guide}<div class="lg">위의 속도 버튼으로 시간을 빠르게 하거나 멈출 수 있어요. 목표는 마음속으로 정해두세요.</div></div><button class="btn" data-a="begin">${m.n}의 스무 살 시작</button></div>`}
 let VARI='S'; // v9-S 지하철 UI (backend.js가 읽는 전역 이름은 그대로 둔다)
 const baseMB=modalBody;
 function roomHTML(){const m=mo(),sp=m>=3&&m<=5,su=m>=6&&m<=8,au=m>=9&&m<=11,night=G.st.burn>=75;
@@ -805,7 +947,7 @@ function roomHTML(){const m=mo(),sp=m>=3&&m<=5,su=m>=6&&m<=8,au=m>=9&&m<=11,nigh
  const say=G.rumor.length?'소문이 도착했어요. 챙겨둔 것에서 검색해볼까요?':G.st.burn>70?'많이 지쳐 보여요. 쉬어가도 괜찮아요.':G.st.soc<32?'친구에게 안부를 물어볼까요?':G.st.mood>70?'오늘 기분이 좋아 보여요.':'오늘도 나만의 속도로 가요.';
  return `<div class="room"><div class="wall"></div><div class="floor"></div><div class="chipx">${G.h} · ${G.me.rg}</div><div class="win"><div class="sky" style="background:${sky}"></div>${sk}</div>${sp?'<span class="bl" style="left:4%;top:8%">🌸</span><span class="bl" style="left:30%;top:6%">🌸</span>':''}${night?'<span class="bl" style="left:34%;top:14%">🌙</span>':''}<div class="desk"></div><span class="px" style="left:70%;top:50%">💻</span><span class="px" style="left:84%;top:48%">${plant}</span><span class="px" style="left:58%;top:52%;font-size:22px">${cups}</span><span class="px" style="left:46%;top:76%;font-size:24px">${prop}</span>${G.f.pet?'<span class="px" style="left:30%;top:76%;font-size:24px">🐈‍⬛</span>':''}<div class="me">${av(G.me.cols,76)}</div><div class="say">${say}</div><div class="mas">🐱</div></div>`}
 function vPlay(){const items=[];G.log.slice(0,60).forEach(l=>items.push({o:l.o,h:logHTML(l)}));G.feed.slice(0,10).forEach(p=>items.push({o:p.o,h:postHTML(p)}));items.sort((a,b)=>b.o-a.o);
- const map=Array.from({length:20},(_,i)=>{const c=G.map[i],cur=i==G.age-20;return `<i class="${cur?'cur':''}" style="${c?`background:${moodCol(c.mood)}`:''}" data-a="yr:${i}" title="${20+i}세"></i>`}).join('');
+ const map=Array.from({length:AGE_END-AGE_START},(_,i)=>{const c=G.map[i],cur=i==G.age-AGE_START;return `<i class="${cur?'cur':''}" style="${c?`background:${moodCol(c.mood)}`:''}" data-a="yr:${i}" title="${AGE_START+i}세"></i>`}).join('');
  const nav=[['home','🏠','홈'],['friends','👥','친구들'],['stash','🗂️','챙겨둔 것'],['record','📖','인생 기록'],['public','🏛️','공공정보']].map(x=>`<button class="${(x[0]=='home'&&!MOD)||(MOD&&MOD.k=='nav'&&MOD.t==x[0])?'on':''}" data-a="nav:${x[0]}"><b>${x[1]}</b>${x[2]}</button>`).join('');
  return `<div class="tb"><span class="ttl">Another Station <small class="mu">beta</small></span><span class="age">${G.age}<small>세 ${mo()}월</small></span>${tickBar()}${ctlHTML()}</div>
  <div class="hm"><div class="hm1">${roomHTML()}${condHTML()}</div>
@@ -821,7 +963,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b
  else if(k=='home'){S='start';G=null;MOD=null;clearTimeout(TM);FFN=0;draw()}
  else if(k=='f'){const j=v.indexOf(':');FORM[v.slice(0,j)]=v.slice(j+1);draw()}
  else if(k=='as'){const f=G.fr[+v];LTO=null;newGame('other',{},f);draw()}
- else if(k=='begin'){S='play';addLine(`스무 살, ${mo()}월. ${G.me.rg}에서 새 학기가 시작되었다.`.replace('새 학기가','새 계절이'),'n');addLine({대학생:'대학 2학년. 아직 모든 게 어정쩡하다.',직장:'일을 시작한 지 2년. 월급날만 기다리는 일상이다.',준비:'시험 준비 중. 하루가 독서실 안에서 끝난다.'}[G.me.path],'n');draw();loop()}
+ else if(k=='begin'){S='play';addLine(`${ageWord(AGE_START)} 살, 1월. ${G.me.rg}에서 고등학교 졸업식을 마쳤다.`,'n');addLine('친구들은 저마다 다른 열차를 탄다. 나도 다음 정거장을 정해야 한다.','n');makeDec(careerEv(false));draw();loop()}
  else if(k=='ans'||k=='thx'){if(k=='ans')G.ans=v;else G.thx=v;if(typeof BE!='undefined')BE.patchPlay();draw()}
  else if(!G)return;
  else if(k=='c'){pickC(+v);draw()}
@@ -829,7 +971,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b
  else if(k=='pause'){G.paused=!G.paused;FFN=0;draw();if(!G.paused)loop()}
  else if(k=='sp'){G.speed=+v;G.paused=false;FFN=0;draw();loop()}
  else if(k=='ff'){G.paused=false;FFN=1;draw();loop()}
- else if(k=='auto'){G.auto=!G.auto;if(G.auto&&G.dec&&!G.dec.hid){const ok=G.dec.e.ch.map((c,i)=>i).filter(i=>!lock(G.dec.e.ch[i]));pickC(ri(ok.length?ok:[0]))}tst(G.auto?'자동 결정 켜짐 — 이제 선택을 알아서 해요':'자동 결정 꺼짐');draw();loop()}
+ else if(k=='auto'){G.auto=!G.auto;if(G.auto&&G.dec&&!G.dec.hid){pickC(autoIdx(G.dec.e))}tst(G.auto?'자동 결정 켜짐 — 이제 선택을 알아서 해요':'자동 결정 꺼짐');draw();loop()}
  else if(k=='like'){const p=G.feed.find(x=>x.id==+v);if(p&&!p.liked){p.liked=1;G.fr[p.fi].bond=clf(G.fr[p.fi].bond+2)}draw()}
  else if(k=='cm'){MOD={k:'cm',pid:+v};draw()}else if(k=='cmt')doComment(MOD.pid,v)
  else if(k=='tip'){const p=G.feed.find(x=>x.id==+v);if(p&&p.k){addRum(p.k,G.fr[p.fi].n);const r=G.rumor.find(x=>x.k==p.k);if(r)startSr(r.id)}}
@@ -852,7 +994,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b
  else if(k=='pol'){MOD={k:'pol',id:v,got:1};draw()}
  else if(k=='to'){LTO=v;draw()}
  else if(k=='lp'){const t=['고생 많았어.','네 속도로 가도 돼.','몰랐던 게 아니라 아무도 안 알려줬던 거야.'][+v],x=$('ltr');if(x)x.value=(x.value?x.value+' ':'')+t}
- else if(k=='lsave'){const t=(($('ltr')||{}).value||'').trim();if(!t)return tst('한 줄이라도 남겨보세요');const to=LTO=='me'?'5년 뒤의 나에게':`마흔의 ${G.me.n}에게`,L=lettersLocal();L.unshift({to,text:t,date:new Date().toLocaleDateString('ko-KR')});let ok=1;try{localStorage.setItem('al_letters',JSON.stringify(L.slice(0,20)))}catch(er){ok=0}
+ else if(k=='lsave'){const t=(($('ltr')||{}).value||'').trim();if(!t)return tst('한 줄이라도 남겨보세요');const to=LTO=='me'?'5년 뒤의 나에게':`${ageWord(AGE_END,true)}의 ${G.me.n}에게`,L=lettersLocal();L.unshift({to,text:t,date:new Date().toLocaleDateString('ko-KR')});let ok=1;try{localStorage.setItem('al_letters',JSON.stringify(L.slice(0,20)))}catch(er){ok=0}
   if(typeof BE!='undefined')BE.saveLetter(to,t,ok);else tst(ok?'💌 편지를 저장했어요. 처음 화면의 편지함에서 볼 수 있어요':'이 환경에서는 저장되지 않아요. 복사해서 보관해주세요')}
 });
 window.addEventListener('error',e=>{const a=$('app');if(a)a.insertAdjacentHTML('afterbegin','<div class="pn">오류: '+e.message+'</div>')});
@@ -868,43 +1010,29 @@ draw();
 
 const GAME_NAME = 'Another Station', ROUTE_NAME = '인생선', DEST_NAME = 'Another Life 행';
 
-/* ---------- 나이 구간: 화면은 이 상수에서만 계산한다 ----------
- * 노선도는 20세역 ~ 36세 종점(역 17개, 한 역 = 1년)이다.
- * TODO(subway-conflict): 엔진은 아직 20세→40세(G.age=20+…, G.m>=240, 엔딩 「마흔 번째 생일」)로 돈다.
- *   36세역 도착 시 게임 종료는 2단계에서 엔진에 연결한다. 그 전까지 36세 이후에는 열차 표시가 종점에 머문다. */
-const AGE_START = 20, AGE_END = 36;
+/* ---------- 나이 구간: 엔진의 AGE_START·AGE_END·TOTAL_M(20세 1월 출발 → 36세 1월 종착)을 그대로 쓴다 ---------- */
 const STATIONS = AGE_END - AGE_START + 1;   // 20, 21, …, 35, 36(종점) = 17개
 const YEARS = AGE_END - AGE_START - 1;      // 기획 문구 「15년」
-const TOTAL_M = (STATIONS - 1) * 12;        // 노선도 위 열차 위치 계산용(첫 역 → 종점)
-const FIRST_MO = ((2 + 0) % 12) + 1;        // 엔진의 한 해 첫 달(mo() 기준). 2단계에서 1월 시작으로 바꾸면 따라간다.
+const FIRST_MO = 1;                         // 매년 1월에 나이가 바뀐다
 
-const LINE_COL = {대학생:'#00A84D',취준생:'#00A5DE',공시생:'#747F00',쉬는중:'#A9A08A',대기업:'#0052A4',스타트업:'#E6186C','중견·중소':'#EF7C1C',프리랜서:'#996CAC',공무원:'#CD7C2F',창업:'#D4003B'};
+const LINE_COL = {진로탐색:'#8a8f98',재수생:'#5b6abf','군 복무':'#556B2F',대학생:'#00A84D',취준생:'#00A5DE',공시생:'#747F00',쉬는중:'#A9A08A',대기업:'#0052A4',스타트업:'#E6186C','중견·중소':'#EF7C1C',프리랜서:'#996CAC',공무원:'#CD7C2F',창업:'#D4003B'};
 const SPEED_NAME = ['', '완행', '급행', '특급', '직통'];
 const W_LONG = 882, W_SHORT = 458, W_END = 870;
 const lineCol = j => LINE_COL[j] || '#888';
 const lineName = j => `${j}선`;
 
-/* 나이 → 고유어 (스무, 마흔, 서른다섯 …) */
-function ageWord(n, bare) {
-  const T = ['', '열', '스물', '서른', '마흔', '쉰'], O = ['', '하나', '둘', '셋', '넷', '다섯', '여섯', '일곱', '여덟', '아홉'];
-  const O2 = ['', '한', '두', '세', '네', '다섯', '여섯', '일곱', '여덟', '아홉'];
-  const t = Math.floor(n / 10), o = n % 10;
-  if (bare) return (t === 2 && o === 0 ? '스물' : T[t]) + O[o];
-  return (t === 2 && o === 0 ? '스무' : T[t]) + O2[o];
-}
-
-/* ---------- 픽셀 인물 ---------- */
+/* ---------- 픽셀 인물 ----------
+ * 모든 인물은 외모 객체(look: 성별·머리·머리색·피부·상의·하의·소품)로 그린다. av()·person()이 같은 객체를 쓰므로 어디서 봐도 같은 사람이다.
+ * 직업 유니폼(OUTFIT)은 「출근복」으로만 덧입히고(WORKWEAR), 머리·피부·소품은 그대로 둔다. */
+const WORKWEAR = ['대기업', '스타트업', '중견·중소', '프리랜서', '공무원', '창업', '군 복무'];
 const OUTFIT = {
-  대학생: {top: null, hood: 1, pack: 1, pants: '#4a5a7a'},
-  취준생: {top: '#2b3a67', collar: 1, pants: '#2b3a67'},
-  공시생: {top: '#8a8f98', hood: 1, glasses: 1, pants: '#5a5f68'},
-  쉬는중: {top: '#9ccf6a', stripe: '#fff', pants: '#9ccf6a', shoes: '#ffffff'},
   대기업: {top: '#26335a', collar: 1, lanyard: '#d8382f', badge: 1, pants: '#26335a'},
-  스타트업: {top: '#222', cap: '#ff7fb0', badge: 1, pants: '#3a3a3a'},
+  스타트업: {top: '#222', badge: 1, pants: '#3a3a3a'},
   '중견·중소': {top: '#8ec5ea', badge: 1, lanyard: '#3a6fb0', pants: '#4a4f5a'},
-  프리랜서: {top: '#d9c3a0', inner: '#fff', beanie: '#6b5b95', pants: '#5a4f45'},
+  프리랜서: {top: '#d9c3a0', inner: '#fff', pants: '#5a4f45'},
   공무원: {top: '#f4f4f4', vest: '#2b3a67', badge: 1, pants: '#2b3a67'},
-  창업: {top: null, apron: '#8b5a2b', pants: '#4a4a4a'},
+  창업: {apron: '#8b5a2b', pants: '#4a4a4a'},
+  '군 복무': {top: '#5b6b3a', camo: '#46532c', pants: '#5b6b3a', shoes: '#1e1e1e'},
 };
 
 function pixGrid(w, h) { return Array.from({length: h}, () => Array(w).fill(null)); }
@@ -914,50 +1042,54 @@ function svgOf(g, scale) {
   g.forEach((row, y) => row.forEach((c, x) => { if (c) r += `<rect x="${x}" y="${y}" width="1" height="1" fill="${c}"/>`; }));
   return `<svg width="${w * scale}" height="${h * scale}" viewBox="0 0 ${w} ${h}">${r}</svg>`;
 }
+/* 예전 [머리, 옷, 포인트] 배열이 와도 그릴 수 있게 외모 객체로 바꾼다 */
+const asLook = c => c && c.sex ? c : {sex: 'M', hair: 'short', hairCol: (c && c[0]) || '#3b2a20', skin: '#ffd9b5', top: 'tee', topCol: (c && c[1]) || '#4a6fa5', bottom: 'jeans', botCol: '#3a4a6a', acc: 'none'};
 
-/* 앞모습 인물. pose: 'sit'(16×26) | 'walk'(16×27) | 'stand'
- * opt: {cols, job, phone, sleep, hair, kid} */
+/* 앞모습 인물. pose: 'sit'(16×26) | 'walk'·'stand'(16×27)
+ * opt: {cols(=look), job, phone, sleep, scale} */
 function person(pose, opt) {
-  const cols = opt.cols || ['#3b2a20', '#4a6fa5', '#fff'];
-  const O = OUTFIT[opt.job] || {};
-  const hair = opt.hair || cols[0], top = O.top || cols[1], pants = O.pants || '#4a5060';
-  const skin = '#ffd9b5', eye = '#2b2340', shoe = O.shoes || '#2a2a2a';
+  const L = asLook(opt.cols), work = WORKWEAR.includes(opt.job), O = work ? (OUTFIT[opt.job] || {}) : {};
+  const skin = L.skin, top = O.top || L.topCol, shoe = O.shoes || '#2a2a2a';
   const sit = pose === 'sit', H = sit ? 26 : 27, g = pixGrid(16, H);
   const d = sit && opt.sleep ? 1 : 0; // 졸 때 머리를 한 칸 내린다
-  // 머리
-  fill(g, 4, 0 + d, 8, 1, hair); fill(g, 3, 1 + d, 10, 2, hair);
-  fill(g, 4, 2 + d, 8, 4, skin); fill(g, 3, 2 + d, 1, 2, hair); fill(g, 12, 2 + d, 1, 2, hair);
-  if (opt.sleep) { fill(g, 5, 4 + d - 1, 2, 1, eye); fill(g, 9, 4 + d - 1, 2, 1, eye); }
-  else { fill(g, 6, 3 + d, 1, 1, eye); fill(g, 9, 3 + d, 1, 1, eye); }
-  fill(g, 7, 5 + d, 2, 1, '#e05a7a');
-  if (O.glasses) { fill(g, 5, 3, 3, 1, null); fill(g, 5, 2 + d, 3, 1, '#333'); fill(g, 8, 2 + d, 3, 1, '#333'); fill(g, 5, 4 + d, 3, 1, '#333'); fill(g, 8, 4 + d, 3, 1, '#333'); fill(g, 6, 3 + d, 1, 1, eye); fill(g, 9, 3 + d, 1, 1, eye); }
-  if (O.cap) { fill(g, 3, 0 + d, 10, 2, O.cap); fill(g, 2, 2 + d, 12, 1, O.cap); }
-  if (O.beanie) { fill(g, 3, 0 + d, 10, 2, O.beanie); fill(g, 3, 1 + d, 10, 1, '#8a7ab5'); }
-  if (!d) fill(g, 6, 6, 4, 1, skin); // 목
-  // 몸통
+  if (!d) fill(g, 6, 6, 4, 1, skin);  // 목
+  // 몸통·팔
   fill(g, 3, 7, 10, 8, top);
-  fill(g, 2, 8, 1, 6, top); fill(g, 13, 8, 1, 6, top); // 팔
-  if (O.hood) fill(g, 4, 7, 8, 1, shade(top));
+  fill(g, 2, 8, 1, 6, top); fill(g, 13, 8, 1, 6, top);
+  if (!work) {
+    if (L.top === 'hood') { fill(g, 4, 7, 8, 1, shade(top)); fill(g, 7, 8, 2, 2, shade(top)); }
+    if (L.top === 'shirt') { fill(g, 6, 7, 1, 2, '#fff'); fill(g, 9, 7, 1, 2, '#fff'); fill(g, 7, 8, 2, 6, pxShade(top, 25)); }
+    if (L.top === 'knit') { fill(g, 3, 9, 10, 1, pxShade(top, 30)); fill(g, 3, 12, 10, 1, pxShade(top, 30)); }
+    if (L.top === 'jacket') { fill(g, 6, 7, 4, 8, '#f4f4f4'); fill(g, 7, 7, 2, 8, pxShade(top, -10)); fill(g, 5, 7, 1, 8, shade(top)); fill(g, 10, 7, 1, 8, shade(top)); }
+    if (L.top === 'mtm') fill(g, 3, 14, 10, 1, shade(top));
+    if (L.acc === 'bag') { fill(g, 4, 7, 1, 8, '#7a4b2a'); fill(g, 11, 7, 1, 8, '#7a4b2a'); }
+  }
+  if (O.camo) { [[4, 8], [9, 9], [5, 12], [10, 13], [7, 10]].forEach(([x, y]) => fill(g, x, y, 2, 1, O.camo)); }
   if (O.collar) { fill(g, 6, 7, 1, 2, '#fff'); fill(g, 9, 7, 1, 2, '#fff'); fill(g, 7, 7, 2, 3, '#fff'); fill(g, 7, 8, 2, 1, '#c33'); }
   if (O.vest) { fill(g, 3, 8, 3, 7, O.vest); fill(g, 10, 8, 3, 7, O.vest); }
   if (O.inner) fill(g, 7, 7, 2, 8, O.inner);
-  if (O.stripe) { fill(g, 2, 8, 1, 6, O.stripe); fill(g, 13, 8, 1, 6, O.stripe); }
-  if (O.pack) { fill(g, 4, 7, 1, 8, '#7a4b2a'); fill(g, 11, 7, 1, 8, '#7a4b2a'); }
-  if (O.apron || opt.job === '창업') { fill(g, 5, 9, 6, 6, O.apron || '#8b5a2b'); fill(g, 4, 8, 1, 1, O.apron || '#8b5a2b'); fill(g, 11, 8, 1, 1, O.apron || '#8b5a2b'); }
+  if (O.apron) { fill(g, 5, 9, 6, 6, O.apron); fill(g, 4, 8, 1, 1, O.apron); fill(g, 11, 8, 1, 1, O.apron); }
   if (O.lanyard) { fill(g, 6, 7, 1, 3, O.lanyard); fill(g, 9, 7, 1, 3, O.lanyard); fill(g, 7, 10, 2, 1, O.lanyard); }
   if (O.badge) fill(g, 7, 11, 2, 2, '#fff');
+  // 하의: 출근복이면 유니폼 바지, 아니면 청바지·슬랙스·치마·반바지
+  const bt = work ? 'slacks' : L.bottom, bc = work ? (O.pants || '#4a5060') : (L.bottom === 'jeans' ? '#3d5a8a' : L.botCol);
+  const legTop = bt === 'shorts' || bt === 'skirt';
   if (sit) {
     if (opt.phone && !opt.sleep) { fill(g, 6, 10, 4, 4, '#3a3d42'); fill(g, 4, 12, 2, 2, skin); fill(g, 10, 12, 2, 2, skin); }
     else { fill(g, 1, 14, 2, 2, skin); fill(g, 13, 14, 2, 2, skin); }
-    fill(g, 2, 15, 12, 2, pants);                // 허벅지(앞으로 짧게)
-    fill(g, 3, 17, 3, 8, pants); fill(g, 10, 17, 3, 8, pants); // 정강이
+    fill(g, bt === 'skirt' ? 1 : 2, 15, bt === 'skirt' ? 14 : 12, 2, bc);                       // 허벅지(앞으로 짧게)
+    fill(g, 3, 17, 3, 8, legTop ? skin : bc); fill(g, 10, 17, 3, 8, legTop ? skin : bc);   // 정강이
+    if (bt === 'shorts') { fill(g, 3, 17, 3, 1, bc); fill(g, 10, 17, 3, 1, bc); }
     fill(g, 2, 25, 4, 1, shoe); fill(g, 10, 25, 4, 1, shoe);
     if (opt.phone && opt.sleep) fill(g, 6, 14, 4, 2, '#3a3d42'); // 무릎 위 휴대폰
   } else {
     fill(g, 2, 14, 1, 1, skin); fill(g, 13, 14, 1, 1, skin);
-    fill(g, 4, 15, 3, 10, pants); fill(g, 9, 15, 3, 10, pants);
+    if (bt === 'skirt') { fill(g, 3, 15, 10, 4, bc); fill(g, 4, 19, 3, 6, skin); fill(g, 9, 19, 3, 6, skin); }
+    else if (bt === 'shorts') { fill(g, 4, 15, 3, 3, bc); fill(g, 9, 15, 3, 3, bc); fill(g, 4, 18, 3, 7, skin); fill(g, 9, 18, 3, 7, skin); fill(g, 7, 15, 2, 1, bc); }
+    else { fill(g, 4, 15, 3, 10, bc); fill(g, 9, 15, 3, 10, bc); fill(g, 7, 15, 2, 1, bc); }
     fill(g, 3, 25, 4, 2, shoe); fill(g, 9, 25, 4, 2, shoe);
   }
+  pxHead(g, L, 4, d, {sleep: opt.sleep}); // 머리·얼굴은 엔진의 외모 파츠를 그대로 쓴다(아바타와 같은 모양)
   return svgOf(g, opt.scale || 5);
 }
 function shade(hex) {
@@ -1083,7 +1215,7 @@ function routeHead() {
     return `<span class="badge" style="background:#3a3f47">${DEST_NAME}</span><span class="subt">${AGE_START}세 → ${AGE_END}세 종점 · 한 역 = 1년</span>`;
   }
   const j = G.job, end = G.age >= AGE_END || S === 'end';
-  const nx = end ? `<b>종착역</b> · ${ageWord(AGE_END, true)}` : `다음 역 <b>${G.age + 1}세</b> · 「${CHAP[j] || ''}」`;
+  const nx = end ? `<b>종착역</b> · ${ageWord(AGE_END, true)}` : `다음 역 <b>${G.age + 1}세</b> · 「${chapOf(G)}」`;
   return `<span class="badge" style="background:${lineCol(j)}">${lineName(j)}</span><span class="nx">${nx}</span>`;
 }
 
@@ -1119,7 +1251,7 @@ function cardHTML() {
   const g = G, m = g.me, w = wx();
   // 자산·빚·월 수입 같은 만 원 단위 숫자는 화면에 보여 주지 않는다(1단계: 숨기기만, 3단계에서 정리). 재정 상태는 막대로 보여 준다.
   return `<div class="top" style="--line:${lineCol(g.job)};border-top-color:${lineCol(g.job)}">탑승객 카드 · ${m.rg} 출신</div>
-    <div class="who">${av(m.cols, 64)}<div><div class="nm">${m.n}</div><div class="ln2" style="color:${lineCol(g.job)}"><span class="en">${g.age}</span>세 · ${lineName(g.job)}</div><div class="chap">「${CHAP[g.job] || ''}」</div></div><div class="wx"><b>${w[0]}</b>마음 ${w[1]}</div></div>
+    <div class="who">${av(m.cols, 64)}<div><div class="nm">${m.n}</div><div class="ln2" style="color:${lineCol(g.job)}"><span class="en">${g.age}</span>세 · ${lineName(g.job)}</div><div class="chap">「${chapOf(g)}」</div></div><div class="wx"><b>${w[0]}</b>마음 ${w[1]}</div></div>
     <div class="kv2" style="margin-top:8px"><b>거주</b>${g.h}</div><div class="kv2"><b>집안 형편</b>${FAML[m.q <= 2 ? 0 : m.q == 3 ? 1 : 2]}</div>
     <div class="h">상태 0–100</div>${barsHTML(g)}`;
 }
@@ -1152,7 +1284,7 @@ function heroPro() {
         <div class="kv2"><b>출신</b>${m.rg}</div><div class="kv2"><b>집안 형편</b>${FAML[m.q <= 2 ? 0 : m.q == 3 ? 1 : 2]}</div>
         <div class="kv2"><b>거주</b>${g.h}</div><div class="kv2"><b>마음</b>${w[0]} ${w[1]}</div>
         <div class="kv2"><b>시작 노선</b><span class="board" style="background:${lineCol(j)}">${lineName(j)}</span></div>
-        <div class="chap">「${CHAP[j] || ''}」 · ${PATHL[m.path]}</div></div>
+        <div class="chap">「${chapOf(g)}」 · 20세 1월, 고교 졸업</div></div>
       <div class="pro-st"><div class="h">상태 0–100</div>${barsHTML(g)}</div>
       <div class="pro-tx">${ps.map(p => `<p>${esc(p)}</p>`).join('')}</div>
     </div>
@@ -1170,7 +1302,7 @@ function senderAv(w) {
  * - 한 달에 타임라인에 들어가는 줄은 최대 2줄(선택 결과 줄은 예외). 나머지는 기록 탭(일기장)에만 남는다.
  * - 친구 반응 알림 줄(l.nt)은 타임라인에 넣지 않고 상단 알림 배너로 보여 준다. */
 const TL_PER_MONTH = 2;
-const moOf = m => ((2 + m) % 12) + 1;
+const moOf = m => m % 12 + 1; // 엔진 mo()와 같은 기준(1월 시작)
 const isChoiceLine = l => l.tn === 'q' || l.k === 'c';
 function tlBody(l) {
   const t = esc(l.t);
@@ -1275,18 +1407,19 @@ function meHTML() {
 }
 function wantRiders() {
   const g = G, f = g.f, w = {};
-  if (f.partner || f.married) w.partner = {x: 228, tag: `${f.married ? '배우자' : '연인'} ${g.pn || ''}`.trim(), cols: g.pcols || (g.pcols = [ri(HC), ri(SC), '#fff']), key: 'partner'};
-  if (f.kid) w.kid = {x: 162, tag: '아이', kid: 1, cols: [g.me.cols[0], '#ffd86b', '#fff'], key: 'kid'};
+  const me = g.me.look;
+  if (f.partner || f.married) w.partner = {x: 228, tag: `${f.married ? '배우자' : '연인'} ${g.pn || ''}`.trim(), cols: g.plook || (g.plook = genLook(me.sex === 'M' ? 'F' : 'M')), key: 'partner'};
+  if (f.kid) w.kid = {x: 162, tag: '아이', kid: 1, cols: g.klook || (g.klook = genLook(R() < .5 ? 'M' : 'F', {skin: me.skin, hairCol: me.hairCol, acc: 'none'})), key: 'kid'};
   if (f.pet) w.pet = {x: 36, cat: 1, key: 'pet'};
   const side = f.kid ? 92 : 150;
-  if (g.careAt != null && g.m < g.careAt + 6) w.mom = {x: side, tag: '엄마', hair: '#a9a9a9', cols: ['#a9a9a9', '#b08ab8', '#fff'], key: 'mom'};
+  if (g.careAt != null && g.m < g.careAt + 6) w.mom = {x: side, tag: '엄마', cols: g.mlook || (g.mlook = Object.assign(genLook('F', {skin: me.skin, hair: 'bob', acc: 'none'}), {hairCol: '#a9a9a9', bottom: 'slacks'})), key: 'mom'};
   else if (g.ride && g.m >= g.ride.from && g.m <= g.ride.to && g.fr[g.ride.fi]) { const fr = g.fr[g.ride.fi]; w.friend = {x: side, tag: `친구 ${fr.n}`, cols: fr.cols, key: 'friend'}; }
   return w;
 }
 function riderHTML(r) {
   if (r.cat) return `<div class="px" data-r="${r.key}" style="left:${r.x}px;bottom:${SEAT_Y + 60}px">${catSvg()}</div>`;
   const sc = r.kid ? .72 : 1;
-  return `<div class="px" data-r="${r.key}" style="left:${r.x}px;bottom:${SEAT_Y}px;transform:scale(${sc})">${person('sit', {cols: r.cols, hair: r.hair})}<span class="tag" style="transform:translateX(-50%) scale(${1 / sc})">${esc(r.tag)}</span></div>`;
+  return `<div class="px" data-r="${r.key}" style="left:${r.x}px;bottom:${SEAT_Y}px;transform:scale(${sc})">${person('sit', {cols: r.cols})}<span class="tag" style="transform:translateX(-50%) scale(${1 / sc})">${esc(r.tag)}</span></div>`;
 }
 function placeRiders(set) {
   const box = $s('people');
@@ -1299,7 +1432,8 @@ function placeMe(force) {
   if (!force && key === UI.meKey && $s('me')) return;
   UI.meKey = key;
   const old = $s('me'); if (old) old.remove();
-  if (g && (S === 'play') && !UI.boarding && !UI.ending) $s('people').insertAdjacentHTML('beforeend', meHTML());
+  // 탑승 연출 중(S가 아직 'pro')에도 자리에 앉은 뒤부터는 보여야 한다(UI.seated). 예전에는 S==='play'만 그려서 폰을 들기 전까지 사라졌다.
+  if (g && (S === 'play' || UI.seated) && !UI.boarding && !UI.ending) $s('people').insertAdjacentHTML('beforeend', meHTML());
 }
 
 /* ---------- 문·승강장·창밖 ---------- */
@@ -1337,7 +1471,7 @@ async function walk(html, from, to, ms) {
   await sleep(ms);
   return el;
 }
-const walkerOf = (cols, job, hair) => person('walk', {cols, job, hair});
+const walkerOf = (cols, job) => person('walk', {cols, job});
 async function alight(html, x) { const el = await walk(html, {x, y: SEAT_Y, s: 1}, {x: DOOR_X, y: DOOR_BOTTOM, s: .5}, 1100); el.style.opacity = 0; await sleep(400); el.remove(); }
 async function board(html, x) { const el = await walk(html, {x: DOOR_X, y: DOOR_BOTTOM, s: .5}, {x, y: SEAT_Y, s: 1}, 1100); el.remove(); }
 
@@ -1353,9 +1487,9 @@ async function runBoarding() {
   await withBusy(async () => {
     const g = G, j = g.job;
     setSign(`${AGE_START}세역`, `${lineName(j)} · 시발역`, lineCol(j)); led(`${AGE_START}세역입니다 · ${lineName(j)} 열차가 들어옵니다`);
-    doors(true); await sleep(1200);
+    doors(true); await sleep(120); // 문이 열리기 시작하면 바로 승강장에서 걸어 들어온다(탑승 순간부터 계속 보이게)
     await board(walkerOf(g.me.cols, j), 312);
-    UI.boarding = false; placeMe(true); placeRiders(wantRiders());
+    UI.boarding = false; UI.seated = true; placeMe(true); placeRiders(wantRiders());
     doors(false); await sleep(1100);
     const ph = $s('phone'); ph.classList.remove('down'); ph.classList.add('lift');
     setRouteWidth('short');
@@ -1378,20 +1512,20 @@ async function runStop(xf, want) {
     led(xf ? `이번 역은 ${age}세역, 환승역입니다 · ${lineName(toJ)}으로 갈아타실 분은 이번 역에서 내리세요` : `이번 역은 ${age}세역입니다`);
     doors(true); await sleep(1100);
     // 내릴 사람
-    for (const k of leave) { const r = prev[k], el = document.querySelector(`[data-r="${k}"]`); if (el) el.remove(); if (!r.cat) await alight(walkerOf(r.cols, null, r.hair), r.x); }
+    for (const k of leave) { const r = prev[k], el = document.querySelector(`[data-r="${k}"]`); if (el) el.remove(); if (!r.cat) await alight(walkerOf(r.cols, null), r.x); }
     if (xf) {
       // 환승: 나와 남은 승객이 모두 내렸다가, 새 노선 열차에 다시 탄다
       const stay = Object.keys(wantNow).filter(k => prev[k]);
       $s('me') && $s('me').remove(); UI.meKey = '';
       await alight(walkerOf(g.me.cols, fromJ), 312);
-      for (const k of stay) { const r = prev[k], el = document.querySelector(`[data-r="${k}"]`); if (el) el.remove(); if (!r.cat) await alight(walkerOf(r.cols, null, r.hair), r.x); }
+      for (const k of stay) { const r = prev[k], el = document.querySelector(`[data-r="${k}"]`); if (el) el.remove(); if (!r.cat) await alight(walkerOf(r.cols, null), r.x); }
       doors(false); led(`${lineName(toJ)}으로 갈아타는 중…`); UI.riders = {}; UI.xfColor = toJ; renderStatic(); await sleep(1300);
       setSign(`${age}세역`, `${lineName(toJ)} · 환승`, lineCol(toJ)); doors(true); await sleep(1100);
       await board(walkerOf(g.me.cols, toJ), 312); placeMe(true);
-      for (const k of stay.concat(come)) { const r = wantNow[k]; if (!r.cat) await board(walkerOf(r.cols, null, r.hair), r.x); UI.riders[k] = r; $s('people').insertAdjacentHTML('beforeend', riderHTML(r)); }
+      for (const k of stay.concat(come)) { const r = wantNow[k]; if (!r.cat) await board(walkerOf(r.cols, null), r.x); UI.riders[k] = r; $s('people').insertAdjacentHTML('beforeend', riderHTML(r)); }
       UI.xfColor = null;
     } else {
-      for (const k of come) { const r = wantNow[k]; if (!r.cat) await board(walkerOf(r.cols, null, r.hair), r.x); }
+      for (const k of come) { const r = wantNow[k]; if (!r.cat) await board(walkerOf(r.cols, null), r.x); }
       placeRiders(wantNow);
     }
     placeRiders(wantNow);
@@ -1411,7 +1545,7 @@ async function runEnding() {
     await sleep(900); doors(true); await sleep(1100);
     const meEl = $s('me'); if (meEl) meEl.remove();
     await alight(walkerOf(g.me.cols, g.job), 312);
-    for (const k of Object.keys(UI.riders)) { const r = UI.riders[k], el = document.querySelector(`[data-r="${k}"]`); if (el) el.remove(); if (!r.cat) await alight(walkerOf(r.cols, null, r.hair), r.x); }
+    for (const k of Object.keys(UI.riders)) { const r = UI.riders[k], el = document.querySelector(`[data-r="${k}"]`); if (el) el.remove(); if (!r.cat) await alight(walkerOf(r.cols, null), r.x); }
     UI.riders = {};
     setRouteWidth('end'); await sleep(900);
   });
@@ -1421,7 +1555,7 @@ async function runEnding() {
 /* ---------- 장면 초기화 (새 인생·처음으로) ---------- */
 function resetScene() {
   UI.g = G; UI.riders = {}; UI.meKey = ''; UI.lastAge = null; UI.lastDec = null; UI.ending = false; UI.endShown = false; UI.xfQ = []; UI.ledMsg = '';
-  UI.ledHold = -1; UI.tlSeen = null; UI.tlBorn = null; UI.tlNew = 0;
+  UI.ledHold = -1; UI.tlSeen = null; UI.tlBorn = null; UI.tlNew = 0; UI.seated = false;
   if ($s('tlnew')) $s('tlnew').hidden = true;
   $s('people').innerHTML = ''; doors(false); setRouteWidth('long');
   const ph = $s('phone'); ph.classList.add('down'); $s('splash').classList.remove('gone');
@@ -1478,7 +1612,7 @@ draw = function () {
       const lines = [];
       if (G.jobAt) { let j = null; for (let m = 0; m <= G.m; m++) { const jm = G.jobAt[m] || j; if (jm && jm !== j) { lines.push(`<span style="background:${lineCol(jm)}">${lineName(jm)} · ${AGE_START + Math.floor(m / 12)}세 ${j ? '환승' : '출발'}</span>`); j = jm; } } }
       keepInputs(() => {
-        endp.innerHTML = `<div class="endlogo en">${GAME_NAME}</div><div class="lines"><b style="margin-right:6px">타고 온 노선</b>${lines.join('')}</div>` + vEnd().replace('마흔 번째 생일', '종착역 · 마흔 번째 생일');
+        endp.innerHTML = `<div class="endlogo en">${GAME_NAME}</div><div class="lines"><b style="margin-right:6px">타고 온 노선</b>${lines.join('')}</div>` + vEnd();
       });
       endp.scrollTop = st;
     }
@@ -1598,6 +1732,61 @@ draw();
   if (typeof BE === 'undefined' || typeof BE.savePlay !== 'function') return;
   const API_VARIANT = 'C', save = BE.savePlay;
   BE.savePlay = function () { const v = VARI; VARI = API_VARIANT; try { return save.apply(this, arguments); } finally { VARI = v; } };
+})();
+</script>
+<script>
+/* 개발용 시뮬레이션: 주소에 ?sim=N 을 붙이면 성별 2 × 지역 4 × 형편 1~5 조합을 돌아가며 N판을 자동결정으로 끝까지 돌리고,
+ * 진학 비율·졸업 나이·입대 나이 분포를 콘솔과 화면에 요약한다. 서버 기록 저장은 하지 않는다. */
+(() => {
+  const mm = /[?&]sim=(\d+)/.exec(location.search); if (!mm) return;
+  const N = Math.max(1, +mm[1]);
+  setTimeout(() => {
+    const keepDraw = draw, keepSave = typeof BE !== 'undefined' && BE.savePlay;
+    draw = () => {}; if (keepSave) BE.savePlay = () => {};
+    const combos = []; ['M', 'F'].forEach(sx => RG.forEach(rg => [1, 2, 3, 4, 5].forEach(q => combos.push({sx, rg, q}))));
+    const rows = [], t0 = performance.now();
+    for (let i = 0; i < N; i++) {
+      const c = combos[i % combos.length];
+      newGame('other', {}, {n: '시뮬' + i, sex: c.sx, rg: c.rg, q: c.q});
+      G.yq = {next: 1e9, count: 1e9, seen: [], ready: null, loading: false}; // 청년정책 퀴즈(네트워크) 끔
+      S = 'play'; G.auto = false; makeDec(careerEv(false));
+      let guard = 0;
+      while (S !== 'end' && guard++ < 6000) {
+        if (G.dec) { pickC(autoIdx(G.dec.e)); continue; }
+        if (MOD) { MOD = null; G.sr = null; if (G.yq) G.yq.cur = null; continue; }
+        tickMonth();
+      }
+      const e = G.edu, ageAt = m => m == null ? null : AGE_START + m / 12;
+      rows.push({sex: c.sx, rg: c.rg, q: c.q, first: G.firstChoice || '?', school: e ? e.type : '-', retakes: G.retakes || 0,
+        grad: e && e.gradM != null ? +ageAt(e.gradM).toFixed(2) : null, gradMonths: e && e.gradM != null ? e.gradM - e.start : null,
+        army: G.mil ? +ageAt(G.mil.start).toFixed(2) : null, leaveM: e ? e.leaveM : 0, endJob: G.job, end: G.m});
+    }
+    draw = keepDraw; if (keepSave) BE.savePlay = keepSave;
+    const pct = (n, d) => d ? (100 * n / d).toFixed(1) + '%' : '-';
+    const by = (arr, f) => arr.reduce((o, x) => { const k = f(x); o[k] = (o[k] || 0) + 1; return o; }, {});
+    const hist = (vals) => { const o = by(vals, v => Math.floor(v)); return Object.keys(o).sort((a, b) => a - b).map(k => `${k}세 ${o[k]}`).join(' · '); };
+    const avg = a => a.length ? (a.reduce((s, x) => s + x, 0) / a.length) : 0;
+    const enrolled = rows.filter(r => r.school !== '-'), grads = rows.filter(r => r.grad != null), males = rows.filter(r => r.sex === 'M');
+    const lines = [];
+    lines.push(`시뮬레이션 ${N}판 (${((performance.now() - t0) / 1000).toFixed(1)}초) · 끝까지 간 판 ${rows.filter(r => r.end >= TOTAL_M).length}`);
+    lines.push(`첫 선택: ` + Object.entries(by(rows, r => r.first)).map(([k, v]) => `${k} ${pct(v, N)}`).join(' · '));
+    lines.push(`최종 진학: 4년제 ${pct(rows.filter(r => r.school === 'univ4').length, N)} · 전문대 ${pct(rows.filter(r => r.school === 'college').length, N)} · 진학 합계 ${pct(enrolled.length, N)} · 재수 경험 ${pct(rows.filter(r => r.retakes).length, N)}`);
+    RG.forEach(rg => { const a = rows.filter(r => r.rg === rg); lines.push(`  ${rg}: 진학 ${pct(a.filter(r => r.school !== '-').length, a.length)} (4년제 ${pct(a.filter(r => r.school === 'univ4').length, a.length)}) · ${a.length}판`); });
+    [1, 2, 3, 4, 5].forEach(q => { const a = rows.filter(r => r.q === q); lines.push(`  형편 q${q}: 진학 ${pct(a.filter(r => r.school !== '-').length, a.length)} · ${a.length}판`); });
+    lines.push(`졸업 나이(${grads.length}명): ${hist(grads.map(r => r.grad))}`);
+    ['M', 'F'].forEach(sx => { const a = grads.filter(r => r.sex === sx && r.school === 'univ4'); lines.push(`  4년제 졸업 소요(입학→졸업) ${sx === 'M' ? '남' : '여'}: 평균 ${(avg(a.map(r => r.gradMonths)) / 12).toFixed(2)}년 (${a.length}명) · 통계 ${(LIFE.GRAD_MONTHS[sx] / 12).toFixed(2)}년`); });
+    lines.push(`입대 나이(남 ${males.length}명 중 ${males.filter(r => r.army != null).length}명): ${hist(males.filter(r => r.army != null).map(r => r.army))} · 여성 입대 ${rows.filter(r => r.sex === 'F' && r.army != null).length}명`);
+    const lv = enrolled.filter(r => r.sex === 'F'); lines.push(`여학생 휴학 경험 ${pct(lv.filter(r => r.leaveM > 0).length, lv.length)} · 휴학 경험자 평균 휴학 ${(avg(lv.filter(r => r.leaveM > 0).map(r => r.leaveM))).toFixed(1)}개월`);
+    console.log('[sim] ' + lines.join('\n'));
+    console.table(rows);
+    window.__SIM = {rows, lines};
+    S = 'start'; G = null; draw();
+    const box = document.createElement('pre');
+    box.id = 'simout';
+    box.style.cssText = 'position:fixed;left:12px;top:12px;z-index:99;max-width:760px;max-height:90vh;overflow:auto;background:rgba(20,24,30,.94);color:#e8f5ea;font:12px/1.6 monospace;padding:12px 14px;border-radius:8px;white-space:pre-wrap';
+    box.textContent = lines.join('\n');
+    document.body.appendChild(box);
+  }, 300);
 })();
 </script>
 </body></html>

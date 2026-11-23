@@ -1,6 +1,6 @@
 # 인생그램 (another-life)
 
-20세부터 40세까지 다른 사람의 삶을 살아보는 시뮬레이션과, 그 백엔드입니다.
+20세 1월(고교 졸업 직후)부터 36세 종착역까지 다른 사람의 삶을 살아보는 지하철 시뮬레이션 **Another Station**과, 그 백엔드입니다. 진학·휴학·군 복무 확률과 기간은 `frontend/life-stats.js`에 출처와 함께 모여 있고, `another_life_v9S.html?sim=40`으로 자동 플레이 통계를 볼 수 있습니다.
 
 ```
 another-life/
@@ -85,7 +85,7 @@ python backend/app/kosis_public.py
 | PUT | `/api/policies/{key}` | 정책 추가·수정 (관리자, `X-Admin-Token` 헤더) |
 | POST | `/api/letters` | 엔딩의 편지 저장 |
 | GET | `/api/letters?player_id=` | 내 편지함 |
-| POST | `/api/plays` | 40세 엔딩 도달 시 플레이 기록 저장 |
+| POST | `/api/plays` | 엔딩(종착역) 도달 시 플레이 기록 저장 |
 | PATCH | `/api/plays/{id}` | 엔딩에서 고른 「마음속 목표」「고마웠던 것」 답 기록 |
 | GET | `/api/plays?player_id=` | 내 플레이 기록 |
 | GET | `/api/stats` | 버전별 플레이 수, 정책별 대상 수·획득 수·획득률 |
