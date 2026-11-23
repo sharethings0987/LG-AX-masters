@@ -1,27 +1,27 @@
 <!DOCTYPE html>
 <html lang="ko"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>인생그램 v9-S · 지하철</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@600;700&display=swap">
+<title>Another Station</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap">
 <style>
 :root{--bg:#f3f4f0;--card:#fff;--ink:#1f2a2e;--mu:#7b827c;--ln:#dcdfd8;--ac:#8a1c3b;--g:#1f7a5c;--b:#b3312d;--gd:#b88a1e;color-scheme:light}
 @media (prefers-color-scheme:dark){:root{--bg:#171b1c;--card:#20262a;--ink:#e9eeea;--mu:#97a09a;--ln:#323a3d;--ac:#e0708f;--g:#5fc59a;--b:#f08580;--gd:#e0b955;color-scheme:dark}}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.6 "Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif}
-.se{font-family:"Noto Serif KR",serif}.mu{color:var(--mu);font-size:12px}.av{image-rendering:pixelated;flex:none}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.6 "NEXON Lv2 Gothic","Noto Sans KR",sans-serif}
+.se{font-family:"NEXON Lv2 Gothic","Noto Sans KR",sans-serif}.mu{color:var(--mu);font-size:12px}.av{image-rendering:pixelated;flex:none}
 .tb{position:sticky;top:0;z-index:20;background:var(--card);border-bottom:1px solid var(--ln);padding:8px 14px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.tb .ttl{font:700 18px "Noto Serif KR",serif}.tb .age{font:700 30px "Noto Serif KR",serif;line-height:1}.tb .age small{font-size:14px}
+.tb .ttl{font:700 18px "NEXON Lv2 Gothic","Noto Sans KR",sans-serif}.tb .age{font:700 30px "NEXON Lv2 Gothic","Noto Sans KR",sans-serif;line-height:1}.tb .age small{font-size:14px}
 .pbar{height:4px;background:var(--ln);width:170px;margin-top:3px}.pbar i{display:block;height:100%;background:var(--ac)}
 .tb .ctl{margin-left:auto;display:flex;flex-wrap:wrap;gap:6px}
 .tb button,.sm{border:1px solid var(--ln);background:var(--card);color:var(--ink);font:inherit;font-size:12px;padding:4px 10px;border-radius:5px;cursor:pointer}
 .tb button.on,.sm.on{background:var(--ink);color:var(--bg)}
 .gd{display:grid;grid-template-columns:290px minmax(0,1fr) 300px;gap:14px;max-width:1380px;margin:14px auto;padding:0 14px}
 .pn{background:var(--card);border:1px solid var(--ln);border-radius:6px;padding:14px;margin-bottom:14px}
-.pn h4{margin:0 0 8px;font:700 15px "Noto Serif KR",serif;display:flex;justify-content:space-between;align-items:baseline}.pn h4 span{font:400 11px "Noto Sans KR";color:var(--mu)}
+.pn h4{margin:0 0 8px;font:700 15px "NEXON Lv2 Gothic","Noto Sans KR",sans-serif;display:flex;justify-content:space-between;align-items:baseline}.pn h4 span{font:400 11px "NEXON Lv2 Gothic","Noto Sans KR",sans-serif;color:var(--mu)}
 .id{border-top:6px solid var(--ac)}.post{display:flex;gap:10px;align-items:flex-start}
 .kv{display:flex;justify-content:space-between;gap:8px;font-size:13px;padding:2px 0}.kv b{font-weight:400;color:var(--mu)}
 .sb{display:flex;align-items:center;gap:8px;margin:5px 0;font-size:13px}.sb label{width:52px;color:var(--mu)}.sb .bar{flex:1;height:8px;background:var(--ln)}.sb .bar i{display:block;height:100%;transition:width .8s}.sb em{width:26px;text-align:right;font-style:normal;font-size:12px}
 .sc{height:118px;border-radius:6px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:54px;margin-bottom:12px;letter-spacing:8px}
-.sc div{position:absolute;left:12px;bottom:8px;right:12px;font:600 14px "Noto Serif KR",serif;color:#1f2a2e;text-shadow:0 0 6px rgba(255,255,255,.8);letter-spacing:0}
+.sc div{position:absolute;left:12px;bottom:8px;right:12px;font:600 14px "NEXON Lv2 Gothic","Noto Sans KR",sans-serif;color:#1f2a2e;text-shadow:0 0 6px rgba(255,255,255,.8);letter-spacing:0}
 .ln{display:flex;gap:12px;padding:7px 0;border-bottom:1px solid var(--ln);font-size:14px}.ln .ag{font:12px monospace;color:var(--mu);width:50px;flex:none;padding-top:2px}.ln.g{color:var(--g)}.ln.b{color:var(--b)}.ln.q{font-style:italic;color:var(--ac)}.ln.d{color:var(--mu)}
 .ln.new{animation:fi .6s}@keyframes fi{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
 .mp{display:grid;grid-template-columns:repeat(10,1fr);gap:4px}.mp i{aspect-ratio:1;background:var(--ln);border-radius:2px;cursor:pointer}.mp i.cur{outline:2px solid var(--ac)}
@@ -34,7 +34,7 @@
 .ov{position:fixed;inset:0;background:rgba(15,20,22,.45);display:flex;align-items:center;justify-content:center;padding:14px;z-index:30}
 .dc{background:var(--card);border:1px solid var(--ln);border-radius:8px;max-width:640px;width:100%;max-height:92vh;overflow:auto;box-shadow:0 12px 40px rgba(0,0,0,.25)}
 .dc header{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--ln);font-size:12px;color:var(--ac)}
-.dc .bd{padding:16px 18px}.dc h2{margin:0 0 6px;font:700 24px "Noto Serif KR",serif}
+.dc .bd{padding:16px 18px}.dc h2{margin:0 0 6px;font:700 24px "NEXON Lv2 Gothic","Noto Sans KR",sans-serif}
 .cs{display:flex;gap:12px;align-items:center;width:100%;text-align:left;margin-top:8px;padding:12px 14px;border:1px solid var(--ln);background:var(--bg);color:var(--ink);font:inherit;font-weight:700;border-radius:5px;cursor:pointer}.cs:hover{border-color:var(--ac)}.cs i{font:400 12px monospace;color:var(--mu);font-style:normal}.cs.dis{opacity:.45;cursor:not-allowed}.cs small{display:block;font-weight:400;font-size:12px;color:var(--mu)}
 .ft{text-align:center;margin:12px 0 0}.ft button{border:1px solid var(--ln);background:var(--card);color:var(--ink);font:inherit;font-size:12px;padding:5px 12px;border-radius:5px;cursor:pointer}
 .bn{border:1px solid var(--ac);color:var(--ac);padding:8px 12px;border-radius:6px;margin-bottom:10px;cursor:pointer;background:var(--card)}
@@ -89,11 +89,17 @@ body{padding-bottom:84px}
 @media (max-width:900px){.hm1,.hm2{grid-template-columns:1fr}.room{height:260px}.cnav button{padding:6px 10px}}
 </style>
 <style>
-/* ===== v9-S 지하철 무대 ===== */
+/* ===== v9-S 지하철 무대 (Another Station) ===== */
+/* 한글: NEXON Lv2 Gothic(눈누 CDN, 상업적 무료). 영문·숫자 강조: Outfit(Google Fonts) */
+@font-face{font-family:"NEXON Lv2 Gothic";src:url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@2.1/NEXON%20Lv2%20Gothic.woff") format("woff");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"NEXON Lv2 Gothic";src:url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@2.1/NEXON%20Lv2%20Gothic%20Bold.woff") format("woff");font-weight:700;font-style:normal;font-display:swap}
+body,.se,textarea,button{font-family:"NEXON Lv2 Gothic","Noto Sans KR",sans-serif}
+.se{font-weight:700}
+.en{font-family:"Outfit","NEXON Lv2 Gothic","Noto Sans KR",sans-serif}
 html,body{height:100%}
 body.sw{margin:0;padding:0;background:#15181c;overflow:hidden;color:#1f2a2e}
 #app{position:relative;width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;overflow:clip}
-#stage{position:relative;width:1280px;height:800px;flex:none;overflow:hidden;overflow:clip;background:linear-gradient(#eef0ee 0,#e4e7e4 62%,#cfd3cf 62%,#c3c7c3 100%);font:14px/1.55 "Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;color:#1f2a2e;color-scheme:light;
+#stage{position:relative;width:1280px;height:800px;flex:none;overflow:hidden;overflow:clip;background:linear-gradient(#eef0ee 0,#e4e7e4 62%,#cfd3cf 62%,#c3c7c3 100%);font:14px/1.55 "NEXON Lv2 Gothic","Noto Sans KR",sans-serif;color:#1f2a2e;color-scheme:light;
  --mu:#6b7270;--ln:#d6dad6;--card:#fff;--ink:#1f2a2e;--bg:#f4f5f3;--ac:#a8467a;--g:#1f7a5c;--b:#b3312d;--gd:#b88a1e}
 #stage *{box-sizing:border-box}
 #stage .ceil{position:absolute;left:0;right:0;top:0;height:18px;background:linear-gradient(#cfd4d2,#e9ecea)}
@@ -104,18 +110,18 @@ body.sw{margin:0;padding:0;background:#15181c;overflow:hidden;color:#1f2a2e}
 .sw-pole{position:absolute;width:12px;border-radius:6px;background:linear-gradient(90deg,#8f969a,#f4f6f7 45%,#9aa1a5);box-shadow:1px 0 2px rgba(0,0,0,.2)}
 .sw-part{position:absolute;width:20px;background:linear-gradient(90deg,#f7f7f5,#e2e4e1);border:1px solid #cfd2ce;border-radius:4px}
 /* 출입문 */
-#door{position:absolute;left:452px;top:160px;width:376px;height:552px;background:#9da4a8;border:6px solid #b7bdc0;border-radius:6px 6px 0 0;overflow:hidden;box-shadow:inset 0 0 0 2px #868d91}
+#door{position:absolute;left:452px;top:242px;width:376px;height:470px;background:#9da4a8;border:6px solid #b7bdc0;border-radius:6px 6px 0 0;overflow:hidden;box-shadow:inset 0 0 0 2px #868d91}
 #plat{position:absolute;inset:0;background:linear-gradient(#e7e3d6 0,#e7e3d6 70%,#a7a294 70%,#8e897c 100%);overflow:hidden}
 #plat .tiles{position:absolute;left:0;right:0;top:0;height:70%;background:repeating-linear-gradient(90deg,transparent 0 46px,rgba(0,0,0,.05) 46px 48px),repeating-linear-gradient(0deg,transparent 0 46px,rgba(0,0,0,.05) 46px 48px)}
 #plat .edge{position:absolute;left:0;right:0;top:70%;height:10px;background:repeating-linear-gradient(90deg,#f2c230 0 14px,#2a2a2a 14px 22px)}
-#sign{position:absolute;left:50%;top:70px;transform:translateX(-50%);min-width:230px;padding:10px 16px;border-radius:6px;background:#fff;border:3px solid #333;text-align:center;font-weight:700;font-size:20px;color:#222;white-space:nowrap}
+#sign{position:absolute;left:50%;top:50px;transform:translateX(-50%);min-width:230px;padding:10px 16px;border-radius:6px;background:#fff;border:3px solid #333;text-align:center;font-weight:700;font-size:20px;color:#222;white-space:nowrap}
 #sign small{display:block;font-size:12px;font-weight:500;color:#555}
 #sign .bar{position:absolute;left:0;right:0;bottom:-3px;height:7px;border-radius:0 0 4px 4px}
 .dp{position:absolute;top:0;width:182px;height:100%;background:linear-gradient(90deg,#c3c9cc,#e9ecee 40%,#cdd2d5);transition:transform 1.1s cubic-bezier(.6,0,.3,1);box-shadow:inset 0 0 0 1px #9aa1a5}
 #dpL{left:0;border-right:2px solid #7d8488}#dpR{right:0;border-left:2px solid #7d8488}
 #door.open #dpL{transform:translateX(-186px)}#door.open #dpR{transform:translateX(186px)}
-.dp .win{position:absolute;left:40px;top:54px;width:102px;height:300px;border-radius:10px;border:5px solid #8a9195;overflow:hidden;background:#20242b}
-.dp .stk{position:absolute;left:58px;top:384px;width:66px;padding:3px;border-radius:4px;background:#f6d53a;color:#333;font-size:9px;font-weight:700;text-align:center;line-height:1.2}
+.dp .win{position:absolute;left:40px;top:40px;width:102px;height:260px;border-radius:10px;border:5px solid #8a9195;overflow:hidden;background:#20242b}
+.dp .stk{position:absolute;left:58px;top:322px;width:66px;padding:3px;border-radius:4px;background:#f6d53a;color:#333;font-size:9px;font-weight:700;text-align:center;line-height:1.2}
 /* 창밖: 터널 / 지상 */
 .out{position:absolute;inset:0}
 .tunnel{background:#1c1f25}
@@ -127,7 +133,7 @@ body.sw{margin:0;padding:0;background:#15181c;overflow:hidden;color:#1f2a2e}
 @keyframes bld{to{transform:translateX(-50%)}}
 .ground .lbl{position:absolute;left:4px;top:4px;font-size:9px;background:rgba(255,255,255,.8);border-radius:6px;padding:0 5px;color:#2b5a3a}
 .stopped .tunnel:before,.stopped .ground .bld,.stopped .ground .cld{animation-play-state:paused}
-.flash{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:700 28px "Noto Serif KR",serif;color:#fff;text-shadow:0 0 8px #000;opacity:0;pointer-events:none}
+.flash{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:700 28px "Outfit","NEXON Lv2 Gothic","Noto Sans KR",sans-serif;color:#fff;text-shadow:0 0 8px #000;opacity:0;pointer-events:none}
 .flash.on{animation:fl 1s ease}@keyframes fl{0%,100%{opacity:0}20%,70%{opacity:1}}
 #sun{position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 30%,rgba(255,248,210,.28) 42%,transparent 55%,rgba(255,248,210,.2) 64%,transparent 74%);opacity:0;transition:opacity 1.2s}
 #dim{position:absolute;inset:0;pointer-events:none;background:rgba(30,30,50,.16);opacity:0;transition:opacity 1.2s}
@@ -137,7 +143,7 @@ body.sw{margin:0;padding:0;background:#15181c;overflow:hidden;color:#1f2a2e}
 .seat:after{content:"";position:absolute;left:0;right:0;top:58px;height:20px;background:#9aa1a5;border-radius:0 0 4px 4px}
 .seatback{position:absolute;top:560px;height:84px;border-radius:12px 12px 0 0;background:linear-gradient(#6a8fcf,#4e70b0)}
 /* 비상인터폰 장식 */
-#emg{position:absolute;left:374px;top:200px;width:50px}
+#emg{position:absolute;left:374px;top:262px;width:50px}
 #emg .st{background:#f6d53a;border-radius:4px;padding:4px 3px;font-size:9px;font-weight:700;line-height:1.25;text-align:center;color:#333}
 #emg .bx{margin-top:10px;height:70px;border-radius:5px;background:#d8382f;color:#fff;font-size:9px;text-align:center;padding-top:6px;box-shadow:inset 0 -6px 0 rgba(0,0,0,.15)}
 #emg .bx i{display:block;width:22px;height:22px;margin:6px auto 0;border-radius:50%;background:#ffe1df;border:3px solid #8e1f19}
@@ -145,7 +151,7 @@ body.sw{margin:0;padding:0;background:#15181c;overflow:hidden;color:#1f2a2e}
 /* 운행 컨트롤 */
 #ctl{position:absolute;left:16px;top:30px;width:350px;height:94px;padding:12px 14px;border-radius:10px;background:#20252b;color:#e8ece9;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 4px 12px rgba(0,0,0,.25)}
 #ctl .t{display:flex;align-items:baseline;gap:10px}
-#ctl .age{font:700 28px/1 "Noto Sans KR",monospace;color:#5dff8c;text-shadow:0 0 8px rgba(93,255,140,.5)}
+#ctl .age{font:700 28px/1 "Outfit","NEXON Lv2 Gothic","Noto Sans KR",sans-serif;color:#5dff8c;text-shadow:0 0 8px rgba(93,255,140,.5)}
 #ctl .sub{font-size:14px;color:#b7d9c2}
 #ctl .bt{display:flex;gap:5px}
 #ctl button{flex:1;border:1px solid #47505a;background:#2e353d;color:#e8ece9;font:inherit;font-size:13px;padding:4px 0;border-radius:6px;cursor:pointer}
@@ -156,7 +162,7 @@ body.sw{margin:0;padding:0;background:#15181c;overflow:hidden;color:#1f2a2e}
 #card{position:absolute;left:16px;top:134px;width:350px;height:418px;border:7px solid #e2e5e2;border-radius:8px;background:#fff;padding:10px 14px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.12)}
 #card .top{font-size:11.5px;color:var(--mu);border-top:5px solid var(--line,#a8467a);margin:-10px -14px 8px;padding:7px 14px 0}
 #card .who{display:flex;gap:12px;align-items:center}
-#card .nm{font:700 23px/1.2 "Noto Serif KR",serif}
+#card .nm{font:700 23px/1.2 "NEXON Lv2 Gothic","Noto Sans KR",sans-serif}
 #card .ln2{font-size:14.5px;font-weight:700}
 #card .chap{font-size:12px;color:var(--mu)}
 #card .wx{margin-left:auto;text-align:center;font-size:12px;color:var(--mu)}#card .wx b{display:block;font-size:30px;line-height:1}
@@ -165,30 +171,32 @@ body.sw{margin:0;padding:0;background:#15181c;overflow:hidden;color:#1f2a2e}
 #card .h{font-size:11.5px;color:var(--mu);margin:9px 0 3px}
 #card .bar5{display:flex;align-items:center;gap:8px;font-size:13.5px;height:22px}
 #card .bar5 label{width:46px;color:var(--mu)}#card .bar5 .b{flex:1;height:8px;background:#e9ece9;border-radius:4px;overflow:hidden}#card .bar5 .b i{display:block;height:100%;transition:width .8s}#card .bar5 em{width:28px;text-align:right;font-style:normal}
+#card .bar5 em{font-weight:600}
 #card .money{display:flex;gap:6px}#card .money div{flex:1;background:#f4f6f4;border-radius:6px;padding:5px 7px;font-size:11.5px;color:var(--mu)}#card .money b{display:block;font-size:15.5px;color:var(--ink)}
 #card.ad{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;background:linear-gradient(160deg,#fdf2f8,#eef4ff)}
-#card.ad .big{font:700 26px/1.4 "Noto Serif KR",serif;color:#5a3a6a}
+#card.ad .big{font:700 26px/1.4 "NEXON Lv2 Gothic","Noto Sans KR",sans-serif;color:#5a3a6a}
 /* 노선도 */
-#route{position:absolute;left:382px;top:30px;width:458px;height:120px;background:#fff;border:2px solid #d4d8d4;border-radius:8px;overflow:hidden;transition:width .9s cubic-bezier(.5,0,.3,1);box-shadow:0 2px 8px rgba(0,0,0,.1);z-index:3}
+#route{position:absolute;left:382px;top:30px;width:458px;height:134px;transition:width .9s cubic-bezier(.5,0,.3,1);z-index:5}
+#route .box{height:96px;background:#fff;border:2px solid #d4d8d4;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.1)}
 #route.long{width:882px}#route.end{width:870px}
-#route .hd{height:36px;display:flex;align-items:center;gap:8px;padding:0 10px;border-bottom:1px solid #eceeec;white-space:nowrap;overflow:hidden}
+#route .hd{height:34px;display:flex;align-items:center;gap:8px;padding:0 10px;border-bottom:1px solid #eceeec;white-space:nowrap;overflow:hidden}
 #route .badge{color:#fff;font-size:13px;font-weight:700;padding:2px 10px;border-radius:12px}
 #route .nx{margin-left:auto;font-size:15px}#route .nx b{font-size:17px}
 #route .subt{font-size:12px;color:var(--mu)}
-#route .mapw{position:relative;height:56px}
-#route .base{position:absolute;left:34px;right:34px;top:24px;height:6px;border-radius:3px;background:#dfe2df}
-#route .seg{position:absolute;top:24px;height:6px;transition:left .9s,width .9s}
-#route .st{position:absolute;top:19px;width:16px;height:16px;margin-left:-8px;border-radius:50%;background:#fff;border:3px solid #b9beb9;cursor:pointer;transition:left .9s cubic-bezier(.5,0,.3,1)}
-#route .st.cur{width:24px;height:24px;margin-left:-12px;top:15px;border-width:4px;box-shadow:0 0 0 3px rgba(0,0,0,.08)}
+#route .mapw{position:relative;height:58px}
+#route .base{position:absolute;left:34px;right:34px;top:20px;height:6px;border-radius:3px;background:#dfe2df}
+#route .seg{position:absolute;top:20px;height:6px;transition:left .9s,width .9s}
+#route .st{position:absolute;top:15px;width:16px;height:16px;margin-left:-8px;border-radius:50%;background:#fff;border:3px solid #b9beb9;cursor:pointer;transition:left .9s cubic-bezier(.5,0,.3,1)}
+#route .st.cur{width:24px;height:24px;margin-left:-12px;top:11px;border-width:4px;box-shadow:0 0 0 3px rgba(0,0,0,.08)}
 #route .st.end{border-color:#d8382f}
-#route .st em{position:absolute;top:18px;left:50%;transform:translateX(-50%);font-size:10px;font-style:normal;color:var(--mu);white-space:nowrap}
-#route .st.cur em{top:22px;font-weight:700;color:var(--ink)}
-#route:not(.long):not(.end) .st.odd:not(.cur) em{visibility:hidden}
-#route .xf{position:absolute;top:-2px;width:14px;height:14px;margin-left:-7px;border-radius:50%;background:#fff;border:3px solid;transition:left .9s}
+#route .st em{position:absolute;top:17px;left:50%;transform:translateX(-50%);font:600 11px "Outfit","NEXON Lv2 Gothic","Noto Sans KR",sans-serif;color:var(--mu);white-space:nowrap}
+#route .st em small{font:700 9px "NEXON Lv2 Gothic","Noto Sans KR",sans-serif;color:#d8382f}
+#route .st.cur em{top:21px;font-weight:700;color:var(--ink)}
+#route .xf{position:absolute;top:-4px;width:14px;height:14px;margin-left:-7px;border-radius:50%;background:#fff;border:3px solid;transition:left .9s}
 #route .xf:after{content:"환승";position:absolute;top:-13px;left:50%;transform:translateX(-50%);font-size:9px;font-weight:700;color:#444;white-space:nowrap}
-#route .trn{position:absolute;top:8px;width:20px;height:12px;margin-left:-10px;border-radius:3px;transition:left .4s linear,background .6s;box-shadow:0 1px 2px rgba(0,0,0,.3)}
-#led{position:absolute;left:0;right:0;bottom:0;height:28px;background:#14110d;overflow:hidden}
-#led span{position:absolute;top:3px;white-space:nowrap;font:700 14.5px "Noto Sans KR",monospace;color:#ff9b2f;text-shadow:0 0 6px rgba(255,140,30,.7)}
+#route .trn{position:absolute;top:2px;width:20px;height:12px;margin-left:-10px;border-radius:3px;transition:left .4s linear,background .6s;box-shadow:0 1px 2px rgba(0,0,0,.3)}
+#led{position:absolute;left:0;right:0;bottom:0;height:28px;background:#14110d;border-radius:5px;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.25)}
+#led span{position:absolute;top:3px;white-space:nowrap;font:700 14.5px "NEXON Lv2 Gothic","Noto Sans KR",sans-serif;color:#ff9b2f;text-shadow:0 0 6px rgba(255,140,30,.7)}
 /* 사람 */
 .px{position:absolute;image-rendering:pixelated;transform-origin:50% 100%}
 .px svg{display:block;shape-rendering:crispEdges}
@@ -198,7 +206,7 @@ body.sw{margin:0;padding:0;background:#15181c;overflow:hidden;color:#1f2a2e}
 .mover{position:absolute;transition:left var(--t,1.2s) linear,bottom var(--t,1.2s) linear,transform var(--t,1.2s) linear,opacity .4s}
 /* 시작·프롤로그 카드 */
 #hero{position:absolute;left:452px;top:160px;width:376px;max-height:552px;overflow:auto;padding:18px;border-radius:12px;background:rgba(255,255,255,.97);box-shadow:0 10px 30px rgba(0,0,0,.25);z-index:6}
-#hero h1{margin:0;font:700 30px "Noto Serif KR",serif}
+#hero h1{margin:0;font:700 30px "NEXON Lv2 Gothic","Noto Sans KR",sans-serif}
 #hero .mu{color:var(--mu);font-size:12.5px}
 #hero .btn{display:block;width:100%;margin-top:10px;padding:10px;border:1px solid #1f2a2e;background:#1f2a2e;color:#fff;font:inherit;font-weight:700;border-radius:8px;cursor:pointer;text-align:center;text-decoration:none}
 #hero .btn.sec{background:#fff;color:#1f2a2e;border-color:#d6dad6}
@@ -216,13 +224,14 @@ body.sw{margin:0;padding:0;background:#15181c;overflow:hidden;color:#1f2a2e}
 @media (prefers-color-scheme:dark){#scr{--bg:#1b1724;--card:#252032;--ln:#3a3350;--ac:#e58ab9;--ink:#efeaf8;--mu:#a39bb8;--g:#5fc59a;--b:#f08580;--gd:#e0b955;color-scheme:dark}}
 #scr .sb0{height:34px;display:flex;justify-content:space-between;align-items:center;padding:6px 26px 0;font-size:12.5px;font-weight:700}
 #scr .apph{display:flex;align-items:center;justify-content:space-between;padding:2px 16px 6px;border-bottom:1px solid var(--ln)}
-#scr .logo{font:700 22px "Noto Serif KR",serif}
+#scr .logo{font:700 22px "Outfit","NEXON Lv2 Gothic","Noto Sans KR",sans-serif;letter-spacing:-.3px}
 #scr .lin{font-size:12px;font-weight:700}
 #scr .rings{padding:8px 10px 2px;border-bottom:1px solid var(--ln)}
 #scr .rings .ring .pl,#scr .rings .ring svg{width:50px;height:50px}
 #scr .stories button{font-size:11px}
-#tl{position:absolute;left:0;right:0;top:162px;bottom:64px;overflow-y:auto;padding:6px 12px 12px}
-#scr .nav{position:absolute;z-index:6;left:0;right:0;bottom:0;height:64px;display:flex;border-top:1px solid var(--ln);background:var(--card);padding-bottom:12px}
+#tl{position:absolute;left:0;right:0;top:162px;bottom:94px;overflow-y:auto;padding:6px 12px 12px}
+#scr .nav{position:absolute;z-index:6;left:0;right:0;bottom:30px;height:64px;display:flex;border-top:1px solid var(--ln);background:var(--card);padding-bottom:4px}
+#scr:after{content:"";position:absolute;left:0;right:0;bottom:0;height:30px;background:var(--card);z-index:6}
 #scr .nav button{flex:1;border:0;background:none;color:var(--ink);font:inherit;font-size:11px;cursor:pointer;position:relative}
 #scr .nav button b{display:block;font-size:19px;font-weight:400;line-height:1.3}
 #scr .nav button.on{color:var(--ac);font-weight:700}
@@ -232,11 +241,11 @@ body.sw{margin:0;padding:0;background:#15181c;overflow:hidden;color:#1f2a2e}
 #scr .ph:after{content:"";position:absolute;width:140px;height:140px;right:-30px;top:-50px;border-radius:50%;background:radial-gradient(rgba(255,255,255,.55),transparent 70%)}
 #scr .av{shape-rendering:crispEdges}
 #scr .pcard,#scr .sm2{font-size:13.5px}
-#sheet{position:absolute;left:0;right:0;bottom:64px;max-height:calc(100% - 110px);display:flex;flex-direction:column;background:var(--card);border-radius:22px 22px 0 0;box-shadow:0 -8px 30px rgba(0,0,0,.25);transform:translateY(105%);transition:transform .35s cubic-bezier(.3,0,.2,1);z-index:4}
+#sheet{position:absolute;left:0;right:0;bottom:94px;max-height:calc(100% - 150px);display:flex;flex-direction:column;background:var(--card);border-radius:22px 22px 0 0;box-shadow:0 -8px 30px rgba(0,0,0,.25);transform:translateY(105%);transition:transform .35s cubic-bezier(.3,0,.2,1);z-index:4}
 #sheet.on{transform:none}
 #sheet .grab{width:44px;height:5px;border-radius:3px;background:var(--ln);margin:8px auto 2px;flex:none}
 #shb{overflow-y:auto;padding:6px 16px 18px}
-#shade{position:absolute;left:0;right:0;top:0;bottom:64px;background:rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity .3s;z-index:3}
+#shade{position:absolute;left:0;right:0;top:0;bottom:94px;background:rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity .3s;z-index:3}
 #shade.on{opacity:1;pointer-events:auto}
 #shb .dcd{border:0;padding:0;margin:0;background:none}
 #shb .dcd>.mu:first-child{display:none}
@@ -244,11 +253,11 @@ body.sw{margin:0;padding:0;background:#15181c;overflow:hidden;color:#1f2a2e}
 #shb .from .cir{width:40px;height:40px;border-radius:50%;overflow:hidden;background:var(--ln);display:flex;align-items:center;justify-content:center;font-size:18px;flex:none}
 #shb .hide{display:block;margin:10px auto 0;border:0;background:none;color:var(--mu);font:inherit;cursor:pointer}
 #noti{position:absolute;left:10px;right:10px;top:38px;padding:9px 12px;border-radius:14px;background:rgba(40,34,52,.94);color:#fff;font-size:12.5px;cursor:pointer;z-index:5;box-shadow:0 6px 16px rgba(0,0,0,.3)}
-#splash{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,#a8467a,#5a3a9a);color:#fff;font:700 30px "Noto Serif KR",serif;z-index:9;transition:opacity .6s}
+#splash{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,#a8467a,#5a3a9a);color:#fff;font:700 32px "Outfit","NEXON Lv2 Gothic","Noto Sans KR",sans-serif;z-index:9;transition:opacity .6s}
 #splash.gone{opacity:0;pointer-events:none}
 .hand{position:absolute;width:26px;height:40px;border-radius:13px;background:#f1c7a2;z-index:6;box-shadow:inset -3px 0 0 rgba(0,0,0,.08)}
 /* 엔딩 패널 */
-#endp{position:absolute;left:382px;top:160px;width:870px;height:620px;overflow-y:auto;border-radius:12px;background:var(--bg);box-shadow:0 12px 36px rgba(0,0,0,.3);z-index:6;
+#endp{position:absolute;left:382px;top:174px;width:870px;height:600px;overflow-y:auto;border-radius:12px;background:var(--bg);box-shadow:0 12px 36px rgba(0,0,0,.3);z-index:6;
  --bg:#f5f0fb;--card:#fffdff;--ln:#e3d9f0;--ac:#a8467a;--ink:#2b2438;--mu:#7d7490;color:var(--ink)}
 #endp .w{max-width:none;margin:0;padding:16px 22px}
 #endp .lines{display:flex;flex-wrap:wrap;gap:6px;margin:4px 22px 0;padding-top:16px}
@@ -256,6 +265,74 @@ body.sw{margin:0;padding:0;background:#15181c;overflow:hidden;color:#1f2a2e}
 #foot{position:absolute;left:16px;top:778px;font-size:11px;color:#555;z-index:2}
 #block{position:absolute;inset:0;z-index:20;display:none}
 #stage.busy #block{display:block}
+
+/* ===== 1단계: 첫 페이지 넓은 패널 (노선도와 좌우 끝을 맞춤) ===== */
+#hero.pro{left:382px;top:180px;width:882px;max-height:none;height:448px;padding:16px 22px;display:flex;flex-direction:column;overflow:hidden}
+#hero .pro-hd{font-size:13px;color:var(--mu);margin-bottom:10px}#hero .pro-hd span:first-child{font:700 18px "NEXON Lv2 Gothic","Noto Sans KR",sans-serif;color:var(--ink);margin-right:10px}
+#hero .pro-cols{flex:1;display:grid;grid-template-columns:230px 280px 1fr;gap:22px;min-height:0}
+#hero .pro-who{text-align:center}#hero .pro-who svg{display:block;margin:0 auto 6px;shape-rendering:crispEdges}
+#hero .pro-who .nm{font:700 24px "NEXON Lv2 Gothic","Noto Sans KR",sans-serif;margin-bottom:4px}
+#hero .pro-who .kv2{display:flex;justify-content:space-between;font-size:13px;padding:3px 0;border-bottom:1px solid #eef0ee;text-align:left}#hero .pro-who .kv2 b{font-weight:400;color:var(--mu)}
+#hero .pro-who .chap{font-size:12px;color:var(--mu);margin-top:6px}
+#hero .pro-st .h{font-size:12px;color:var(--mu);margin-bottom:4px}
+#hero .bar5{display:flex;align-items:center;gap:8px;font-size:13.5px;height:30px}#hero .bar5 label{width:50px;color:var(--mu)}#hero .bar5 .b{flex:1;height:9px;background:#e9ece9;border-radius:5px;overflow:hidden}#hero .bar5 .b i{display:block;height:100%}#hero .bar5 em{width:30px;text-align:right;font-style:normal;font-weight:600}
+#hero .pro-tx{overflow:auto;font-size:14px;line-height:1.75;border-left:1px solid #eceeec;padding-left:20px}#hero .pro-tx p{margin:0 0 10px}
+#hero .pro-ft{display:flex;align-items:center;gap:16px;margin-top:10px}#hero .pro-ft .btn{width:auto;flex:1;margin:0}#hero .pro-ft .lk{width:auto;margin:0;flex:none}
+/* ===== 1단계: 시작 화면 승강장 ===== */
+#plt{position:absolute;inset:0;z-index:4;overflow:hidden;background:#e9e6dc;transition:opacity .35s}
+#plt[hidden]{display:none}
+#plt.fade{opacity:0}
+.pl-ceil{position:absolute;left:0;right:0;top:0;height:22px;background:linear-gradient(#5d6166,#80858a)}
+.pl-lamp{position:absolute;top:6px;width:120px;height:9px;border-radius:5px;background:#fffef2;box-shadow:0 0 22px 8px rgba(255,255,225,.6)}
+.pl-wall{position:absolute;left:0;right:0;top:22px;height:300px;background:repeating-linear-gradient(90deg,transparent 0 58px,rgba(0,0,0,.05) 58px 60px),repeating-linear-gradient(0deg,#ece9df 0 28px,#e2ded2 28px 30px)}
+.pl-track{position:absolute;left:0;right:0;top:322px;height:368px;background:linear-gradient(#2a2d33,#1b1d21);overflow:hidden}
+#pl-train{position:absolute;left:0;top:30px;width:2600px;height:300px;transform:translateX(1400px);background:linear-gradient(#dfe3e6,#c4cacf 60%,#aeb5bb);border-radius:30px 0 0 30px;transition:transform .65s cubic-bezier(.2,.7,.25,1)}
+#pl-train:before{content:"";position:absolute;left:0;right:0;top:40px;height:14px;background:#3a3f47}
+#pl-train i{position:absolute;top:80px;width:110px;height:150px;border-radius:8px;background:#2b3038;border:4px solid #9aa1a6}
+#pl-train i:nth-child(1){left:40px}#pl-train i:nth-child(2){left:200px}#pl-train i:nth-child(3){left:436px}#pl-train i:nth-child(4){left:612px}#pl-train i:nth-child(5){left:820px}#pl-train i:nth-child(6){left:980px}
+#plt.arrive #pl-train{transform:translateX(-30px)}
+.pl-doors{position:absolute;left:0;right:0;top:322px;height:368px}
+.psd{position:absolute;top:0;width:150px;height:368px;border:6px solid #8a9298;border-top-width:14px;background:linear-gradient(115deg,rgba(210,232,245,.38),rgba(170,205,225,.16) 45%,rgba(220,240,250,.32));transition:transform .35s ease}
+.psd.gate span{position:absolute;left:50%;top:18px;transform:translateX(-50%);padding:2px 8px;border-radius:4px;background:#2f8f5f;color:#fff;font-size:11px;font-weight:700;white-space:nowrap}
+#plt.open .psd.gl{transform:translateX(-140px)}#plt.open .psd.gr{transform:translateX(140px)}
+.pl-floor{position:absolute;left:0;right:0;top:690px;bottom:0;background:#b7b3a6}
+.pl-safe{position:absolute;left:0;right:0;top:0;height:14px;background:#f2c230}
+.pl-dots{position:absolute;left:0;right:0;top:14px;height:16px;background:radial-gradient(circle,#e6b52a 3px,transparent 4px) 0 0/16px 16px}
+.pl-name{position:absolute;left:16px;top:180px;width:350px;height:118px;border-radius:10px;background:#fff;border:3px solid #3a3f47;padding:10px 16px;box-shadow:0 4px 12px rgba(0,0,0,.15)}
+.pl-name small{display:block;font-size:12px;color:var(--mu)}.pl-name>b{display:block;font:700 38px/1.2 "NEXON Lv2 Gothic","Noto Sans KR",sans-serif}
+.pl-name .nx{font-size:14px;color:#3a3f47}.pl-name .nx b{font-size:18px}
+.pl-name .bar{position:absolute;left:0;right:0;bottom:0;height:8px;background:#3a3f47;border-radius:0 0 7px 7px}
+.pl-arr{position:absolute;left:880px;top:190px;width:384px;padding:8px 14px;border-radius:6px;background:#14110d;color:#ff9b2f;box-shadow:0 4px 10px rgba(0,0,0,.3)}
+.pl-arr span{display:block;font-size:11px;color:#c98a3a}.pl-arr b{font:700 16px "NEXON Lv2 Gothic","Noto Sans KR",sans-serif;text-shadow:0 0 6px rgba(255,140,30,.7)}
+.pl-card{position:absolute;left:420px;top:200px;width:440px;padding:22px 26px;border-radius:14px;background:rgba(255,255,255,.96);box-shadow:0 12px 32px rgba(0,0,0,.28);text-align:center;transition:opacity .3s}
+#plt.arrive .pl-card{opacity:0}
+.pl-card .logo{font:700 38px/1.1 "Outfit","NEXON Lv2 Gothic","Noto Sans KR",sans-serif;letter-spacing:-.5px;color:#1f2a2e}
+.pl-card p{margin:12px 0 0;font-size:15px;line-height:1.7;color:#3a4246}
+.pl-card .btn{display:block;width:100%;margin-top:16px;padding:12px;border:0;background:#1f2a2e;color:#fff;font:700 16px "NEXON Lv2 Gothic","Noto Sans KR",sans-serif;border-radius:10px;cursor:pointer}
+/* ===== 1단계: 폰 타임라인 ===== */
+#tl .tli{padding:2px 0 6px}
+#tl .tli.cont{padding-top:0}
+#tl .tld{font:700 13px "NEXON Lv2 Gothic","Noto Sans KR",sans-serif;color:#26335a;margin:8px 0 4px;letter-spacing:-.2px}
+#tl .tld .en{font-weight:700}
+#tl .tli .ln{border-bottom:0;padding:2px 0}
+#tl .tli.nw{animation:tlin .3s ease-out both,tlhl 1.5s ease both}
+@keyframes tlin{from{transform:translateY(-8px);opacity:0}to{transform:none;opacity:1}}
+@keyframes tlhl{0%,40%{background:rgba(255,214,90,.32)}100%{background:transparent}}
+@media (prefers-color-scheme:dark){#tl .tld{color:#b9c6f2}}
+#tlnew{position:absolute;top:168px;left:50%;transform:translateX(-50%);z-index:3;border:0;border-radius:16px;padding:5px 14px;background:var(--ac);color:#fff;font:700 12px "NEXON Lv2 Gothic","Noto Sans KR",sans-serif;box-shadow:0 4px 12px rgba(0,0,0,.25);cursor:pointer}
+#tlnew[hidden]{display:none}
+#ntb{position:absolute;left:10px;right:10px;top:38px;z-index:7;display:flex;gap:10px;align-items:center;padding:9px 12px;border-radius:16px;background:rgba(40,34,52,.95);color:#fff;font-size:12.5px;cursor:pointer;box-shadow:0 6px 16px rgba(0,0,0,.3);transform:translateY(-140%);transition:transform .35s cubic-bezier(.3,0,.2,1)}
+#ntb[hidden]{display:none}
+#ntb.in{transform:none}#ntb b{font-size:13px}
+#ntb svg{border-radius:50%;background:#fff;flex:none}
+/* 친구 탭 */
+.frl{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--ln)}
+.frl .bd{height:6px;background:var(--ln);border-radius:3px;overflow:hidden;margin-top:4px}.frl .bd i{display:block;height:100%;background:var(--ac)}
+.frl button{border:1px solid var(--ln);background:var(--card);color:var(--ink);font:inherit;font-size:12px;padding:4px 10px;border-radius:14px;cursor:pointer;flex:none}
+.frl button:disabled{opacity:.45;cursor:default}
+details.dm{border-bottom:1px solid var(--ln);padding:6px 0}details.dm summary{cursor:pointer;font-size:13px}
+.endlogo{font:700 22px "Outfit","NEXON Lv2 Gothic","Noto Sans KR",sans-serif;padding:14px 22px 0;color:var(--ac)}
+#foot .en{font-weight:700}
 </style></head><body><div id="app"></div><div id="toast"></div>
 <script>
 const $=i=>document.getElementById(i),R=Math.random,ri=a=>a[Math.floor(R()*a.length)],clf=v=>Math.max(0,Math.min(100,v)),rr=(a,b)=>a+Math.floor(R()*(b-a+1)),rd=Math.round;
@@ -483,6 +560,8 @@ function chg(fx,s=1){for(const k in fx){const v=fx[k];
  else if(k=='_b'){const f=G.fr[v[0]];f.bond=clf(f.bond+v[1])}else{G.f[k]=v;if(k=='partner'&&!G.pn)G.pn=ri(PN)}}
  if(G.cash<0){G.debt-=G.cash;G.cash=0}recalc()}
 const tone=fx=>{let s=0;for(const k in fx){const v=fx[k];if(k=='burn')s-=v;else if(['mood','hp','soc','self','health','money'].includes(k))s+=v;else if(k=='hire')s+=8}return s>1?'g':s<-1?'b':'n'};
+/* 친구 반응 알림: 방금 추가한 줄을 알림으로 표시하고 알림 대기열에 넣는다(타임라인에는 안 나오고 기록 탭에는 남음). */
+function notiLast(){const l=G.log[0];if(!l)return;l.nt=1;(G.ntQ=G.ntQ||[]).push({fi:l.fi,t:l.t})}
 function addLine(t,tn,fx,tag,w,fi){t=txt(t);if(fx)chg(fx);G.log.unshift({age:G.age,mo:mo(),t,tn:tn||'n',nw:1,k:tag,fi,m:G.m,o:++G.oc});if(G.log.length>150)G.log.pop();
  const wt=w||(tn=='g'||tn=='b'?1.5:1);if(!G.yr.best||wt>=G.yr.best.w)G.yr.best={w:wt,t}}
 /* ===== 월 단위 진행 ===== */
@@ -502,7 +581,7 @@ function tickMonth(){
  else if(JB[G.job].s==1&&G.sy>=3&&t.self<35){setJob('쉬는중');addLine('오래된 구직에 지쳐 잠시 멈추기로 했다.','b',null,'u',3)}
  else if(JB[G.job].e&&t.burn>=92){setJob('쉬는중');chg({burn:-30,self:-8});addLine('더는 버틸 수 없어 일을 그만두었다.','b',null,'u',4)}
  /* 예약된 이야기 */
- G.sq=G.sq.filter(q=>{if(q.due>G.m)return true;if(q.act){q.act();return false}addLine(q.t,q.tone||tone(q.fx||{}),q.fx,q.tag,q.w,q.fi);if(q.after)q.after();return false});
+ G.sq=G.sq.filter(q=>{if(q.due>G.m)return true;if(q.act){q.act();return false}addLine(q.t,q.tone||tone(q.fx||{}),q.fx,q.tag,q.w,q.fi);if(q.nt)notiLast();if(q.after)q.after();return false});
  /* 친구들의 삶 */
  if(G.m%12==0){G.fr.forEach((f,i)=>{const o=fy(f);if(o){const j=f.job,glad=f.bond>45;
    if(JB[j].e){addLine(`${f.n}이(가) ${j}에 자리를 잡았다는 소식이 들렸다. ${glad?'진심으로 기뻤다.':'축하한다고 했는데, 속은 조금 쓰렸다.'}`,glad?'g':'n',(JB[G.job].s&&!glad)?{self:-1}:{soc:1},'u',2);genFeed(i)}
@@ -551,12 +630,12 @@ function reply(fi,tn,k){const f=G.fr[fi],tr=ri(TRUE[f.job]),P=k&&POL[k];let t,fx
  else if(tn=='envy'){t=`${f.n}이(가) 답장했다. 「부럽다니… 나도 말 못 했는데, ${tr[0]}」 서로 비슷한 마음이었다.`;fx={soc:7,self:3,hp:2}}
  else if(tn=='cong'){t=`${f.n}이(가) 답장했다. 「고마워! ${tr[1]?tr[0]:'요즘 너는 어때?'}」`;fx={soc:4}}
  else{t=`${f.n}이(가) 답장했다. 「네 응원 덕분에 힘났어. ${tr[0]}」`;fx={soc:5,hp:1}}
- G.sq.push({due:G.m+rr(1,2),t,tone:tt,fx,tag:'f',fi,w:2.5});f.bond=clf(f.bond+8)}
+ G.sq.push({due:G.m+rr(1,2),t,tone:tt,fx,tag:'f',fi,w:2.5,nt:1});f.bond=clf(f.bond+8)}
 function doComment(pid,tn){const p=G.feed.find(x=>x.id==pid);if(!p||p.cm)return;p.cm=tn;const T=TONE[tn],f=G.fr[p.fi];addLine(`${f.n}의 사진에 「${T[0].slice(2)}」 댓글을 남겼다.`,'n',T[1]);f.bond=clf(f.bond+T[2]);if(R()<.85)reply(p.fi,tn,p.k);MOD=null;draw()}
 function doStoryReply(i,tn){const f=G.fr[i];if(f.sr)return;f.sr=1;const T=TONE[tn];addLine(`${f.n}의 스토리에 답장을 보냈다. 「${T[0].slice(2)}」`,'n',T[1]);f.bond=clf(f.bond+T[2]);if(R()<.85)reply(i,tn,null);MOD=null;draw()}
 function saveMyStory(t,m){addLine(`내 스토리 ${m} 「${t}」`,'q',m=='😢'||m=='😮‍💨'?{burn:-2}:{self:1},'me',2);
  const f=G.fr.slice().sort((a,b)=>b.bond-a.bond)[0],mm={'😊':'좋아 보이네! 무슨 좋은 일 있어?','😐':'요즘 어때? 얘기 좀 하자.','😮‍💨':'스토리 봤어. 요즘 많이 지쳤지?','😢':'괜찮아? 스토리 보고 걱정돼서 연락했어.'}[m];
- G.sq.push({due:G.m+rr(1,2),t:`${f.n}이(가) 내 스토리를 보고 연락했다. 「${mm}」 말하고 나니 한결 가벼워졌다.`,tone:'g',fx:{soc:6,burn:-4,hp:2},tag:'f',fi:G.fr.indexOf(f),w:3});f.bond=clf(f.bond+8);G.mys={t,mood:m,exp:G.m+2};G.sq.push({due:G.m+1,t:`내 스토리에 ${rr(2,5)}명이 이모지로 반응했다.`,tone:'g',fx:{soc:2},tag:'u',w:2})}
+ G.sq.push({due:G.m+rr(1,2),t:`${f.n}이(가) 내 스토리를 보고 연락했다. 「${mm}」 말하고 나니 한결 가벼워졌다.`,tone:'g',fx:{soc:6,burn:-4,hp:2},tag:'f',fi:G.fr.indexOf(f),w:3,nt:1});f.bond=clf(f.bond+8);G.mys={t,mood:m,exp:G.m+2};G.sq.push({due:G.m+1,t:`내 스토리에 ${rr(2,5)}명이 이모지로 반응했다.`,tone:'g',fx:{soc:2},tag:'u',w:2})}
 /* ===== 검색 · 정책 ===== */
 function startSr(id){const r=G.rumor.find(x=>x.id==id);if(!r)return;const P=POL[r.k],d=SITE[P.w],b=d.split('.')[0];
  const o=[{t:`${P.n} 신청·자격 안내`,u:'www.'+d,ok:1},{t:`[즉시 입금] ${P.n} 대행 신청`,u:`www.${b}-help.com`,why:'공공기관 주소(.go.kr)가 아니고 대행 수수료를 요구한다.'},{t:`${P.n} 후기 (3년 전 글)`,u:'blog.naver.com/…',why:'오래된 개인 후기라 지금 대상·금액과 다를 수 있다.'},{t:`${P.n} 신청하기 | ${P.w}`,u:`${d}.apply-now.com`,why:'주소 뒤에 .com이 붙은 가짜 사이트다. 진짜 공공기관은 도메인이 .go.kr로 끝난다.'}].sort(()=>R()-.5);
@@ -576,7 +655,7 @@ function loop(){clearTimeout(TM);if(S!='play'||!G)return;
 function draw(){const a=$('app');a.innerHTML=S=='start'?vStart():S=='form'?vForm():S=='pro'?vPro():S=='play'?vPlay():vEnd()}
 const lettersLocal=()=>{try{return JSON.parse(localStorage.getItem('al_letters')||'[]')}catch(e){return[]}};
 const letters=()=>(typeof BE!='undefined'&&BE.letters())||lettersLocal();
-function vStart(){const L=letters();return `<div class="w"><div class="se" style="font-size:30px;font-weight:700">인생그램</div><div class="mu">20세부터 40세까지, 다른 사람의 삶을 살아보며 나에게 맞는 선택지를 찾는 시뮬레이션</div>
+function vStart(){const L=letters();return `<div class="w"><div class="se" style="font-size:30px;font-weight:700">Another Station</div><div class="mu">20세부터 40세까지, 다른 사람의 삶을 살아보며 나에게 맞는 선택지를 찾는 시뮬레이션</div>
  <div class="pn" style="margin-top:16px"><h4>어떻게 시작할까요?</h4><button class="btn" data-a="new:other">🎲 다른 사람의 인생 살아보기<div class="mu" style="color:inherit;opacity:.8">완전 랜덤 캐릭터 · 내가 모르는 조건의 삶</div></button><button class="btn sec" data-a="new:form">🪞 내 인생에 적용해보기<div class="mu">지역·형편·진로·고민을 고르고, 나머지는 랜덤</div></button></div>
  <a class="btn sec" href="public-services.html">🏛️ 실시간 혜택·LH 임대공고 보기</a>
  <a class="btn sec" href="statistics.html">📊 KOSIS 2025 인구·가구 통계 보기</a>
@@ -589,7 +668,7 @@ function vPro(){const m=G.me,P={서울:'서울에서 자랐다. 모든 게 가�
  <div class="pn"><h4>화면 보는 법</h4><div class="lg"><b>가운데</b> 내 이야기가 위에서부터 쌓여요. 갈림길에서는 선택 창이 떠요.</div><div class="lg"><b>왼쪽</b> 나와 상태, 돈.</div><div class="lg"><b>오른쪽</b> 가족·친구, 친구들의 피드, 정책 서랍, 인생 지도.</div><div class="lg">위의 속도 버튼으로 시간을 빠르게 하거나 멈출 수 있어요. 목표는 마음속으로 정해두세요.</div></div><button class="btn" data-a="begin">${m.n}의 스무 살 시작</button></div>`}
 function bars(){return Object.keys(LB).map(k=>`<div class="sb" title="${ROLE[k]}"><label>${LB[k]}</label><div class="bar"><i style="width:${G.st[k]}%;background:${BC[k]}"></i></div><em>${rd(G.st[k])}</em></div>`).join('')}
 function vPlay(){const d=G.dec,pc=G.m/240*100;
- return `<div class="tb"><div><div class="ttl">인생그램 <span class="mu">20→40</span></div></div><div><div class="age">${G.age}<small>세 ${mo()}월</small></div><div class="pbar"><i style="width:${pc}%"></i></div></div>
+ return `<div class="tb"><div><div class="ttl">Another Station <span class="mu">20→40</span></div></div><div><div class="age">${G.age}<small>세 ${mo()}월</small></div><div class="pbar"><i style="width:${pc}%"></i></div></div>
  <div class="ctl"><button class="${G.paused?'on':''}" data-a="pause">${G.paused?'▶ 재개':'⏸ 멈춤'}</button>${[1,2,3,4].map(s=>`<button class="${!G.paused&&G.speed==s&&!FFN?'on':''}" data-a="sp:${s}">${[1,2,4,8][s-1]}×</button>`).join('')}<button data-a="ff">다음 결정까지 »</button><button class="${G.auto?'on':''}" data-a="auto">자동 결정</button><button data-a="home">나가기</button></div></div>
  <div class="g"><div>${pLeft()}</div><div class="cc">${pCenter()}</div><div>${pRight()}</div></div>${FT}${modal()}`}
 function pLeft(){const m=G.me,nw=rd(G.cash-G.debt);
@@ -669,10 +748,10 @@ function doComment(pid,tn){const p=G.feed.find(x=>x.id==pid);if(!p||p.cm)return;
  addLine(`${f.n}의 게시물에 「${T[0].slice(2)}」 댓글을 남겼다.`,'q',T[1],'c',1.5);f.bond=clf(f.bond+T[2]);
  p.cms.push({n:'나',t:T[0],me:1});p.cms.push({n:f.n,t:CRPL[tn]});touch(fi);if(R()<.85)reply(fi,tn,p.k);
  const due=G.m+rr(1,2);
- if(tn=='cong')G.sq.push({due,act:()=>{addStory(fi,'mood',{t:'댓글 고마워 🥹 덕분에 힘났다',e:'🫶',from:'comment'});addLine(`${f.n}이(가) 내 댓글을 언급하며 스토리를 올렸다.`,'g',{soc:1},'f',2,fi)}});
- else if(tn=='cheer')G.sq.push({due,act:()=>{startSerial(fi,'comment');addLine(`${f.n}이(가) 연재 스토리를 시작했다. 내 응원 덕분이라고 한다.`,'g',{soc:1},'f',2,fi)}});
+ if(tn=='cong')G.sq.push({due,act:()=>{addStory(fi,'mood',{t:'댓글 고마워 🥹 덕분에 힘났다',e:'🫶',from:'comment'});addLine(`${f.n}이(가) 내 댓글을 언급하며 스토리를 올렸다.`,'g',{soc:1},'f',2,fi);notiLast()}});
+ else if(tn=='cheer')G.sq.push({due,act:()=>{startSerial(fi,'comment');addLine(`${f.n}이(가) 연재 스토리를 시작했다. 내 응원 덕분이라고 한다.`,'g',{soc:1},'f',2,fi);notiLast()}});
  else if(tn=='ask'&&p.k)G.sq.push({due,act:()=>{addStory(fi,'info',{t:`${POL[p.k].n}, 공식 사이트에서 직접 확인해봐`,e:'📄',from:'comment'});addRum(p.k,f.n)}});
- else G.sq.push({due,act:()=>{addStory(fi,'inner',{t:TRUE[f.job][0][0],e:'🌧️',from:'comment',reveal:1});addLine(`${f.n}이(가) 속마음 스토리를 올렸다. 내 댓글 이후의 이야기다.`,'n',{soc:2,self:2},'f',2,fi)}});
+ else G.sq.push({due,act:()=>{addStory(fi,'inner',{t:TRUE[f.job][0][0],e:'🌧️',from:'comment',reveal:1});addLine(`${f.n}이(가) 속마음 스토리를 올렸다. 내 댓글 이후의 이야기다.`,'n',{soc:2,self:2},'f',2,fi);notiLast()}});
  MOD=null;draw()}
 function doStoryReply(sid,tn){const s=findStory(sid);if(!s||s.replied)return;s.replied=1;const f=G.fr[s.fi],T=TONE[tn];addLine(`${f.n}의 스토리에 답장했다. 「${T[0].slice(2)}」`,'q',T[1],'c',1.5);f.bond=clf(f.bond+T[2]);touch(s.fi);if(R()<.85)reply(s.fi,tn,null);draw()}
 function answerStory(sid,i){const s=findStory(sid);if(!s||s.ans!=null)return;s.ans=i;const f=G.fr[s.fi],c=s.opts[i];f.bond=clf(f.bond+6);
@@ -728,12 +807,12 @@ function roomHTML(){const m=mo(),sp=m>=3&&m<=5,su=m>=6&&m<=8,au=m>=9&&m<=11,nigh
 function vPlay(){const items=[];G.log.slice(0,60).forEach(l=>items.push({o:l.o,h:logHTML(l)}));G.feed.slice(0,10).forEach(p=>items.push({o:p.o,h:postHTML(p)}));items.sort((a,b)=>b.o-a.o);
  const map=Array.from({length:20},(_,i)=>{const c=G.map[i],cur=i==G.age-20;return `<i class="${cur?'cur':''}" style="${c?`background:${moodCol(c.mood)}`:''}" data-a="yr:${i}" title="${20+i}세"></i>`}).join('');
  const nav=[['home','🏠','홈'],['friends','👥','친구들'],['stash','🗂️','챙겨둔 것'],['record','📖','인생 기록'],['public','🏛️','공공정보']].map(x=>`<button class="${(x[0]=='home'&&!MOD)||(MOD&&MOD.k=='nav'&&MOD.t==x[0])?'on':''}" data-a="nav:${x[0]}"><b>${x[1]}</b>${x[2]}</button>`).join('');
- return `<div class="tb"><span class="ttl">인생그램 <small class="mu">beta</small></span><span class="age">${G.age}<small>세 ${mo()}월</small></span>${tickBar()}${ctlHTML()}</div>
+ return `<div class="tb"><span class="ttl">Another Station <small class="mu">beta</small></span><span class="age">${G.age}<small>세 ${mo()}월</small></span>${tickBar()}${ctlHTML()}</div>
  <div class="hm"><div class="hm1">${roomHTML()}${condHTML()}</div>
  <div class="hm2"><div class="pn"><h4>내 이야기 <span>친구 소식이 함께 흘러요</span></h4>${decHTML()}<div class="strm">${items.slice(0,36).map(x=>x.h).join('')}</div></div>
  <div>${ringHTML()}<div class="pn"><h4>오늘의 소식</h4>${G.feed[0]?postHTML(G.feed[0]):'<div class="mu">아직 소식이 없어요.</div>'}</div><div class="pn"><h4>인생 지도 <span>한 칸 = 1년</span></h4><div class="mp">${map}</div></div></div></div></div>${FT}<div class="cnav">${nav}</div>${modal()}`}
 modalBody=function(){if(MOD&&MOD.k=='nav'){const t=MOD.t;
- if(t=='friends')return `<h3 class="se" style="margin:0 0 8px">친구들</h3>${ringHTML()}${peersHTML()}<h4 class="se" style="margin:12px 0 4px">DM</h4>${G.log.filter(l=>l.k=='f'&&G.fr[l.fi]).slice(0,6).map(l=>`<div class="sf">${av(G.fr[l.fi].cols,28)}<div class="bub"><div class="mu">${G.fr[l.fi].n} · ${l.age}세 ${l.mo}월</div>${esc(l.t)}</div></div>`).join('')||'<div class="mu">스토리에 답하거나 댓글을 달면 대화가 이어져요.</div>'}<button class="btn sec" data-a="close">닫기</button>`;
+ if(t=='friends'){const recent=f=>f.ping>G.m-6;const rows=G.fr.map((f,i)=>`<div class="frl">${av(f.cols,40)}<div style="flex:1;min-width:0"><b>${f.n}</b> <span class="mu">${f.job}</span><div class="bd" title="친밀도 ${rd(f.bond)}"><i style="width:${clf(f.bond)}%"></i></div></div><button data-a="ping:${i}" ${recent(f)?'disabled title="최근에 안부를 물었어요"':''}>💬 안부 묻기</button></div>`).join('');const dm=G.fr.map((f,i)=>{const ls=G.log.filter(l=>l.fi===i&&/안부/.test(l.t));return ls.length?`<details class="dm"><summary>${f.n} · 안부 ${ls.length}건</summary>${ls.slice(0,6).map(l=>`<div class="lg"><span class="mu">${l.age}세 ${l.mo}월</span> ${esc(l.t)}</div>`).join('')}</details>`:''}).join('');return `<h3 class="se" style="margin:0 0 8px">친구들</h3>${rows}<h4 class="se" style="margin:14px 0 4px">안부 대화</h4>${dm||'<div class="mu">안부를 물으면 친구별로 대화가 쌓여요.</div>'}<button class="btn sec" data-a="close">닫기</button>`}
  if(t=='stash')return `<h3 class="se" style="margin:0 0 8px">챙겨둔 것</h3>${drawerHTML()}<h4 class="se" style="margin:12px 0 4px">제도 도감</h4><div class="mu">알게 된 제도만 이름이 보여요.</div>${PK.map(k=>{const s=G.done[k]?'✅ 챙김':G.known[k]?'📌 저장':G.rumor.some(r=>r.k==k)?'⏳ 소문':G.miss[k]?'놓침':G.heard[k]?'들어봄':'';return `<div class="lg">${s?POL[k].n:'？？？'} <span class="mu">${s}</span></div>`}).join('')}<button class="btn sec" data-a="close">닫기</button>`;
  if(t=='record')return `<h3 class="se" style="margin:0 0 8px">인생 기록</h3>${G.map.map(c=>`<div class="lg"><span style="color:${moodCol(c.mood)}">●</span> <b>${c.age}세</b> ${esc(c.t)}</div>`).join('')||'<div class="mu">아직 기록된 해가 없어요.</div>'}<button class="btn" data-a="diary">일기장 전체 보기</button><button class="btn sec" data-a="close">닫기</button>`}
  return baseMB()};
@@ -758,9 +837,9 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b
  else if(k=='sans'){const j=v.indexOf(':');answerStory(+v.slice(0,j),+v.slice(j+1))}
  else if(k=='snext'){const l=actS();if(l.length<2){MOD=null;draw();loop();return}const ix=l.findIndex(s=>s.id==MOD.sid);MOD={k:'story',sid:l[(ix+1)%l.length].id};draw()}
  else if(k=='diary'){MOD={k:'diary'};draw()}
- else if(k=='nav'){if(v=='home'){MOD=null;draw();loop()}else if(v=='public'){location.href='public-services.html'}else{MOD={k:'nav',t:v};draw()}}
+ else if(k=='nav'){if(v=='home'){MOD=null;draw();loop()}else{MOD={k:'nav',t:v};draw()}}
  else if(k=='peer'){MOD={k:'peer',i:+v};draw()}
- else if(k=='ping'){const f=G.fr[+v];f.ping=G.m;f.bond=clf(f.bond+6);const tr=ri(TRUE[f.job]);G.sq.push({due:G.m+1,t:`${f.n}에게서 답장이 왔다. 「${tr[0]}」 안부를 묻길 잘했다.`,tone:'g',fx:{soc:4,hp:1},tag:'f',fi:+v,w:2});addLine(`${f.n}에게 안부 메시지를 보냈다.`,'q',null,'c');touch(+v);MOD=null;draw()}
+ else if(k=='ping'){const f=G.fr[+v];f.ping=G.m;f.bond=clf(f.bond+6);const tr=ri(TRUE[f.job]);G.sq.push({due:G.m+1,t:`${f.n}에게서 답장이 왔다. 「${tr[0]}」 안부를 묻길 잘했다.`,tone:'g',fx:{soc:4,hp:1},tag:'f',fi:+v,w:2});addLine(`${f.n}에게 안부 메시지를 보냈다.`,'q',null,'c',undefined,+v);touch(+v);MOD=null;draw()}
  else if(k=='yr'){MOD={k:'yr',i:+v};draw()}
  else if(k=='mys'){MOD={k:'my',mood:'😊'};draw()}
  else if(k=='mood'){const t=($('mys')||{}).value||'';MOD.mood=v;draw();if($('mys'))$('mys').value=t}
@@ -781,18 +860,23 @@ draw();
 </script>
 <script>
 /* ===================================================================
- * 인생그램 v9-S · 지하철 UI
- * 엔진(데이터·tickMonth·pickDecision·pickC·SNS·정책·검색·엔딩 로직)은 위 스크립트 그대로 쓰고,
- * 화면 진입점 draw()만 지하철 장면으로 바꾼다. 엔진에 끼어들 때는 함수를 감싸기만 한다
- * (setJob·tickMonth·startArc·loop). 클릭은 모두 기존 data-a 위임 처리기를 그대로 탄다.
+ * Another Station (인생그램 v9-S) · 지하철 UI
+ * 엔진(데이터·tickMonth·pickDecision·pickC·SNS·정책·검색·엔딩 로직)은 위 스크립트를 쓰고,
+ * 화면 진입점 draw()만 지하철 장면으로 바꾼다. 엔진에 끼어들 때는 주로 함수를 감싼다
+ * (setJob·tickMonth·startArc·loop·newGame). 클릭은 모두 기존 data-a 위임 처리기를 그대로 탄다.
  * =================================================================== */
 
+const GAME_NAME = 'Another Station', ROUTE_NAME = '인생선', DEST_NAME = 'Another Life 행';
+
 /* ---------- 나이 구간: 화면은 이 상수에서만 계산한다 ----------
- * TODO(subway-conflict): 기획(prompt v9S)은 18세→35세지만 엔진은 20세→40세(G.age=20+…, G.m>=240,
- * 엔딩 「마흔 번째 생일」)로 돈다. 나이 구간 변경은 엔진 작업(메모 C1)이라 이번 범위가 아니므로,
- * 화면은 실제 엔진 값에 맞춘다. 엔진을 18→35로 바꾸면 아래 두 값만 바꾸면 된다. */
-const AGE_START = 20, AGE_END = 40;
-const STATIONS = AGE_END - AGE_START + 1, YEARS = AGE_END - AGE_START, TOTAL_M = YEARS * 12;
+ * 노선도는 20세역 ~ 36세 종점(역 17개, 한 역 = 1년)이다.
+ * TODO(subway-conflict): 엔진은 아직 20세→40세(G.age=20+…, G.m>=240, 엔딩 「마흔 번째 생일」)로 돈다.
+ *   36세역 도착 시 게임 종료는 2단계에서 엔진에 연결한다. 그 전까지 36세 이후에는 열차 표시가 종점에 머문다. */
+const AGE_START = 20, AGE_END = 36;
+const STATIONS = AGE_END - AGE_START + 1;   // 20, 21, …, 35, 36(종점) = 17개
+const YEARS = AGE_END - AGE_START - 1;      // 기획 문구 「15년」
+const TOTAL_M = (STATIONS - 1) * 12;        // 노선도 위 열차 위치 계산용(첫 역 → 종점)
+const FIRST_MO = ((2 + 0) % 12) + 1;        // 엔진의 한 해 첫 달(mo() 기준). 2단계에서 1월 시작으로 바꾸면 따라간다.
 
 const LINE_COL = {대학생:'#00A84D',취준생:'#00A5DE',공시생:'#747F00',쉬는중:'#A9A08A',대기업:'#0052A4',스타트업:'#E6186C','중견·중소':'#EF7C1C',프리랜서:'#996CAC',공무원:'#CD7C2F',창업:'#D4003B'};
 const SPEED_NAME = ['', '완행', '급행', '특급', '직통'];
@@ -892,10 +976,11 @@ function catSvg() {
 const UI = {
   built: false, g: null, busy: false, mode: 'start', boarding: false, allowBegin: false,
   riders: {}, meKey: '', lastAge: null, lastDec: null, ledMsg: '', xfQ: [], ending: false, endShown: false,
-  tlScroll: 0,
+  tlScroll: 0, tlSeen: null, tlNew: 0, ledHold: -1, ntBusy: false, starting: false, allowNew: false,
 };
 const sleep = ms => new Promise(r => setTimeout(r, ms));
-const fast = () => !!G && (G.speed === 4 || FFN > 0);
+// 직통에서만 연출을 생략한다(완행·급행·특급은 항상 연출).
+const fast = () => !!G && G.speed === 4;
 const $s = id => document.getElementById(id);
 
 /* ---------- 무대 만들기 (한 번만) ---------- */
@@ -906,8 +991,8 @@ function buildStage() {
   const lamps = [60, 330, 620, 900, 1160].map(x => `<i class="lamp" style="left:${x}px;width:120px"></i>`).join('');
   app.innerHTML = `<div id="stage">
     <div class="ceil">${lamps}</div><div class="wainscot"></div><div class="floor"></div>
-    <div class="sw-part" style="left:426px;top:150px;height:470px"></div><div class="sw-pole" style="left:440px;top:18px;height:690px"></div>
-    <div class="sw-part" style="left:832px;top:150px;height:470px"></div><div class="sw-pole" style="left:836px;top:18px;height:690px"></div>
+    <div class="sw-part" style="left:426px;top:222px;height:400px"></div><div class="sw-pole" style="left:440px;top:18px;height:690px"></div>
+    <div class="sw-part" style="left:832px;top:222px;height:400px"></div><div class="sw-pole" style="left:836px;top:18px;height:690px"></div>
     <div id="door"><div id="plat"><div class="tiles"></div><div class="edge"></div><div id="sign"></div></div>
       <div class="dp" id="dpL"><div class="win"><div class="out tunnel"></div><div class="flash"></div></div><div class="stk">기대지<br>마세요</div></div>
       <div class="dp" id="dpR"><div class="win"><div class="out tunnel"></div><div class="flash"></div></div><div class="stk">손 끼임<br>주의</div></div></div>
@@ -917,19 +1002,41 @@ function buildStage() {
     <div id="people"></div>
     <div id="ctl" class="off"></div>
     <div id="card"></div>
-    <div id="route" class="long"><div class="hd"></div><div class="mapw"></div><div id="led"><span></span></div></div>
+    ${platformHTML()}
+    <div id="route" class="long"><div class="box"><div class="hd"></div><div class="mapw"></div></div><div id="led"><span></span></div></div>
     <div id="hero"></div>
     <div id="phone" class="down"><div id="scr">
       <div class="sb0"></div><div class="apph"></div><div class="rings"></div><div id="tl"></div>
-      <div class="nav"></div><div id="noti" hidden></div><div id="shade"></div>
-      <div id="sheet"><div class="grab"></div><div id="shb"></div></div><div id="splash">인생그램</div></div>
+      <button id="tlnew" type="button" hidden></button>
+      <div class="nav"></div><div id="noti" hidden></div><div id="ntb" hidden></div><div id="shade"></div>
+      <div id="sheet"><div class="grab"></div><div id="shb"></div></div><div id="splash">${GAME_NAME}</div></div>
       <i class="hand" style="left:-14px;top:300px"></i><i class="hand" style="left:-14px;top:350px"></i><i class="hand" style="left:-14px;top:400px"></i><i class="hand" style="right:-14px;top:330px;height:48px"></i></div>
     <div id="endp" hidden></div>
     <div id="sun"></div><div id="dim"></div>
-    <div id="foot">※ 이벤트·정책은 프로토타입용 예시입니다. 실제 대상·조건·금액은 온통청년·복지로·고용24·정부24에서 확인하세요.</div>
+    <div id="foot"><b class="en">${GAME_NAME}</b> · ※ 이벤트·정책은 프로토타입용 예시입니다. 실제 대상·조건·금액은 온통청년·복지로·고용24·정부24에서 확인하세요.</div>
     <div id="block"></div></div>`;
   UI.built = true;
   fitStage(); addEventListener('resize', fitStage);
+  $s('tlnew').addEventListener('click', () => { const tl = $s('tl'); tl.scrollTo({top: 0, behavior: 'smooth'}); UI.tlNew = 0; $s('tlnew').hidden = true; });
+  $s('tl').addEventListener('scroll', () => { if ($s('tl').scrollTop < 8) { UI.tlNew = 0; $s('tlnew').hidden = true; } });
+}
+
+/* ---------- 시작 화면: 지하철 역 승강장 (CSS·픽셀로 직접 그림) ---------- */
+function platformHTML() {
+  const lights = Array.from({length: 7}, (_, i) => `<i class="pl-lamp" style="left:${40 + i * 180}px"></i>`).join('');
+  const panes = Array.from({length: 8}, (_, i) => {
+    const x = 16 + i * 156, mid = i === 3 || i === 4;
+    return `<div class="psd${mid ? ' gate' : ''}${i === 3 ? ' gl' : ''}${i === 4 ? ' gr' : ''}" style="left:${x}px">${mid ? '<span>타는 곳</span>' : ''}</div>`;
+  }).join('');
+  return `<div id="plt" hidden>
+    <div class="pl-ceil">${lights}</div><div class="pl-wall"></div>
+    <div class="pl-track"><div id="pl-train"><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+    <div class="pl-doors">${panes}</div>
+    <div class="pl-floor"><div class="pl-safe"></div><div class="pl-dots"></div></div>
+    <div class="pl-name"><small>${ROUTE_NAME}</small><b>${AGE_START}세역</b><div class="nx">다음 역 <b class="en">${AGE_START + 1}</b>세 →</div><i class="bar"></i></div>
+    <div class="pl-arr"><span>열차 도착 안내</span><b>${DEST_NAME} · 곧 도착합니다</b></div>
+    <div class="pl-card" id="plc"></div>
+  </div>`;
 }
 
 /* 창 크기에 맞추기: zoom(화질 유지) → 지원하지 않으면 scale */
@@ -949,7 +1056,7 @@ function setRouteWidth(kind) {
 }
 
 function routeHTML() {
-  const g = G, curI = g ? g.age - AGE_START : -1;
+  const g = G, curI = g ? Math.min(g.age, AGE_END) - AGE_START : -1;
   // 노선 선: 같은 직업이 이어지는 구간마다 그 노선 색
   let segs = '';
   if (g && g.jobAt) {
@@ -963,7 +1070,8 @@ function routeHTML() {
     const age = AGE_START + i, c = g && g.map[i], cur = i === curI;
     const col = c ? moodCol(c.mood) : '';
     const tip = c ? `${c.age}세 · ${String(c.t).replace(/"/g, '')}` : `${age}세`;
-    return `<i class="st${cur ? ' cur' : ''}${i === STATIONS - 1 ? ' end' : ''}${i % 2 && i !== STATIONS - 1 ? ' odd' : ''}" style="left:${sx(i)};${col ? `background:${col};border-color:${col}` : ''}${cur && g ? `;border-color:${lineCol(g.job)}` : ''}" ${g ? `data-a="yr:${i}"` : ''} title="${tip}"><em>${i === STATIONS - 1 ? '종점' : age}</em></i>`;
+    const last = i === STATIONS - 1;
+    return `<i class="st${cur ? ' cur' : ''}${last ? ' end' : ''}" style="left:${sx(i)};${col ? `background:${col};border-color:${col}` : ''}${cur && g ? `;border-color:${lineCol(g.job)}` : ''}" ${g ? `data-a="yr:${i}"` : ''} title="${tip}"><em>${last ? `${age} <small>종점</small>` : age}</em></i>`;
   }).join('');
   const xf = g && g.xf ? g.xf.map(x => `<i class="xf" style="left:${mx(x.m)};border-color:${lineCol(x.to)}" title="${AGE_START + Math.floor(x.m / 12)}세 · ${x.from} → ${x.to} 환승"></i>`).join('') : '';
   const trn = g ? `<i class="trn" style="left:${mx(g.m)};background:${lineCol(g.job)}"></i>` : '';
@@ -972,7 +1080,7 @@ function routeHTML() {
 
 function routeHead() {
   if (!G || S === 'start' || S === 'pro' || UI.boarding) {
-    return `<span class="badge" style="background:#555">인생그램선</span><span class="subt">${AGE_START}세 → ${AGE_END}세 · 한 역 = 1년</span>`;
+    return `<span class="badge" style="background:#3a3f47">${DEST_NAME}</span><span class="subt">${AGE_START}세 → ${AGE_END}세 종점 · 한 역 = 1년</span>`;
   }
   const j = G.job, end = G.age >= AGE_END || S === 'end';
   const nx = end ? `<b>종착역</b> · ${ageWord(AGE_END, true)}` : `다음 역 <b>${G.age + 1}세</b> · 「${CHAP[j] || ''}」`;
@@ -990,7 +1098,9 @@ function led(msg) {
   if (sp.animate) sp.animate([{transform: `translateX(${w}px)`}, {transform: `translateX(${-tw}px)`}],
     {duration: Math.max(6000, (w + tw) * 16), iterations: Infinity});
 }
-const defaultLed = () => G ? `이번 열차는 ${lineName(G.job)}, ${AGE_END}세 행입니다 · ${G.age}세 ${mo()}월` : `인생그램선 · ${AGE_START}세역에서 ${AGE_END}세 종착역까지`;
+const routeLed = () => `${ROUTE_NAME} · ${AGE_START}세역에서 ${AGE_END}세 종착역까지 · 한 정거장마다 1년`;
+const departLed = () => `이번 열차는 ${DEST_NAME}입니다 · ${AGE_START}세역 출발 · ${AGE_END}세 종착 · ${routeLed()}`;
+const defaultLed = () => G ? `이번 열차는 ${lineName(G.job)}, ${AGE_END}세 행입니다 · ${G.age}세 ${mo()}월` : routeLed();
 
 /* ---------- 운행 컨트롤 ---------- */
 function ctlHTML2() {
@@ -1006,37 +1116,47 @@ function ctlHTML2() {
 /* ---------- 탑승객 카드 ---------- */
 function cardHTML() {
   // TODO(subway-conflict): v8-C 상태창의 「챙긴 제도 n/${'${PK.length}'}」 줄은 기획상 카드에서 뺐다(메모 A5). 챙긴 제도 목록은 폰 「챙겨둔 것」 탭에서 볼 수 있다.
-  const g = G, m = g.me, w = wx(), inc = JB[g.job].inc + (g.job == '대학생' ? m.q * 16 : JB[g.job].s || g.job == '쉬는중' ? m.q * 8 : 0);
+  const g = G, m = g.me, w = wx();
+  // 자산·빚·월 수입 같은 만 원 단위 숫자는 화면에 보여 주지 않는다(1단계: 숨기기만, 3단계에서 정리). 재정 상태는 막대로 보여 준다.
   return `<div class="top" style="--line:${lineCol(g.job)};border-top-color:${lineCol(g.job)}">탑승객 카드 · ${m.rg} 출신</div>
-    <div class="who">${av(m.cols, 64)}<div><div class="nm">${m.n}</div><div class="ln2" style="color:${lineCol(g.job)}">${g.age}세 · ${lineName(g.job)}</div><div class="chap">「${CHAP[g.job] || ''}」</div></div><div class="wx"><b>${w[0]}</b>마음 ${w[1]}</div></div>
+    <div class="who">${av(m.cols, 64)}<div><div class="nm">${m.n}</div><div class="ln2" style="color:${lineCol(g.job)}"><span class="en">${g.age}</span>세 · ${lineName(g.job)}</div><div class="chap">「${CHAP[g.job] || ''}」</div></div><div class="wx"><b>${w[0]}</b>마음 ${w[1]}</div></div>
     <div class="kv2" style="margin-top:8px"><b>거주</b>${g.h}</div><div class="kv2"><b>집안 형편</b>${FAML[m.q <= 2 ? 0 : m.q == 3 ? 1 : 2]}</div>
-    <div class="h">상태 0–100</div>
-    ${Object.keys(LB).map(k => `<div class="bar5" title="${ROLE[k]}"><label>${LB[k]}</label><span class="b"><i style="width:${g.st[k]}%;background:${BC[k]}"></i></span><em>${rd(g.st[k])}</em></div>`).join('')}
-    <div class="h">돈 (만원)</div>
-    <div class="money"><div>자산<b>${rd(g.cash).toLocaleString()}</b></div><div>빚<b style="color:${g.debt > 0 ? 'var(--b)' : 'inherit'}">${rd(g.debt).toLocaleString()}</b></div><div>월 수입<b>${inc.toLocaleString()}</b></div></div>`;
+    <div class="h">상태 0–100</div>${barsHTML(g)}`;
+}
+/* 상태 막대 6개: 건강·행복·관계·자신감·피로 + 재정(G.st.money) */
+const BAR_KEYS = [...Object.keys(LB), 'money'];
+const barLabel = k => k === 'money' ? '재정' : LB[k];
+const barColor = k => k === 'money' ? '#2f8f8f' : BC[k];
+const barRole = k => k === 'money' ? '돈 사정. 자산과 빚을 바탕으로 정해져요.' : ROLE[k];
+function barsHTML(g) {
+  return BAR_KEYS.map(k => `<div class="bar5" title="${barRole(k)}"><label>${barLabel(k)}</label><span class="b"><i style="width:${clf(g.st[k] || 0)}%;background:${barColor(k)}"></i></span><em class="en">${rd(g.st[k] || 0)}</em></div>`).join('');
 }
 
-/* ---------- 시작·프롤로그 ---------- */
+/* ---------- 시작 카드(승강장 가운데)·첫 페이지 ---------- */
 function heroStart() {
-  const L = letters();
-  return `<h1>인생그램</h1>
-    <p style="margin:8px 0 0">${ageWord(AGE_START)} 살 역에서 ${ageWord(AGE_END)} 살 종착역까지,<br>한 정거장마다 1년.<br>지하철에 앉아 휴대폰으로 남의 ${YEARS}년을 살아 봅니다.</p>
-    <button class="btn" data-a="new:other">🎲 랜덤 인생으로 탑승하기</button>
-    <a class="btn sec" href="public-services.html">🏛️ 실시간 혜택·LH 임대공고</a>
-    <a class="btn sec" href="statistics.html">📊 KOSIS 2025 인구·가구 통계</a>
-    ${L.length ? `<div style="margin-top:12px"><b>💌 내가 쓴 편지함</b>${L.slice(0, 6).map(l => `<div class="lt"><span class="mu">${esc(l.to)} · ${esc(l.date)}</span><br>${esc(l.text)}</div>`).join('')}</div>` : ''}`;
+  // TODO(subway-conflict): 1단계 지시로 시작 카드는 로고·소개·탑승 버튼만 둔다. v8-C 시작 화면의 「내가 쓴 편지함」 목록과
+  //   공공정보·KOSIS 링크는 빠졌다(public-services.html·statistics.html 파일은 그대로 있음). 편지함을 어디서 보여 줄지 정해야 한다.
+  return `<div class="logo en">${GAME_NAME}</div>
+    <p>${ageWord(AGE_START)} 살 역에서 ${ageWord(AGE_END)} 살 종착역까지,<br>한 정거장마다 1년.<br>지하철에 앉아 휴대폰으로 남의 ${YEARS}년을 살아 봅니다.</p>
+    <button class="btn" data-a="new:other">🎲 랜덤 인생으로 탑승하기</button>`;
 }
 function heroPro() {
-  const m = G.me, tmp = document.createElement('div');
+  const g = G, m = g.me, w = wx(), tmp = document.createElement('div');
   tmp.innerHTML = vPro(); // 엔진의 프롤로그 문장(지역·형편·출발점)을 그대로 쓴다
   const ps = [...tmp.querySelectorAll('.pn.id p')].map(p => p.textContent);
-  const j = G.job;
-  return `<div class="mu">나의 첫 페이지 · ${AGE_START}세</div>
-    <div style="display:flex;gap:14px;align-items:flex-end;margin:8px 0">${person('stand', {cols: m.cols, job: j, scale: 3})}
-      <div><div style="font:700 24px 'Noto Serif KR',serif">${m.n}</div><div class="mu">${m.rg} · ${PATHL[m.path]}</div><span class="board" style="background:${lineCol(j)}">${lineName(j)} 탑승</span></div></div>
-    ${ps.map(p => `<p style="margin:6px 0">${esc(p)}</p>`).join('')}
-    <button class="btn" data-a="begin">🚪 문이 열립니다 — 탑승</button>
-    <button class="lk" data-a="new:other">다른 사람으로 다시 뽑기</button>`;
+  const j = g.job;
+  return `<div class="pro-hd"><span>나의 첫 페이지</span><span class="en">${AGE_START}</span>세 · <span style="color:${lineCol(j)}">${lineName(j)}</span>에서 출발</div>
+    <div class="pro-cols">
+      <div class="pro-who">${person('stand', {cols: m.cols, job: j, scale: 6})}
+        <div class="nm">${m.n}</div>
+        <div class="kv2"><b>출신</b>${m.rg}</div><div class="kv2"><b>집안 형편</b>${FAML[m.q <= 2 ? 0 : m.q == 3 ? 1 : 2]}</div>
+        <div class="kv2"><b>거주</b>${g.h}</div><div class="kv2"><b>마음</b>${w[0]} ${w[1]}</div>
+        <div class="kv2"><b>시작 노선</b><span class="board" style="background:${lineCol(j)}">${lineName(j)}</span></div>
+        <div class="chap">「${CHAP[j] || ''}」 · ${PATHL[m.path]}</div></div>
+      <div class="pro-st"><div class="h">상태 0–100</div>${barsHTML(g)}</div>
+      <div class="pro-tx">${ps.map(p => `<p>${esc(p)}</p>`).join('')}</div>
+    </div>
+    <div class="pro-ft"><button class="btn" data-a="begin">🚪 문이 열립니다 — 탑승</button><button class="lk" data-a="new:other">다른 사람으로 다시 뽑기</button></div>`;
 }
 
 /* ---------- 휴대폰 ---------- */
@@ -1044,23 +1164,74 @@ function senderAv(w) {
   const f = G.fr.find(x => w && String(w).includes(x.n));
   return f ? av(f.cols, 40) : `<span>${esc(String(w || '✉').trim().slice(0, 2))}</span>`;
 }
+/* ---------- 폰 타임라인 ----------
+ * - 날짜를 크게·굵게 따로 보여 주고, 같은 달 줄이 이어지면 두 번째 줄부터 날짜를 생략한다.
+ * - 한 해 첫 달 줄은 날짜를 그때 노선 색으로 칠한다.
+ * - 한 달에 타임라인에 들어가는 줄은 최대 2줄(선택 결과 줄은 예외). 나머지는 기록 탭(일기장)에만 남는다.
+ * - 친구 반응 알림 줄(l.nt)은 타임라인에 넣지 않고 상단 알림 배너로 보여 준다. */
+const TL_PER_MONTH = 2;
+const moOf = m => ((2 + m) % 12) + 1;
+const isChoiceLine = l => l.tn === 'q' || l.k === 'c';
+function tlBody(l) {
+  const t = esc(l.t);
+  if (l.k === 'f' && l.fi != null && G.fr[l.fi]) { const f = G.fr[l.fi]; return `<div class="sf">${av(f.cols, 34)}<div class="bub"><div class="mu">${f.n}</div>${t}</div></div>`; }
+  if (l.tn === 'q') return `<div class="sq">내 선택 — ${t}</div>`;
+  if (l.k === 'c') return `<div class="sm2 ${l.tn}"><span class="em">📝</span><div><div class="mu">나의 이야기</div>${t}</div></div>`;
+  if (l.k === 'u' || l.k === 'me') return `<div class="sm2 ${l.tn}"><span class="em">🔔</span><div>${t}</div></div>`;
+  return `<div class="ln ${l.tn}"><span>${t}</span></div>`;
+}
+function tlItems() {
+  const g = G, raw = [];
+  g.log.slice(0, 80).forEach(l => { if (!l.nt) raw.push({o: l.o, m: l.m, age: l.age, mo: l.mo, ex: isChoiceLine(l), h: () => tlBody(l)}); });
+  g.feed.slice(0, 12).forEach(p => raw.push({o: p.o, m: p.m, age: p.age, mo: moOf(p.m), ex: false, h: () => postHTML(p)}));
+  // 달마다 앞선 2줄만 남긴다(선택 결과 줄은 예외)
+  raw.sort((a, b) => a.o - b.o);
+  const cnt = {}, keep = raw.filter(x => x.ex || (cnt[x.m] = (cnt[x.m] || 0) + 1) <= TL_PER_MONTH);
+  return keep.sort((a, b) => b.o - a.o).slice(0, 40);
+}
+function tlHTML(items) {
+  const seen = UI.tlSeen, now = Date.now(), born = UI.tlBorn || (UI.tlBorn = new Map());
+  let prev = null;
+  return items.map(x => {
+    const key = x.age + '|' + x.mo, showDate = key !== prev; prev = key;
+    const yearStart = x.mo === FIRST_MO, col = yearStart ? lineCol((G.jobAt && G.jobAt[x.m]) || G.job) : '';
+    if (seen && !seen.has(x.o) && !born.has(x.o)) born.set(x.o, now);
+    // 새 항목은 1.5초 동안 하이라이트. 그사이 다시 그려져도 애니메이션이 이어지게 지난 시간만큼 앞당긴다.
+    const age = born.has(x.o) ? now - born.get(x.o) : 1e9, isNew = age < 1500;
+    return `<div class="tli${isNew ? ' nw' : ''}${showDate ? '' : ' cont'}"${isNew ? ` style="animation-delay:-${age}ms"` : ''}>${showDate ? `<div class="tld"${col ? ` style="color:${col}"` : ''}><span class="en">${x.age}</span>세 <span class="en">${x.mo}</span>월</div>` : ''}${x.h()}</div>`;
+  }).join('') || '<div class="mu">이야기가 시작되기를 기다리는 중…</div>';
+}
+
 function phoneParts() {
   const g = G, d = g.dec;
-  const items = [];
-  g.log.slice(0, 60).forEach(l => items.push({o: l.o, h: logHTML(l)}));
-  g.feed.slice(0, 10).forEach(p => items.push({o: p.o, h: postHTML(p)}));
-  items.sort((a, b) => b.o - a.o);
   // TODO(subway-conflict): v8-C의 「오늘의 소식」(G.feed[0] 강조) 패널은 타임라인에 섞여 강조가 없어졌다(메모 A6).
-  const tl = items.slice(0, 40).map(x => x.h).join('') || '<div class="mu">이야기가 시작되기를 기다리는 중…</div>';
+  const items = tlItems(), tl = tlHTML(items);
   const rum = g.rumor.length;
-  const navs = [['home', '🏠', '홈'], ['friends', '👥', '친구'], ['stash', '🗂️', '챙겨둔 것'], ['record', '📖', '기록'], ['public', '🏛️', '공공정보']];
-  // TODO(subway-conflict): 「공공정보」는 v8-C처럼 같은 탭에서 public-services.html로 이동해 진행 중인 게임이 사라진다(메모 B2).
+  // 하단 탭 4개(공공정보 탭은 1단계에서 뺐다)
+  const navs = [['home', '🏠', '홈'], ['friends', '👥', '친구'], ['stash', '🗂️', '챙겨둔 것'], ['record', '📖', '기록']];
   const nav = navs.map(x => `<button class="${(x[0] === 'home' && !MOD) || (MOD && MOD.k === 'nav' && MOD.t === x[0]) ? 'on' : ''}" data-a="nav:${x[0]}"><b>${x[1]}</b>${x[2]}${x[0] === 'stash' && rum ? `<span class="dot">${rum}</span>` : ''}</button>`).join('');
   let sheet = '', noti = '';
   if (MOD) sheet = modalBody();
   else if (d && !d.hid) sheet = `<div class="from"><span class="cir">${senderAv(d.w)}</span><div><b>${esc(d.w || '')}</b><div class="mu">${d.age}세 ${d.mo}월 · 갈림길</div></div></div>${decHTML()}<button class="hide" data-a="dhide">잠깐 내려 두기 ▾</button>`;
   if (d && d.hid && !MOD) noti = `📩 <b>${esc(d.w || '')}</b> · ${esc(d.t)} — 눌러서 다시 열기 · 결정 전까지 열차가 서 있어요`;
-  return {tl, nav, sheet, noti};
+  return {tl, items, nav, sheet, noti};
+}
+
+/* 친구 반응 알림 배너: 3초간 내려왔다 사라지고, 여러 개면 하나씩. 누르면 그 친구 스토리를 연다. */
+function pumpNoti() {
+  const g = G;
+  if (!g || UI.ntBusy || !g.ntQ || !g.ntQ.length || S !== 'play') return;
+  const n = g.ntQ.shift(), f = g.fr[n.fi], el = $s('ntb');
+  if (!f) return pumpNoti();
+  UI.ntBusy = true;
+  el.innerHTML = `${av(f.cols, 34)}<div><b>${esc(f.n)}</b><div>${esc(n.t)}</div></div>`;
+  // 올라온 스토리가 있으면 스토리를, 없으면 그 친구 프로필을 연다.
+  el.setAttribute('data-a', f.stories.some(s => s.exp >= g.m) ? `fst:${n.fi}` : `peer:${n.fi}`);
+  el.hidden = false; el.classList.remove('in'); void el.offsetWidth; el.classList.add('in');
+  setTimeout(() => {
+    el.classList.remove('in');
+    setTimeout(() => { el.hidden = true; UI.ntBusy = false; pumpNoti(); }, 350);
+  }, 3000);
 }
 
 function keepInputs(fn) {
@@ -1073,9 +1244,18 @@ function keepInputs(fn) {
 function renderPhone() {
   const g = G, p = phoneParts();
   $s('scr').querySelector('.sb0').innerHTML = `<span>${g.age}세 ${mo()}월</span><span>🔋 ${rd(100 - g.st.burn)}%</span>`;
-  $s('scr').querySelector('.apph').innerHTML = `<span class="logo">인생그램</span><span class="lin" style="color:${lineCol(g.job)}">● ${lineName(g.job)}</span>`;
+  $s('scr').querySelector('.apph').innerHTML = `<span class="logo en">${GAME_NAME}</span><span class="lin" style="color:${lineCol(g.job)}">● ${lineName(g.job)}</span>`;
   $s('scr').querySelector('.rings').innerHTML = ringHTML();
-  const tl = $s('tl'), st = tl.scrollTop; tl.innerHTML = p.tl; tl.scrollTop = st;
+  // 타임라인: 읽던 위치를 지키고, 아래로 내려 읽는 중이면 끌어올리지 않고 「새 소식 n개 ↑」를 띄운다.
+  const tl = $s('tl'), st = tl.scrollTop, h0 = tl.scrollHeight;
+  const fresh = UI.tlSeen ? p.items.filter(x => !UI.tlSeen.has(x.o)).length : 0;
+  tl.innerHTML = p.tl;
+  UI.tlSeen = new Set(p.items.map(x => x.o));
+  if (st > 8) {
+    tl.scrollTop = st + (tl.scrollHeight - h0);
+    if (fresh) { UI.tlNew += fresh; const b = $s('tlnew'); b.textContent = `새 소식 ${UI.tlNew}개 ↑`; b.hidden = false; }
+  } else tl.scrollTop = 0;
+  pumpNoti();
   $s('scr').querySelector('.nav').innerHTML = p.nav;
   const noti = $s('noti'); noti.hidden = !p.noti; noti.innerHTML = p.noti; if (p.noti) noti.setAttribute('data-a', 'dshow');
   const shb = $s('shb'), sh = $s('sheet'), ss = shb.scrollTop, key = MOD ? 'm:' + MOD.k + (MOD.sid || MOD.t || MOD.pid || MOD.i || '') : g.dec ? 'd' : '';
@@ -1241,6 +1421,8 @@ async function runEnding() {
 /* ---------- 장면 초기화 (새 인생·처음으로) ---------- */
 function resetScene() {
   UI.g = G; UI.riders = {}; UI.meKey = ''; UI.lastAge = null; UI.lastDec = null; UI.ending = false; UI.endShown = false; UI.xfQ = []; UI.ledMsg = '';
+  UI.ledHold = -1; UI.tlSeen = null; UI.tlBorn = null; UI.tlNew = 0;
+  if ($s('tlnew')) $s('tlnew').hidden = true;
   $s('people').innerHTML = ''; doors(false); setRouteWidth('long');
   const ph = $s('phone'); ph.classList.add('down'); $s('splash').classList.remove('gone');
   const ep = $s('endp'); ep.hidden = true; ep.innerHTML = '';
@@ -1265,19 +1447,27 @@ draw = function () {
   renderStatic();
   setOutside();
 
+  const adCard = () => { card.className = 'ad'; card.innerHTML = `<div class="big">이 자리에<br>당신이 살아볼<br><span class="en">${YEARS}</span>년이 실립니다</div><div class="mu" style="margin-top:10px">${ROUTE_NAME} · ${AGE_START}세 → ${AGE_END}세 종점</div>`; };
+  $s('plt').hidden = !(S === 'start' || !G || UI.starting);
+  $s('emg').style.visibility = S === 'pro' && !UI.boarding ? 'hidden' : ''; // 첫 페이지 패널 뒤로 비치지 않게
+
   if (S === 'start' || !G) {
-    hero.className = ''; hero.innerHTML = heroStart();
-    card.className = 'ad'; card.innerHTML = `<div class="big">이 자리에<br>당신이 살아볼<br>${YEARS}년이 실립니다</div><div class="mu" style="margin-top:10px">인생그램선 · ${AGE_START}세 → ${AGE_END}세</div>`;
-    led(`인생그램선 · ${AGE_START}세역에서 ${AGE_END}세 종착역까지 · 한 정거장마다 1년`);
+    // 시작 화면: 차내 대신 승강장을 보여 주고, 가운데 카드만 띄운다.
+    hero.className = 'hide';
+    if (!UI.starting) $s('plc').innerHTML = heroStart();
+    adCard();
+    led(departLed());
+    return;
+  }
+
+  if (S === 'pro') {
+    // 첫 페이지: 왼쪽은 광고 카드 그대로, 노선도 아래에 넓은 패널 하나
+    adCard();
+    hero.className = UI.boarding ? 'hide' : 'pro'; if (!UI.boarding) hero.innerHTML = heroPro();
+    if (!UI.boarding) led(departLed());
     return;
   }
   card.className = ''; card.innerHTML = cardHTML();
-
-  if (S === 'pro') {
-    hero.className = UI.boarding ? 'hide' : ''; if (!UI.boarding) hero.innerHTML = heroPro();
-    if (!UI.boarding) led(`${AGE_START}세역 · ${lineName(G.job)} 탑승 대기 중`);
-    return;
-  }
   hero.className = 'hide';
 
   if (S === 'end') {
@@ -1288,7 +1478,7 @@ draw = function () {
       const lines = [];
       if (G.jobAt) { let j = null; for (let m = 0; m <= G.m; m++) { const jm = G.jobAt[m] || j; if (jm && jm !== j) { lines.push(`<span style="background:${lineCol(jm)}">${lineName(jm)} · ${AGE_START + Math.floor(m / 12)}세 ${j ? '환승' : '출발'}</span>`); j = jm; } } }
       keepInputs(() => {
-        endp.innerHTML = `<div class="lines"><b style="margin-right:6px">타고 온 노선</b>${lines.join('')}</div>` + vEnd().replace('마흔 번째 생일', '종착역 · 마흔 번째 생일');
+        endp.innerHTML = `<div class="endlogo en">${GAME_NAME}</div><div class="lines"><b style="margin-right:6px">타고 온 노선</b>${lines.join('')}</div>` + vEnd().replace('마흔 번째 생일', '종착역 · 마흔 번째 생일');
       });
       endp.scrollTop = st;
     }
@@ -1302,15 +1492,22 @@ draw = function () {
     // 해가 바뀔 때: 서기만 하고 문은 열지 않는다
     flashAge(G.age);
     led(`이번 역은 ${G.age}세역입니다 · 내리실 문은 없습니다 · 다음 역은 ${G.age + 1}세역`);
-    if (!fast()) withBusy(() => sleep(900)).then(() => { if (S === 'play') loop(); });
-  } else if (!UI.busy && !UI.ledMsg.startsWith('이번 역은')) led(defaultLed());
+    // 정차가 끝나면 반드시 다시 그린다. 그사이 결정 창이 떠서 loop가 그리지 않더라도 대기 중인 환승을 놓치지 않는다.
+    if (!fast()) withBusy(() => sleep(900)).then(() => { if (S === 'play') { draw(); loop(); } });
+  } else if (!UI.busy && !UI.ledMsg.startsWith('이번 역은') && G.m >= UI.ledHold) led(defaultLed());
   UI.lastAge = G.age;
 
-  if (!UI.busy && !UI.boarding) {
+  // 환승·승객 변화: 결정 창이나 다른 창이 열려 있으면 닫은 뒤에 연출한다(큐는 그대로 둔다).
+  const sheetOpen = !!MOD || (G.dec && !G.dec.hid);
+  if (!UI.busy && !UI.boarding && !sheetOpen) {
     const want = wantRiders(), xf = UI.xfQ.shift() || null;
     const diff = Object.keys(want).some(k => !UI.riders[k]) || Object.keys(UI.riders).some(k => !want[k]);
     if (xf || diff) {
-      if (fast()) { placeMe(true); placeRiders(want); if (xf) led(`이번 열차는 ${lineName(G.job)}, ${AGE_END}세 행입니다`); }
+      if (fast()) {
+        // 직통: 연출 없이 색·옷차림만 바꾸고 LED 한 줄로 안내한다.
+        placeMe(true); placeRiders(want);
+        if (xf) { led(`${AGE_START + Math.floor(xf.m / 12)}세역 환승 · ${lineName(xf.from)} → ${lineName(xf.to)} · 이번 열차는 ${lineName(xf.to)}, ${AGE_END}세 행입니다`); UI.ledHold = G.m + 3; }
+      }
       else { runStop(xf, want); return; }
     }
     // 이름표 갱신(연인 → 배우자)
@@ -1345,7 +1542,7 @@ startArc = function (fi) {
  *   v8-C와 같은 동작이고 엔진(makeDec 자동 선택)은 건드리지 않았다. 검색 선택지를 빼거나 「메모만」을 고르게 할지는 나중에 정한다.
  * TODO(subway-conflict): v8-C 방 장면(roomHTML)의 마스코트 말풍선 안내(소문 도착·지쳐 보임·안부 권유)는 지하철 UI에 자리가 없다(메모 A4).
  *   LED 전광판이나 폰 알림으로 옮길지 정해야 한다. roomHTML() 코드는 그대로 남겨 두었다.
- * TODO(subway-conflict): 무대는 1280×800 고정이라 휴대폰 화면에서는 아주 작게 보인다(메모 B3). index.html은 아직 v8-C를 가리킨다.
+ * TODO(subway-conflict): 무대는 1280×800 고정이라 휴대폰 화면에서는 아주 작게 보인다(메모 B3). index.html은 v9-S를 가리킨다.
  * TODO(subway-conflict): 차내는 밝은 색 고정, 휴대폰 화면 안쪽과 엔딩 패널만 시스템 다크 모드를 따른다(메모 B4). */
 const _loop = loop;
 loop = function () {
@@ -1359,13 +1556,32 @@ newGame = function () {
   return r;
 };
 
-/* begin(탑승)은 capture 단계에서 가로채 연출 뒤에 엔진 처리를 그대로 실행한다. 연출 중 다른 클릭은 막는다. */
+/* 시작 화면 → 첫 페이지 전환: 승강장에 열차가 들어와 문이 열리고 차내로 넘어간다(약 1.3초). */
+async function runStart() {
+  UI.starting = true;
+  await withBusy(async () => {
+    const plt = $s('plt');
+    plt.classList.add('arrive'); await sleep(650);   // 열차 도착
+    plt.classList.add('open'); await sleep(350);     // 스크린도어·열차 문 열림
+    plt.classList.add('fade'); await sleep(350);     // 차내로
+  });
+  UI.allowNew = true;
+  const b = document.createElement('button'); b.dataset.a = 'new:other'; b.hidden = true; document.body.appendChild(b); b.click(); b.remove();
+  UI.allowNew = false;
+  UI.starting = false; $s('plt').classList.remove('arrive', 'open', 'fade'); draw();
+}
+
+/* begin(탑승)·시작 화면의 new:other는 capture 단계에서 가로채 연출 뒤에 엔진 처리를 그대로 실행한다. 연출 중 다른 클릭은 막는다. */
 document.addEventListener('click', e => {
   const t = e.target.closest && e.target.closest('[data-a]');
   if (UI.busy && e.target.closest && e.target.closest('#stage')) { e.stopPropagation(); e.preventDefault(); return; }
   if (t && t.dataset.a === 'begin' && !UI.allowBegin) {
     e.stopPropagation(); e.preventDefault();
     if (S === 'pro' && !UI.boarding) runBoarding();
+  }
+  if (t && t.dataset.a === 'new:other' && S === 'start' && !UI.allowNew) {
+    e.stopPropagation(); e.preventDefault();
+    if (!UI.starting) runStart();
   }
 }, true);
 
