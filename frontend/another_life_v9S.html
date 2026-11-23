@@ -332,6 +332,7 @@ body.sw{margin:0;padding:0;background:#15181c;overflow:hidden;color:#1f2a2e}
 details.dm{border-bottom:1px solid var(--ln);padding:6px 0}details.dm summary{cursor:pointer;font-size:13px}
 .endlogo{font:700 22px "Outfit","NEXON Lv2 Gothic","Noto Sans KR",sans-serif;padding:14px 22px 0;color:var(--ac)}
 #foot .en{font-weight:700}
+#tl .pins{margin:2px 0 8px;padding:6px 8px;border-radius:12px;background:rgba(255,214,90,.16);border:1px solid rgba(200,160,40,.35)}#tl .pin{position:relative;padding:2px 0}#tl .pin+.pin{border-top:1px dashed var(--ln)}#tl .pinok{position:absolute;right:2px;top:2px;border:1px solid var(--ln);background:var(--card);color:var(--ink);border-radius:10px;font:inherit;font-size:11px;padding:1px 8px;cursor:pointer}
 #tl .fxc{margin-top:3px;font-size:11.5px;color:var(--mu);letter-spacing:-.2px}
 </style></head><body><div id="app"></div><div id="toast"></div>
 <script src="life-stats.js"></script>
@@ -750,7 +751,8 @@ function fy(f,init){const old=f.job;if(!init){
  else if(f.job=='쉬는중'&&R()<.3)f.job='취준생'}
  newStory(f);return old!=f.job?old:null}
 function newStory(f){}
-function genFeed(fi,k,cap,kind){const f=G.fr[fi];kind=kind||(k?'info':pickW([['ach',3],['daily',4],['event',2]]));const s=kind=='ach'?ri(SNSL[f.job]):kind=='event'?ri(EVC):ri(GEN);G.feed.unshift({id:++G.pid,fi,age:G.age,m:G.m,o:++G.oc,kind,cap:cap||s[0],e:(cap&&k)?'💡📄':s[1],pc:ri(PHC),l:rr(20,320),k,cms:seedCms(fi)});G.feed=G.feed.slice(0,14)}
+/* 4단계: 친구 소식은 피드가 아니라 스토리로만 보여 준다(피드 = 나에게 일어난 일 + 세상·정책 소식) */
+function genFeed(fi,k,cap,kind){const f=G.fr[fi];if(!f)return;kind=kind||(k?'info':pickW([['ach',3],['daily',4],['event',2]]));const s=kind=='ach'?ri(SNSL[f.job]):kind=='event'?ri(EVC):ri(GEN);addStory(fi,k?'info':'mood',{t:cap||s[0],e:(cap&&k)?'💡📄':s[1],k})}
 function newGame(mode,fm={},as){
  const used=new Set(),pickName=s=>{const p=(s=='M'?NM_M:NM_F).filter(n=>!used.has(n));const n=ri(p.length?p:(s=='M'?NM_M:NM_F));used.add(n);return n};
  const sex0=(as&&as.sex)||(R()<.5?'M':'F'),o={sex:sex0};o.n=as?as.n:pickName(sex0);if(as)used.add(as.n);
@@ -867,7 +869,7 @@ function chg(fx,s=1){if(!fx)return;const mon=Object.keys(fx).some(k=>MONEY_KEYS.
 const tone=fx=>{let s=0;for(const k in fx){const v=fx[k];if(k=='burn')s-=v;else if(['mood','hp','soc','self','health','money'].includes(k))s+=v;else if(k=='hire')s+=8}return s>1?'g':s<-1?'b':'n'};
 /* 친구 반응 알림: 방금 추가한 줄을 알림으로 표시하고 알림 대기열에 넣는다(타임라인에는 안 나오고 기록 탭에는 남음). */
 function notiLast(){const l=G.log[0];if(!l)return;l.nt=1;(G.ntQ=G.ntQ||[]).push({fi:l.fi,t:l.t})}
-function addLine(t,tn,fx,tag,w,fi){t=txt(t);if(fx)chg(fx);G.log.unshift({age:G.age,mo:mo(),t,tn:tn||'n',nw:1,k:tag,fi,m:G.m,o:++G.oc});if(G.log.length>150)G.log.pop();
+function addLine(t,tn,fx,tag,w,fi){t=txt(t);if(fx)chg(fx);const L0={age:G.age,mo:mo(),t,tn:tn||'n',nw:1,k:tag,fi,m:G.m,o:++G.oc,w:w||0};G.log.unshift(L0);if(isStar(L0)&&!G.ledNews)G.ledNews='📱 새 소식 · '+t.replace(/^[^가-힣「]+/,'').slice(0,28);if(G.log.length>150)G.log.pop();
  const wt=w||(tn=='g'||tn=='b'?1.5:1);if(!G.yr.best||wt>=G.yr.best.w)G.yr.best={w:wt,t}}
 /* ===== 월 단위 진행 ===== */
 function tickMonth(){
@@ -894,11 +896,11 @@ function tickMonth(){
  else if(!G.dec&&(G.job=='취준생'||G.job=='공시생')){const n=G.m-(G.jsM==null?G.m:G.jsM),gs=G.job=='공시생',p=gs?(n>=6?.05:.01):(n<2?.05:n<12?.11:.2)+Math.min(.04,G.prep*.006);
   if(R()<p){addLine(gs?'필기에 이어 면접까지 통과했다. 최종 합격자 명단에 내 이름이 있다.':'넣어 둔 지원서 중 한 곳에서 연락이 왔다. 면접을 거쳐 최종 합격했다.','g',null,'c',4);hire()}}
  /* 예약된 이야기 */
- G.sq=G.sq.filter(q=>{if(q.due>G.m)return true;if(q.act){q.act();return false}addLine(q.t,q.tone||tone(q.fx||{}),q.fx,q.tag,q.w,q.fi);if(q.chip)G.log[0].chip=fxChip(q.fx);if(q.nt)notiLast();if(q.after)q.after();return false});
+ G.sq=G.sq.filter(q=>{if(q.due>G.m)return true;if(q.act){q.act();return false}addLine(q.t,q.tone||tone(q.fx||{}),q.fx,q.tag,q.w,q.fi);if(q.chip)G.log[0].chip=fxChip(q.fx);if(q.q)G.log[0].q=q.q;if(q.nt)notiLast();if(q.after)q.after();return false});
  /* 친구들의 삶 */
  if(G.m%12==0){G.fr.forEach((f,i)=>{const o=fy(f);if(o){const j=f.job,glad=f.bond>45;
-   if(JB[j].e){addLine(`${f.n}이(가) ${j}에 자리를 잡았다는 소식이 들렸다. ${glad?'진심으로 기뻤다.':'축하한다고 했는데, 속은 조금 쓰렸다.'}`,glad?'g':'n',(JB[G.job].s&&!glad)?{self:-1}:{soc:1},'u',2);genFeed(i)}
-   else if(j=='쉬는중'||j=='취준생')addLine(`${f.n}이(가) 일을 그만뒀다고 한다. 올리던 사진과는 다른 사정이 있었나 보다.`,'n',null,'u',2)}})}
+   if(JB[j].e){chg((JB[G.job].s&&!glad)?{self:-1}:{soc:1});addStory(i,"mood",{t:`${j} 합격! 새 출발 🎉`,e:"🎉💼",news:1})}
+   else if(j=='쉬는중'||j=='취준생')addStory(i,'inner',{t:'잠깐 쉬어 가는 중. 다시 시작할 거야.',e:'🌧️',news:1})}})}
  /* 3단계 7: 「정체된 해」 방지 — 10월까지 선택이 건드린 영역이 2개 미만이면 다른 영역의 소소한 선택을 하나 예약한다 */
  if(G.m%12==0)G.yrDom=new Set();
  else if(mo()==10&&(G.yrDom||new Set()).size<2&&!(G.fq||[]).some(x=>x.tag=='dom')){const have=G.yrDom||new Set(),c=MI.filter(e=>(!e.c||e.c(G))&&ctxOk(e,G)&&[...evDoms(e)].some(d=>!have.has(d)));if(c.length&&G.job!='군 복무')queueEv(ri(c),G.m,'dom')}
@@ -961,8 +963,8 @@ function pickC(i){const d=G.dec;if(!d)return;const c=d.e.ch[i];if(lock(c))return
  /* ③ 결과 크기: fx가 함수면 지금 상태로 계산한다 */
  const p=typeof c.p=='function'?c.p(G):c.p,r=(p==null||R()<p)?c.ok:(c.ko||c.ok),dly=r[2],fx=typeof r[1]=='function'?r[1](G):r[1];
  addLine(`${d.t}: ${c.t}.${c.pre?' '+c.pre:''}`,'q',null,'c',4);markDom(fx);
- if(dly)G.sq.push({due:G.m+dly,t:r[0],tone:tone(fx),fx,tag:'c',w:4,chip:1});
- else{addLine(r[0],tone(fx),fx,'c',4);G.log[0].chip=fxChip(fx)}}
+ if(dly)G.sq.push({due:G.m+dly,t:r[0],tone:tone(fx),fx,tag:'c',w:4,chip:1,q:`${d.t} → ${c.t}`});
+ else{addLine(r[0],tone(fx),fx,'c',4);G.log[0].chip=fxChip(fx);G.log[0].q=`${d.t} → ${c.t}`}}
 /* 3단계 7: 선택이 건드린 영역(건강·행복·관계·자신감·피로·돈)을 해마다 모은다 */
 const DOM_OF={health:'health',hp:'mood',mood:'mood',soc:'soc',_b:'soc',self:'self',burn:'burn',money:'money',cost:'money',gain:'money',borrow:'money',loan:'money'};function domsOf(fx){const s=new Set();if(fx&&typeof fx=='object')for(const k in fx)if(DOM_OF[k])s.add(DOM_OF[k]);return s}
 function markDom(fx){G.yrDom=G.yrDom||new Set();domsOf(fx).forEach(d=>G.yrDom.add(d))}
@@ -1072,17 +1074,19 @@ const QA=[['요즘 하루 중 제일 좋은 시간은?',['퇴근 직후','주말
 const POLLS=[['이번 연휴, 어디 갈까?',['여행','집콕']],['주말 약속 어때?',['번개 좋아','쉬고 싶어']],['이직 vs 존버?',['이직','존버']],['아침형 vs 저녁형?',['아침','저녁']]];
 const ARC={down:[['{n}에게서 연락이 왔다. 「사실 요즘 많이 힘들어서… 잠깐 얘기해도 돼?」',{soc:3}],['{n}이(가) 만나자고 했다. 늦은 밤 편의점 앞에서 오래 이야기를 들었다.',{soc:6,burn:2,hp:1}],['{n}이(가) 스토리에 남겼다. 「고마워. 덕분에 다시 시작해보려고.」 마음이 따뜻해졌다.',{hp:4,self:3,soc:4}]],trip:[['{n}이(가) 여행 가자고 했다. 「이번엔 진짜로.」',{}],['여행 준비로 단톡방이 시끄럽다. 설레면서도 통장이 걱정된다.',{money:-3,hp:2}],['{n}과(와)의 여행에서 돌아왔다. 사진 속 우리는 다 웃고 있었다.',{soc:8,hp:5,burn:-6,money:-4}]]};
 const CRPL={cong:'고마워 ㅎㅎ',envy:'에이 뭘ㅠ 나중에 얘기해',cheer:'힘이 된다 진짜',ask:'DM 보낼게!'};
-function addStory(fi,type,o={}){const f=G.fr[fi],s=Object.assign({id:++G.sid,fi,type,born:G.m,exp:G.m+2,seen:0,bg:rr(0,5),o:++G.oc},o);f.stories.unshift(s);f.stories=f.stories.slice(0,4);return s}
+/* 스토리는 저절로 사라지지 않는다. 친구별 최근 3개까지 보관하고, 올라오면 LED에 한 줄 예고한다. */
+function addStory(fi,type,o={}){const f=G.fr[fi],s=Object.assign({id:++G.sid,fi,type,born:G.m,exp:1e9,seen:0,bg:rr(0,5),o:++G.oc},o);f.stories.unshift(s);f.stories=f.stories.slice(0,3);G.ledNews='📱 '+f.n+'이(가) 스토리를 올렸습니다';return s}
+const isStar=l=>!!l&&(l.k=='c'||l.k=='u'||l.k=='me')&&l.tn!='q'&&((l.w||0)>=4||/^💡/.test(l.t)||l.k=='me');
 function findStory(id){for(const f of G.fr)for(const s of f.stories)if(s.id==id)return s;return null}
 function actS(){const a=[];G.fr.forEach(f=>f.stories.forEach(s=>{if(s.exp>=G.m)a.push(s)}));return a}
 function startSerial(i,from){const f=G.fr[i];if(f.serUntil>G.m)return;f.serUntil=G.m+3;const a=SERIAL[f.job]||SERIAL.default;addStory(i,'serial',{t:a[0],e:SERE[0],part:1,of:3,from});G.sq.push({due:G.m+1,act:()=>addStory(i,'serial',{t:a[1],e:SERE[1],part:2,of:3})});G.sq.push({due:G.m+2,act:()=>addStory(i,'serial',{t:a[2],e:SERE[2],part:3,of:3})})}
-function spawnOne(i){const f=G.fr[i];if(f.stories.filter(s=>s.exp>=G.m).length>=2)return;const r=R();
+function spawnOne(i){const f=G.fr[i];if(f.stories.filter(s=>!s.seen).length>=2)return;const r=R();
  if(r<.38){const s=R()<.7?ri(SNSL[f.job]):ri(GEN);addStory(i,'mood',{t:s[0],e:s[1]})}
  else if(r<.55){const q=ri(QA);addStory(i,'qa',{t:q[0],opts:q[1],e:'❓'})}
  else if(r<.72){const q=ri(POLLS);addStory(i,'poll',{t:q[0],opts:q[1],e:'🗳️'})}
  else if(r<.87&&f.bond>=45){const t=ri(TRUE[f.job]);addStory(i,'inner',{t:t[0],e:t[1]?'🌤️':'🌧️'})}
  else startSerial(i)}
-function spawnStories(){G.fr.forEach((f,i)=>{f.stories=f.stories.filter(s=>{if(s.exp>=G.m)return true;if(!s.seen&&(s.type=='inner'||s.type=='serial')&&R()<.6){addLine(`${f.n}의 스토리를 보지 못하고 지나쳤다. 나중에 다른 친구에게서 들었다.`,'b',{soc:-1},'f',1,i);f.bond=clf(f.bond-2)}return false});if(!f.stories.length&&R()<.3)spawnOne(i)})}
+function spawnStories(){G.fr.forEach((f,i)=>{if(!f.stories.some(s=>!s.seen)&&R()<.25)spawnOne(i)})}
 function touch(fi){const f=G.fr[fi];f.ix=(f.ix||0)+1;if(f.ix>=3&&!f.arc&&f.bond>=40){f.arc=1;startArc(fi)}}
 function startArc(fi){const f=G.fr[fi],k=R()<.5?'down':'trip',a=ARC[k];
  a.forEach((x,j)=>{G.sq.push({due:G.m+[1,3,5][j],t:x[0].replace(/\{n\}/g,f.n),tone:'g',fx:x[1],tag:'f',fi,w:4,after:j==2?()=>{if(k=='trip')genFeed(fi,null,'여행 다녀옴 ✈️','event');addStory(fi,'mood',{t:k=='trip'?'여행 끝, 우리 또 가자':'고마웠어. 이제 괜찮아',e:k=='trip'?'✈️🌅':'🫶'})}:null})});
@@ -1126,9 +1130,10 @@ function drawerHTML(){const dr=PK.filter(k=>G.done[k]),kn=PK.filter(k=>G.known[k
 function peersHTML(){return G.fr.map((f,i)=>`<div class="pr" data-a="peer:${i}">${av(f.cols,30)}<div style="flex:1"><b>${f.n}</b> <span class="mu">${f.rg}</span><div class="mu">${f.job} · ${'♥'.repeat(Math.max(1,Math.ceil(f.bond/25)))}</div></div></div>`).join('')}
 function modal(){return MOD?`<div class="ov"><div class="dc"><div class="bd">${modalBody()}</div></div></div>`:''}
 function storyBody(){const s=findStory(MOD.sid);if(!s)return '<p>사라진 스토리예요.</p><button class="btn sec" data-a="close">닫기</button>';const f=G.fr[s.fi];s.seen=1;
- const tl={mood:'근황',inner:'속마음',serial:`연재 ${s.part}/${s.of}`,qa:'질문',poll:'투표',info:'정보'}[s.type]||'',left=s.exp<=G.m?'이번 달까지':`${s.exp-G.m}개월 남음`;let act;
+ const tl={mood:'근황',inner:'속마음',serial:`연재 ${s.part}/${s.of}`,qa:'질문',poll:'투표',info:'정보'}[s.type]||'',left=`${AGE_START+Math.floor(s.born/12)}세 ${s.born%12+1}월`;let act;
  if(s.type=='qa'||s.type=='poll')act=s.ans!=null?`<div class="mu">내 답: ${esc(s.opts[s.ans])}</div>`:`<div class="chips">${s.opts.map((o,i)=>`<button class="chip" data-a="sans:${s.id}:${i}">${esc(o)}</button>`).join('')}</div>`;
  else act=s.replied?'<div class="mu">답장을 보냈어요.</div>':`<div class="mu">답장 보내기</div><div class="chips" style="margin-top:4px">${Object.keys(TONE).map(t=>`<button class="chip" data-a="srep:${t}">${TONE[t][0]}</button>`).join('')}</div>`;
+ if(s.k&&POL[s.k]&&!G.done[s.k])act=`<button class="btn sec" data-a="stip:${s.id}">🔎 알아보기</button>`+act;
  return `<div class="post">${av(f.cols,44)}<div style="flex:1"><b>${f.n}</b><div class="mu">${tl} · ${left}${s.from=='comment'?' · 내 댓글 이후':''}</div></div></div><div class="ph" style="height:140px;background:linear-gradient(135deg,${PHC[s.bg][0]},${PHC[s.bg][1]})">${s.e}</div><p class="se" style="font-size:17px">${esc(s.t)}</p>${act}<div class="chips" style="margin-top:10px"><button class="chip" data-a="snext">다음 스토리 ▶</button></div><button class="btn sec" data-a="close">닫기</button>`}
 function modalBody(){const k=MOD.k;
  if(k=='story')return storyBody();
@@ -1185,6 +1190,8 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b
  else if(k=='peer'){MOD={k:'peer',i:+v};draw()}
  else if(k=='ping'){const f=G.fr[+v];f.ping=G.m;f.bond=clf(f.bond+6);const tr=ri(TRUE[f.job]);G.sq.push({due:G.m+1,t:`${f.n}에게서 답장이 왔다. 「${tr[0]}」 안부를 묻길 잘했다.`,tone:'g',fx:{soc:4,hp:1},tag:'f',fi:+v,w:2});addLine(`${f.n}에게 안부 메시지를 보냈다.`,'q',null,'c',undefined,+v);touch(+v);MOD=null;draw()}
  else if(k=='yr'){MOD={k:'yr',i:+v};draw()}
+  else if(k=='stip'){const s=findStory(+v);if(s&&s.k){addRum(s.k,G.fr[s.fi].n);const r=G.rumor.find(x=>x.k==s.k);if(r&&!G.auto)startSr(r.id);else{MOD=null;draw()}}}
+ else if(k=='rd'){const l=G.log.find(x=>x.o==+v);if(l)l.rd=1;draw()}
  else if(k=='role'){tst((v=='money'?'재정':LB[v])+' — '+(v=='money'?MONEY_ROLE:ROLE[v]))}
  else if(k=='mys'){MOD={k:'my',mood:'😊'};draw()}
  else if(k=='mood'){const t=($('mys')||{}).value||'';MOD.mood=v;draw();if($('mys'))$('mys').value=t}
@@ -1510,18 +1517,27 @@ function tlBody(l) {
   const t = esc(l.t);
   if (l.k === 'f' && l.fi != null && G.fr[l.fi]) { const f = G.fr[l.fi]; return `<div class="sf">${av(f.cols, 34)}<div class="bub"><div class="mu">${f.n}</div>${t}</div></div>`; }
   if (l.tn === 'q') return `<div class="sq">내 선택 — ${t}</div>`;
-  if (l.k === 'c') return `<div class="sm2 ${l.tn}"><span class="em">📝</span><div><div class="mu">나의 이야기</div>${t}${l.chip ? `<div class="fxc">${esc(l.chip)}</div>` : ''}</div></div>`;
+  if (l.k === 'c') return `<div class="sm2 ${l.tn}"><span class="em">📝</span><div><div class="mu">${l.q ? esc(l.q) : '나의 이야기'}</div>${t}${l.chip ? `<div class="fxc">${esc(l.chip)}</div>` : ''}</div></div>`;
   if (l.k === 'u' || l.k === 'me') return `<div class="sm2 ${l.tn}"><span class="em">🔔</span><div>${t}</div></div>`;
   return `<div class="ln ${l.tn}"><span>${t}</span></div>`;
 }
+/* 4단계 피드(홈): 나에게 일어난 일(선택 결과·진로·돈·관계 변화)과 세상·정책 소식만. 친구 소식은 스토리, 친구 반응은 알림 배너,
+ * 덜 중요한 일상 문장은 기록 탭(일기장)에만 쌓는다. 한 달에 최대 1개, 중요 항목(★)은 예외이고 읽기 전까지 맨 위에 고정한다. */
+const feedLine = l => !l.nt && (l.k === 'c' || l.k === 'u' || l.k === 'me') && l.tn !== 'q';
 function tlItems() {
   const g = G, raw = [];
-  g.log.slice(0, 80).forEach(l => { if (!l.nt) raw.push({o: l.o, m: l.m, age: l.age, mo: l.mo, ex: isChoiceLine(l), h: () => tlBody(l)}); });
-  g.feed.slice(0, 12).forEach(p => raw.push({o: p.o, m: p.m, age: p.age, mo: moOf(p.m), ex: false, h: () => postHTML(p)}));
-  // 달마다 앞선 2줄만 남긴다(선택 결과 줄은 예외)
+  g.log.slice(0, 120).forEach(l => { if (feedLine(l) && (l.rd || !isStar(l))) raw.push({o: l.o, m: l.m, age: l.age, mo: l.mo, star: isStar(l), h: () => tlBody(l)}); });
   raw.sort((a, b) => a.o - b.o);
-  const cnt = {}, keep = raw.filter(x => x.ex || (cnt[x.m] = (cnt[x.m] || 0) + 1) <= TL_PER_MONTH);
+  const starM = new Set(raw.filter(x => x.star).map(x => x.m)), cnt = {};
+  const keep = raw.filter(x => x.star || (!starM.has(x.m) && (cnt[x.m] = (cnt[x.m] || 0) + 1) <= 1));
   return keep.sort((a, b) => b.o - a.o).slice(0, 40);
+}
+function pinnedHTML() {
+  const pins = G.log.filter(l => feedLine(l) && isStar(l) && !l.rd).slice(0, 3);
+  if (!pins.length) return '';
+  // 3개를 넘는 오래된 중요 항목은 읽은 것으로 넘긴다(타임라인으로 내려간다)
+  G.log.filter(l => feedLine(l) && isStar(l) && !l.rd).slice(3).forEach(l => { l.rd = 1; });
+  return `<div class="pins">${pins.map(l => `<div class="pin"><div class="mu">★ ${l.age}세 ${l.mo}월</div>${tlBody(l)}<button class="pinok" data-a="rd:${l.o}">읽음 ✓</button></div>`).join('')}</div>`;
 }
 function tlHTML(items) {
   const seen = UI.tlSeen, now = Date.now(), born = UI.tlBorn || (UI.tlBorn = new Map());
@@ -1583,7 +1599,7 @@ function renderPhone() {
   // 타임라인: 읽던 위치를 지키고, 아래로 내려 읽는 중이면 끌어올리지 않고 「새 소식 n개 ↑」를 띄운다.
   const tl = $s('tl'), st = tl.scrollTop, h0 = tl.scrollHeight;
   const fresh = UI.tlSeen ? p.items.filter(x => !UI.tlSeen.has(x.o)).length : 0;
-  tl.innerHTML = p.tl;
+  tl.innerHTML = pinnedHTML() + p.tl;
   UI.tlSeen = new Set(p.items.map(x => x.o));
   if (st > 8) {
     tl.scrollTop = st + (tl.scrollHeight - h0);
@@ -1835,7 +1851,8 @@ draw = function () {
     led(`이번 역은 ${G.age}세역입니다 · 내리실 문은 없습니다 · 다음 역은 ${G.age + 1}세역`);
     // 정차가 끝나면 반드시 다시 그린다. 그사이 결정 창이 떠서 loop가 그리지 않더라도 대기 중인 환승을 놓치지 않는다.
     if (!fast()) withBusy(() => sleep(900)).then(() => { if (S === 'play') { draw(); loop(); } });
-  } else if (!UI.busy && !UI.ledMsg.startsWith('이번 역은') && G.m >= UI.ledHold) led(defaultLed());
+  } else if (G.ledNews && !UI.busy) { led(G.ledNews); G.ledNews = null; UI.ledHold = G.m + 1; } // 새 스토리·소식 예고
+  else if (!UI.busy && !UI.ledMsg.startsWith('이번 역은') && G.m >= UI.ledHold) led(defaultLed());
   UI.lastAge = G.age;
 
   // 환승·승객 변화: 결정 창이나 다른 창이 열려 있으면 닫은 뒤에 연출한다(큐는 그대로 둔다).
