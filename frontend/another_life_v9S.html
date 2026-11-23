@@ -632,6 +632,49 @@ function ctxOk(ev,g){g=g||G;if(!ev||!g)return true;const T=ctxText(ev),skip=ev.c
 function ctxAudit(){const base=()=>({age:28,job:'중견·중소',h:'월세',m:60,hm:40,jsM:null,edu:null,mil:null,prep:0,sy:0,pn:'',st:{health:70,mood:55,soc:50,self:55,burn:50,money:55},me:{q:3,rg:'서울',sex:'M'},f:{partner:1,married:1,kid:1,preg:1,marTalk:1,indepTalk:1,first1:1,laid:1,pet:0},fr:[{bond:50,n:'친구'}],yq:null});
  const items=EV.map(e=>[e.id,e,g=>!e.c||e.c(g)]).concat(MI.map(e=>[e.id,e,g=>!e.c||e.c(g)])).concat(PK.map(k=>[k,POL[k],g=>POL[k].req.every(r=>r[1](g))]));
  items.forEach(([id,e,own])=>{const T=ctxText(e);CTX.forEach(r=>{if((e.ctx||{})[r.k]||!r.re.test(T))return;const g=base();r.probe(g);try{if(!r.ok(g)&&own(g))console.warn(`[ctxOk] 「${id}」: 「${(T.match(r.re)||[''])[0]}」 키워드가 있는데 자체 조건(c/req)에 ${r.k} 조건이 없습니다. ctxOk가 대신 막습니다.`)}catch(er){}})})}
+/* ===== 4단계 2: 친구 호감도(bond 0~100) · 단계 · 친구가 직접 거는 선택 이벤트(바텀시트 팝업) =====
+ * 단계: 아는 사이(<30) · 친구(30~59) · 절친(60+). lv는 이벤트가 열리는 최소 단계(0 아는 사이, 1 친구, 2 절친, -1 멀어짐 전용).
+ * 효과의 B는 그 친구 호감도 변화, fade는 연락 끊김. 친구별로 한 번씩만 나온다(f.fu). */
+const FST=b=>b>=60?'절친':b>=30?'친구':'아는 사이',FLV=b=>b>=60?2:b>=30?1:0;
+const FEV=[
+ {id:'fe_alba',lv:0,a:[20,25],c:g=>NONEARN.includes(g.job)&&!g.f.alba,t:'같이 알바할래?',x:'「{F}: 주말 카페 알바 자리가 두 개 났대. 같이 하자!」',ch:[
+  {t:'같이 한다',ok:['둘이 같이 하니 시간이 빨리 간다.',{alba:1,burn:3,hp:2,B:8}]},{t:'이번엔 패스',ok:['아쉬워하는 눈치였다.',{B:-3}]}]},
+ {id:'fe_study',lv:0,c:g=>g.job=='대학생'||(JB[g.job]&&JB[g.job].s==1),t:'시험 기간 스터디',x:'「{F}: 이번에 같이 준비할래? 도서관 아침 7시.」',ch:[
+  {t:'매일 나간다',ok:['서로 깨워 주며 버텼다.',{prep:1,self:3,burn:3,B:7}]},{t:'혼자가 편하다',ok:['조용히 혼자 했다.',{B:-2}]}]},
+ {id:'fe_bday',lv:0,t:'생일 파티 초대',x:'「{F}: 토요일에 내 생일 파티 해! 꼭 와.」',ch:[
+  {t:'선물을 들고 간다',ok:['오랜만에 크게 웃었다.',{cost:'S',soc:5,hp:3,B:8}]},{t:'축하 메시지만 보낸다',ok:['짧게 축하했다.',{B:-2}]}]},
+ {id:'fe_trip',lv:1,t:'여행 제안',x:'「{F}: 우리 이번엔 진짜 여행 가자. 2박 3일!」',ch:[
+  {t:'간다',need:{money:30},ok:['사진첩이 꽉 찼다. 돌아오는 길이 아쉬웠다.',{cost:'M',burn:-8,hp:5,B:10}]},{t:'당일치기로 줄이자고 한다',ok:['짧지만 알찼다.',{cost:'S',burn:-3,B:4}]},{t:'이번엔 못 간다',ok:['다음을 기약했다.',{B:-4}]}]},
+ {id:'fe_call',lv:1,t:'새벽의 전화',x:'「{F}: 자니…? 잠깐 얘기 좀 들어 줄 수 있어?」',ch:[
+  {t:'끝까지 들어 준다',ok:['새벽 세 시까지 통화했다. 서로 많이 기대게 됐다.',{burn:2,soc:4,B:12}]},{t:'내일 얘기하자고 한다',ok:['다음 날 연락했지만 괜찮다고만 했다.',{B:-5}]}]},
+ {id:'fe_loan',lv:1,a:[23,36],t:'돈 부탁',x:'「{F}: 정말 미안한데… 이번 달만 좀 빌려줄 수 있어?」',ch:[
+  {t:'빌려준다',p:(g,f)=>f.bond>=60?.8:.55,ok:['약속한 날 갚았다. 더 가까워졌다.',{B:8}],ko:['갚는다는 날짜가 자꾸 밀린다. 돈도 마음도 상했다.',{cost:'M',B:-12,soc:-3}]},{t:'정중히 거절한다',ok:['어색했지만 이해해 줬다.',{B:-4}]}]},
+ {id:'fe_blind',lv:1,a:[22,34],c:g=>!g.f.partner&&(g.f.exM==null||g.m-g.f.exM>=12),t:'소개팅 주선',x:'「{F}: 괜찮은 사람 있는데 한번 만나 볼래?」',ch:[
+  {t:'만나 본다',pre:'약속 장소로 가는 길이 길었다.',p:g=>Math.max(.3,Math.min(.85,.55+(g.st.soc-50)*.004+(g.st.mood-50)*.003)),ok:['대화가 잘 통했다. 다시 만나기로 했다.',{partner:1,soc:5,hp:4,B:6},1],ko:['어색하게 끝났다. 주선해 준 마음은 고맙다.',{B:2},1]},{t:'지금은 괜찮다고 한다',ok:['마음만 받았다.',{}]}]},
+ {id:'fe_wed',lv:1,a:[25,36],t:'결혼식 초대',x:'「{F}: 나 결혼해! 와 줄 거지?」',ch:[
+  {t:'축의금을 들고 간다',ok:['친구의 웃는 얼굴이 오래 남았다.',{cost:'S',soc:6,hp:2,B:8}]},{t:'축의금만 보낸다',ok:['마음 한쪽이 불편했다.',{cost:'S',B:-3}]}]},
+ {id:'fe_move',lv:1,a:[22,36],t:'이삿짐 좀 도와줘',x:'「{F}: 이번 주말 이사하는데… 짜장면 살게!」',ch:[
+  {t:'도와준다',ok:['허리는 아프지만 짜장면이 맛있었다.',{burn:3,health:-1,B:9}]},{t:'일정이 안 된다고 한다',ok:['다음에 꼭 돕겠다고 했다.',{B:-3}]}]},
+ {id:'fe_job',lv:2,c:g=>(JB[g.job]&&JB[g.job].s==1)||g.job=='쉬는중',t:'일자리 추천',x:'「{F}: 우리 팀에 자리 났어. 너 추천해도 돼?」',ch:[
+  {t:'부탁한다',pre:'추천을 받아 면접을 봤다.',p:.7,ok:['절친 덕분에 합격했다!',{hire:1,B:6},1],ko:['아쉽게 떨어졌지만 고마운 마음이 크다.',{prep:1,B:3},1]},{t:'내 힘으로 해 볼게',ok:['응원받았다.',{self:2}]}]},
+ {id:'fe_help',lv:2,c:g=>g.st.burn>=60||g.st.mood<40,t:'먼저 온 연락',x:'「{F}: 요즘 너 좀 이상해. 오늘 저녁 내가 살게. 나와.」',ch:[
+  {t:'나간다',ok:['말하지 않아도 알아주는 사람이 있었다.',{burn:-8,soc:6,hp:4,B:6}]},{t:'괜찮다고 한다',ok:['고마웠지만 혼자 있고 싶었다.',{soc:-2}]}]},
+ {id:'fe_crisis',lv:2,c:g=>g.st.money<25,t:'위기 때 내민 손',x:'「{F}: 힘들다며. 급한 거 있으면 말해. 우리 집에 잠깐 있어도 되고.」',ch:[
+  {t:'고맙게 도움을 받는다',ok:['급한 불을 껐다. 이 빚은 꼭 갚고 싶다.',{gain:'M',self:-1,B:8}]},{t:'마음만 받는다',ok:['그 말만으로 버틸 힘이 났다.',{self:2,B:3}]}]},
+ {id:'fe_biz',lv:2,a:[25,36],c:g=>isEarner(g)&&g.job!='창업',t:'같이 해 보자',x:'「{F}: 나 회사 차리는데, 같이 할래? 너라면 믿을 수 있어.」',ch:[
+  {t:'합류한다',pre:'사직서를 내고 친구와 사무실을 구했다.',p:.45,ok:['첫 계약을 따냈다! 둘이 소리를 질렀다.',{job:'창업',bizHit:1,self:8,B:10},3],ko:['일 년을 버티다 접었다. 우정은 남았다.',{job:'취준생',cost:'L',self:-6,B:-4},3]},{t:'응원만 한다',ok:['「잘되면 밥 사!」라고 웃었다.',{B:2}]}],autoW:()=>[.3,.7]},
+ {id:'fe_fade',lv:-1,c:(g,f)=>(f.lowM||0)>=24,t:'멀어진 사이',x:'{F}의 연락처를 한참 내려다봤다. 마지막 대화가 1년도 더 전이다.',ch:[
+  {t:'먼저 연락해 본다',p:.5,ok:['반갑게 답장이 왔다. 다시 이어졌다.',{B:15,soc:3}],ko:['답장이 오지 않았다. 그렇게 멀어졌다.',{soc:-2,fade:1}]},{t:'그냥 둔다',ok:['그렇게 연락이 끊겼다.',{fade:1}]}]},
+];
+/* 템플릿을 특정 친구의 이벤트로 만든다: 이름 치환, B → 그 친구 호감도(_b), fade → 연락 끊김 */
+function buildFE(tp,fi){const f=G.fr[fi];if(!tp||!f)return null;const fxOf=x=>{if(!x||typeof x!='object')return x;const o=Object.assign({},x);if('B' in o){o._b=[fi,o.B];delete o.B}if(o.fade){o.fgone=fi;delete o.fade}return o};
+ const rs=r=>r&&[String(r[0]).replace(/\{F\}/g,f.n),fxOf(r[1]),r[2]];
+ return {id:tp.id,fe:1,fi,tag:'rel',w:f.n,t:tp.t,x:tp.x.replace(/\{F\}/g,f.n),autoW:tp.autoW,ch:tp.ch.map(c=>Object.assign({},c,{p:typeof c.p=='function'?(g=>c.p(g,f)):c.p,ok:rs(c.ok),ko:rs(c.ko)}))}}
+function pickFriendEv(){const g=G,c=[];g.fr.forEach((f,fi)=>{if(f.gone)return;const lv=FLV(f.bond);f.fu=f.fu||{};
+  FEV.forEach(tp=>{if(f.fu[tp.id])return;if(tp.lv==-1?!tp.c(g,f):(tp.lv>lv||(tp.a&&(g.age<tp.a[0]||g.age>tp.a[1]))||(tp.c&&!tp.c(g,f))))return;const ev=buildFE(tp,fi);if(ctxOk(ev,g))c.push([[tp,fi],(1+f.bond/40)*extW(tp)])})});
+ if(!c.length)return null;const [tp,fi]=pickW(c);g.fr[fi].fu[tp.id]=1;return buildFE(tp,fi)}
+/* 호감도가 오래 낮으면(20 미만 24개월) 멀어짐 이벤트, 단계가 오르면 한 줄 알림. 매달 호출 */
+function bondTick(){G.fr.forEach((f,i)=>{if(f.gone)return;f.bond=clf(f.bond-.08);f.lowM=f.bond<20?(f.lowM||0)+1:0;const lv=FLV(f.bond);if(lv>(f.lvMax||0)){f.lvMax=lv;addLine(`${f.n}과(와) ${FST(f.bond)} 사이가 됐다.`,'g',null,'u',2,i)}})}
 const CARE={'취업':['job'],'주거':['house'],'돈':['money'],'관계·마음':['rel','mind']};
 const SPD=[0,1500,750,370,170];
 const FT='<footer>※ 이벤트·정책은 프로토타입용 예시이며 실제 대상·조건·금액은 연도와 지자체마다 다릅니다. 반드시 공식 사이트(.go.kr)에서 확인하세요 · <a href="https://www.youthcenter.go.kr" target="_blank">온통청년</a> · <a href="https://www.bokjiro.go.kr" target="_blank">복지로</a> · <a href="https://www.work24.go.kr" target="_blank">고용24</a> · <a href="https://www.gov.kr" target="_blank">정부24</a></footer>';
@@ -740,7 +783,7 @@ function genChar(o={}){const q=o.q||pickW([[1,2],[2,3],[3,4],[4,3],[5,2]]),sex=o
  /* path는 백엔드 플레이 기록 계약(문자열) 때문에 남겨 둔다. 첫 진로 선택에서 정해진다. cols는 예전 코드와 호환되게 look을 가리킨다. */
  return{n:o.n,sex,rg:o.rg||ri(RG),q,path:o.path||'미정',look,cols:look}}
 function mkFriend(n,sex){const c=genChar({n,sex});c.job=pickW([['대학생',.74],['중견·중소',.1],['취준생',.07],['공시생',.05],['프리랜서',.04]]);
- c.gradM=c.job=='대학생'?pickW([[48,5],[60,2],[30,2]]):0;c.bond=rr(15,35);c.log=[];c.stories=[];c.ix=0;fy(c,1);return c}
+ c.gradM=c.job=='대학생'?pickW([[48,5],[60,2],[30,2]]):0;c.bond=rr(15,35);c.lvMax=c.bond>=60?2:c.bond>=30?1:0;c.log=[];c.stories=[];c.ix=0;fy(c,1);return c}
 function fy(f,init){const old=f.job;if(!init){
  /* 남자 친구들의 군 복무(18개월). 늦어도 23세 중에는 입대한다. */
  if(f.job=='군 복무'){if(G.m>=f.armyEnd)f.job=f.prevJob||'취준생'}
@@ -860,7 +903,7 @@ function chg(fx,s=1){if(!fx)return;const mon=Object.keys(fx).some(k=>MONEY_KEYS.
  else if(k=='loan')addLoan(v,v=='student'?EC.tuitionLoan:amtOf('M'));
  else if(k=='debt')addLoan('card',v);
  else if(k=='car'){const a=amtOf(v);spend(a);G.car=(G.car||0)+a*.7}
- else if(k=='jobLv')G.jobLv=(G.jobLv||0)+v;else if(k=='repay')G.repay=v;
+ else if(k=='fgone'){if(G.fr[v])G.fr[v].gone=1}else if(k=='jobLv')G.jobLv=(G.jobLv||0)+v;else if(k=='repay')G.repay=v;
  else if(k=='rum')addRum(v);else if(k=='job')setJob(v);else if(k=='hire')hire(typeof v=='string'?v:null);else if(k=='h')setHome(v);
  else if(k=='_b'){const f=G.fr[v[0]];f.bond=clf(f.bond+v[1])}else if(k=='leave'){startLeave(v)}else{if(k=='partner'&&v&&!G.f.partner)G.pm=G.m;if(k=='alba'&&v)G.albaInc=rr(EC.partTime[0],EC.partTime[1]);G.f[k]=v;if(k=='partner'&&!G.pn){const ps=(G.me.sex=='M'?NM_F:NM_M).filter(n=>n!=G.me.n&&!G.fr.some(f=>f.n==n));G.pn=ri(ps.length?ps:(G.me.sex=='M'?NM_F:NM_M));G.plook=genLook(G.me.sex=='M'?'F':'M')}}}
  recalc();
@@ -878,7 +921,7 @@ function tickMonth(){
  chg(J.d,s);const t=G.st;
  G.selfMom=(G.selfMom||0)*SR.selfAnchor.momentumDecay;
  t.burn=clf(t.burn-t.burn*(t.health<=SR.link.sickAt?.006:.012));t.self=clf(t.self+(selfAnchor(G)-t.self)*.02);t.soc=clf(t.soc+(45-t.soc)*.012-.05);
- linkTick();
+ linkTick();bondTick();
  t.health=clf(t.health+(t.burn>70?-.35:t.burn<35?.12:0)-(G.age>35?.05:0));
  t.mood=clf(t.mood+((t.soc*.3+t.self*.25+(100-t.burn)*.2+t.health*.15+t.money*.1)*.9-t.mood)*.07);
  if(JB[G.job].s==1){G.prep+=.08;G.sy+=s}
@@ -928,6 +971,8 @@ function pickDecision(){
  const cand=PK.filter(k=>POL[k].ok(G)&&!G.done[k]&&!G.miss[k]&&!G.heard[k]);
  if(cand.length&&R()<.16+G.st.soc/500){const k=ri(cand),P=POL[k],f=ri(G.fr),fi=G.fr.indexOf(f);G.heard[k]=1;genFeed(fi,k,'요즘 알아보는 중 👀 '+P.h);
   return makeDec({id:'rumor',w:f.n,t:'지나가듯 들은 소문',x:`${f.n}이(가) 말했다. 「${P.h}」`,ch:[{t:'바로 검색해본다',act:()=>{G.rumor.push({id:++G.tid,k,ttl:8,src:f.n});startSr(G.rumor[G.rumor.length-1].id)}},{t:'일단 메모만 해둔다',act:()=>{G.rumor.push({id:++G.tid,k,ttl:8,src:f.n});addLine('메모해뒀다. 시간 날 때 알아봐야지. (서랍 확인)','n')}},{t:'그냥 흘려듣는다',act:()=>{G.miss[k]=1;addLine('그냥 흘려들었다.','n')}}]})}
+ /* 4단계 2: 친구가 거는 이벤트 */
+ if(R()<(G.job=='군 복무'?.12:.22)){const fe=pickFriendEv();if(fe)return makeDec(fe)}
  const army=G.job=='군 복무',ARMY_EV=['mom','scam','envy','wedf'],ARMY_MI=['m_sns','m_rain','m_parent','m_old','m_sleep'];
  const major=EV.filter(e=>(!army||ARMY_EV.includes(e.id))&&(!e.a||G.age>=e.a[0]&&G.age<=e.a[1])&&(!e.c||e.c(G))&&ctxOk(e,G)&&(G.used[e.id]||0)<(e.max||1));
  const micro=MI.filter(e=>(!army||ARMY_MI.includes(e.id))&&(!e.c||e.c(G))&&ctxOk(e,G)&&!G.recent.includes(e.id));let ev=null;
@@ -1087,7 +1132,8 @@ function spawnOne(i){const f=G.fr[i];if(f.stories.filter(s=>!s.seen).length>=2)r
  else if(r<.87&&f.bond>=45){const t=ri(TRUE[f.job]);addStory(i,'inner',{t:t[0],e:t[1]?'🌤️':'🌧️'})}
  else startSerial(i)}
 function spawnStories(){G.fr.forEach((f,i)=>{if(!f.stories.some(s=>!s.seen)&&R()<.25)spawnOne(i)})}
-function touch(fi){const f=G.fr[fi];f.ix=(f.ix||0)+1;if(f.ix>=3&&!f.arc&&f.bond>=40){f.arc=1;startArc(fi)}}
+/* 스토리·댓글로 자주 주고받으면 그 친구가 먼저 이벤트를 건다(예전 연재 이야기 startArc를 친구 이벤트로 합침) */
+function touch(fi){const f=G.fr[fi];f.ix=(f.ix||0)+1;if(f.ix>=3&&!f.arc&&f.bond>=40){f.arc=1;f.fu=f.fu||{};const tp=FEV.find(x=>x.id==(f.fu.fe_call?'fe_trip':'fe_call'));if(tp&&!f.fu[tp.id]){f.fu[tp.id]=1;queueEv(()=>buildFE(tp,fi),G.m+1)}}}
 function startArc(fi){const f=G.fr[fi],k=R()<.5?'down':'trip',a=ARC[k];
  a.forEach((x,j)=>{G.sq.push({due:G.m+[1,3,5][j],t:x[0].replace(/\{n\}/g,f.n),tone:'g',fx:x[1],tag:'f',fi,w:4,after:j==2?()=>{if(k=='trip')genFeed(fi,null,'여행 다녀옴 ✈️','event');addStory(fi,'mood',{t:k=='trip'?'여행 끝, 우리 또 가자':'고마웠어. 이제 괜찮아',e:k=='trip'?'✈️🌅':'🫶'})}:null})});
  addLine(`${f.n}과(와)의 이야기가 이어지기 시작했다.`,'n',null,'u',2)}
@@ -1161,7 +1207,7 @@ function vPlay(){const items=[];G.log.slice(0,60).forEach(l=>items.push({o:l.o,h
  <div class="hm2"><div class="pn"><h4>내 이야기 <span>친구 소식이 함께 흘러요</span></h4>${decHTML()}<div class="strm">${items.slice(0,36).map(x=>x.h).join('')}</div></div>
  <div>${ringHTML()}<div class="pn"><h4>오늘의 소식</h4>${G.feed[0]?postHTML(G.feed[0]):'<div class="mu">아직 소식이 없어요.</div>'}</div><div class="pn"><h4>인생 지도 <span>한 칸 = 1년</span></h4><div class="mp">${map}</div></div></div></div></div>${FT}<div class="cnav">${nav}</div>${modal()}`}
 modalBody=function(){if(MOD&&MOD.k=='nav'){const t=MOD.t;
- if(t=='friends'){const recent=f=>f.ping>G.m-6;const rows=G.fr.map((f,i)=>`<div class="frl">${av(f.cols,40)}<div style="flex:1;min-width:0"><b>${f.n}</b> <span class="mu">${f.job}</span><div class="bd" title="친밀도 ${rd(f.bond)}"><i style="width:${clf(f.bond)}%"></i></div></div><button data-a="ping:${i}" ${recent(f)?'disabled title="최근에 안부를 물었어요"':''}>💬 안부 묻기</button></div>`).join('');const dm=G.fr.map((f,i)=>{const ls=G.log.filter(l=>l.fi===i&&/안부/.test(l.t));return ls.length?`<details class="dm"><summary>${f.n} · 안부 ${ls.length}건</summary>${ls.slice(0,6).map(l=>`<div class="lg"><span class="mu">${l.age}세 ${l.mo}월</span> ${esc(l.t)}</div>`).join('')}</details>`:''}).join('');return `<h3 class="se" style="margin:0 0 8px">친구들</h3>${rows}<h4 class="se" style="margin:14px 0 4px">안부 대화</h4>${dm||'<div class="mu">안부를 물으면 친구별로 대화가 쌓여요.</div>'}<button class="btn sec" data-a="close">닫기</button>`}
+ if(t=='friends'){const recent=f=>f.ping>G.m-6;const rows=G.fr.map((f,i)=>`<div class="frl">${av(f.cols,40)}<div style="flex:1;min-width:0"><b>${f.n}</b> <span class="kd">${f.gone?"연락 끊김":FST(f.bond)}</span> <span class="mu">${f.job}</span><div class="bd" title="호감도 ${rd(f.bond)}"><i style="width:${clf(f.bond)}%"></i></div></div><button data-a="ping:${i}" ${recent(f)||f.gone?`disabled title="${f.gone?"연락이 끊겼어요":"최근에 안부를 물었어요"}"`:""}>💬 안부 묻기</button></div>`).join("");const dm=G.fr.map((f,i)=>{const ls=G.log.filter(l=>l.fi===i&&/안부/.test(l.t));return ls.length?`<details class="dm"><summary>${f.n} · 안부 ${ls.length}건</summary>${ls.slice(0,6).map(l=>`<div class="lg"><span class="mu">${l.age}세 ${l.mo}월</span> ${esc(l.t)}</div>`).join('')}</details>`:''}).join('');return `<h3 class="se" style="margin:0 0 8px">친구들</h3>${rows}<h4 class="se" style="margin:14px 0 4px">안부 대화</h4>${dm||'<div class="mu">안부를 물으면 친구별로 대화가 쌓여요.</div>'}<button class="btn sec" data-a="close">닫기</button>`}
  if(t=='stash')return `<h3 class="se" style="margin:0 0 8px">챙겨둔 것</h3>${drawerHTML()}<h4 class="se" style="margin:12px 0 4px">제도 도감</h4><div class="mu">알게 된 제도만 이름이 보여요.</div>${PK.map(k=>{const s=G.done[k]?'✅ 챙김':G.known[k]?'📌 저장':G.rumor.some(r=>r.k==k)?'⏳ 소문':G.miss[k]?'놓침':G.heard[k]?'들어봄':'';return `<div class="lg">${s?POL[k].n:'？？？'} <span class="mu">${s}</span></div>`}).join('')}<button class="btn sec" data-a="close">닫기</button>`;
  if(t=='record')return `<h3 class="se" style="margin:0 0 8px">인생 기록</h3>${G.map.map(c=>`<div class="lg"><span style="color:${moodCol(c.mood)}">●</span> <b>${c.age}세</b> ${esc(c.t)}</div>`).join('')||'<div class="mu">아직 기록된 해가 없어요.</div>'}<button class="btn" data-a="diary">일기장 전체 보기</button><button class="btn sec" data-a="close">닫기</button>`}
  return baseMB()};
@@ -2046,7 +2092,7 @@ draw();
       <hr style="border-color:#444">
       <div>나이 <button style="${btn}" data-d="y1">+1년</button> <input id="dAge" type="number" min="20" max="35" value="${g ? Math.min(35, g.age + 1) : 25}" style="${inp};width:48px"> <button style="${btn}" data-d="yto">로 이동</button></div>
       <div>다시 뽑기 ${sel('dSex', [['r', '성별?'], ['M', '남'], ['F', '여']])} ${sel('dQ', [['r', '형편?'], [1, 'q1'], [2, 'q2'], [3, 'q3'], [4, 'q4'], [5, 'q5']])} ${sel('dRg', [['r', '지역?']].concat(RG.map(r => [r, r])))} <button style="${btn}" data-d="new">뽑기</button></div>
-      <div>이벤트 ${sel('dEv', EV.concat(MI).map(e => [e.id, e.id + ' · ' + e.t]))} <button style="${btn}" data-d="ev">발생</button> <label><input id="dForce" type="checkbox">조건 무시</label></div>
+      <div>이벤트 ${sel('dEv', EV.concat(MI).map(e => [e.id, e.id + ' · ' + e.t]).concat(FEV.map(e => [e.id, '👥 ' + e.id + ' · ' + e.t])))} <button style="${btn}" data-d="ev">발생</button> <label><input id="dForce" type="checkbox">조건 무시</label></div>
       <div>상태 ${sel('dSt', keys.map(k => [k, barLabel(k)]))} <input id="dVal" type="number" min="0" max="100" value="50" style="${inp};width:48px"> <button style="${btn}" data-d="st">설정</button></div>
       <div>${g ? keys.map(k => `${barLabel(k)} ${rd(g.st[k])}`).join(' · ') : ''}</div>`;
   }
@@ -2079,7 +2125,7 @@ draw();
     }
     else if (a === 'ev') {
       if (!G || S !== 'play') return tst('탑승 후에 쓸 수 있어요');
-      const ev = EV.concat(MI).find(x => x.id === v('dEv')); if (!ev) return;
+      const fe = FEV.find(x => x.id === v('dEv')); let ev = fe ? buildFE(fe, G.fr.indexOf(G.fr.slice().sort((a, b) => b.bond - a.bond)[0])) : EV.concat(MI).find(x => x.id === v('dEv')); if (!ev) return;
       const okNow = (!ev.c || ev.c(G)) && (typeof ctxOk !== 'function' || ctxOk(ev, G));
       if (!okNow && !document.getElementById('dForce').checked) return tst('지금 상황에서는 조건이 맞지 않아요(조건 무시를 켜면 강제로 띄움)');
       MOD = null; G.dec = null; if (ev.on) ev.on(G); G.used[ev.id] = (G.used[ev.id] || 0) + 1; makeDec(ev); draw();
