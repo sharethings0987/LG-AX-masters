@@ -15,3 +15,5 @@ services:
         sync: false
       - key: LH_SERVICE_KEY
         sync: false
+      - key: ONTONG_YOUTH_KEY
+        sync: false

@@ -250,3 +250,68 @@ def test_lh_upstream_error_code_is_reported_without_exposing_key(client, monkeyp
     assert response.status_code == 502
     assert "SERVICE_ACCESS_DENIED_ERROR" in response.json()["detail"]
     assert service_key not in response.text
+
+
+def test_youth_policies_requires_server_key(client, monkeypatch):
+    monkeypatch.delenv("ONTONG_YOUTH_KEY", raising=False)
+    r = client.get("/api/public/youth-policies")
+    assert r.status_code == 503
+    assert "인증키" in r.json()["detail"]
+
+
+def test_youth_policies_proxy_uses_server_key_and_search(client, monkeypatch):
+    monkeypatch.setenv("ONTONG_YOUTH_KEY", "youth-server-only-key")
+    captured = {}
+
+    async def fake_fetch(url, params, source):
+        captured.update(url=url, params=params, source=source)
+        return {
+            "resultCode": 200,
+            "result": {
+                "pagging": {"pageNum": 2, "pageSize": 10, "totCount": 1},
+                "youthPolicyList": [{"plcyNo": "P1", "plcyNm": "테스트 청년정책"}],
+            },
+        }
+
+    monkeypatch.setattr(public_data, "_fetch_json", fake_fetch)
+    r = client.get("/api/public/youth-policies", params={"page": 2, "per_page": 10, "keyword": " 주거 "})
+    assert r.status_code == 200
+    assert r.json()["result"]["youthPolicyList"][0]["plcyNm"] == "테스트 청년정책"
+    assert captured["url"] == public_data.YOUTH_POLICY_URL
+    assert captured["params"]["apiKeyNm"] == "youth-server-only-key"
+    assert captured["params"]["pageNum"] == 2
+    assert captured["params"]["pageSize"] == 10
+    assert captured["params"]["pageType"] == "1"
+    assert captured["params"]["rtnType"] == "json"
+    assert captured["params"]["plcyKywdNm"] == "주거"
+    assert "plcyNm" not in captured["params"]
+
+
+def test_youth_policy_detail_requests_detail_page(client, monkeypatch):
+    monkeypatch.setenv("ONTONG_YOUTH_KEY", "youth-server-only-key")
+    captured = {}
+
+    async def fake_fetch(url, params, source):
+        captured.update(url=url, params=params, source=source)
+        return {"resultCode": 200, "result": {"youthPolicyList": [{"plcyNo": "P1"}]}}
+
+    monkeypatch.setattr(public_data, "_fetch_json", fake_fetch)
+    r = client.get("/api/public/youth-policies/P1")
+    assert r.status_code == 200
+    assert captured["params"]["pageType"] == "2"
+    assert captured["params"]["plcyNo"] == "P1"
+    assert client.get("/api/public/youth-policies/bad%20id").status_code == 422
+
+
+def test_youth_policy_error_without_result_is_reported_without_key(client, monkeypatch):
+    service_key = "youth-server-only-key"
+    monkeypatch.setenv("ONTONG_YOUTH_KEY", service_key)
+
+    async def fake_fetch(url, params, source):
+        return {"resultCode": 401, "resultMessage": f"invalid key {service_key}"}
+
+    monkeypatch.setattr(public_data, "_fetch_json", fake_fetch)
+    r = client.get("/api/public/youth-policies")
+    assert r.status_code == 502
+    assert "401" in r.json()["detail"]
+    assert service_key not in r.text

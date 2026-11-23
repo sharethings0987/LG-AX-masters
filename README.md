@@ -47,7 +47,7 @@ uvicorn app.main:app --reload
 
 GitHub Pages는 정적 파일만 제공하므로 FastAPI 백엔드는 실행되지 않습니다.
 따라서 API 기반 정책 갱신, 편지 저장, 플레이 기록 기능은 사용할 수 없고, 게임의 내장 정책을 사용합니다.
-API 기능까지 공개하려면 백엔드를 별도 호스팅하고 프론트엔드의 API 주소 및 CORS 설정을 구성해야 합니다. GitHub Pages에는 `frontend/public-services.html`도 배포되며, 게임의 「공공정보」 메뉴에서 정부24 혜택과 LH 임대공고 목록을 볼 수 있습니다. 이 목록은 게임의 정책 판정과 별도로 동작합니다.
+API 기능까지 공개하려면 백엔드를 별도 호스팅하고 프론트엔드의 API 주소 및 CORS 설정을 구성해야 합니다. GitHub Pages에는 `frontend/public-services.html`도 배포되며, 게임의 「공공정보」 메뉴에서 정부24 혜택, LH 임대공고, 온통청년 청년정책 목록을 볼 수 있습니다. 이 목록은 게임의 정책 판정과 별도로 동작합니다.
 
 ### KOSIS 통계 페이지
 
@@ -78,6 +78,8 @@ python backend/app/kosis_public.py
 | GET | `/api/public/benefits` | 정부24 공공서비스(혜택) 목록 |
 | GET | `/api/public/benefits/{service_id}/conditions` | 정부24 공공서비스 지원 조건 |
 | GET | `/api/public/lh-notices` | LH 임대주택 공고 목록 |
+| GET | `/api/public/youth-policies` | 온통청년 청년정책 목록 (`keyword`, `name` 검색 가능) |
+| GET | `/api/public/youth-policies/{policy_no}` | 온통청년 청년정책 상세 |
 
 공공 API 프록시는 키를 백엔드 환경변수에서만 읽습니다. 브라우저 코드나 GitHub Pages 저장소에 인증키를 넣지 마세요. 정부24와 LH API의 정확한 지원 대상·접수 기간은 각 카드의 공식 안내 링크에서 확인해야 합니다.
 
@@ -90,7 +92,7 @@ GitHub Pages는 백엔드 프로세스를 실행할 수 없습니다. 저장소 
 
 1. Render에서 **New → Blueprint**를 선택하고 GitHub 저장소를 연결합니다. Root Directory는 별도로 지정하지 않습니다.
 2. Blueprint가 `render.yaml`을 감지하면 `lg-ax-masters-api` 서비스를 만들고 배포합니다.
-3. Render 서비스의 **Environment** 설정에서 `GOV24_SERVICE_KEY`와 `LH_SERVICE_KEY`를 발급받은 키로 등록합니다. 키는 Blueprint나 GitHub에 저장하지 않습니다.
+3. Render 서비스의 **Environment** 설정에서 `GOV24_SERVICE_KEY`, `LH_SERVICE_KEY`, `ONTONG_YOUTH_KEY`를 발급받은 키로 등록합니다. 키는 Blueprint나 GitHub에 저장하지 않습니다.
 4. 배포가 완료되면 서비스 URL의 `/api/health`가 `{"ok": true, ...}`를 반환하는지 확인합니다.
 5. 발급된 기본 URL을 `frontend/api-config.js`의 `window.AL_API_BASE_URL` 값에 설정하고 `main`에 푸시합니다. `/api` 경로는 URL에 붙이지 않습니다. Pages 배포가 끝나면 게임의 「공공정보」 메뉴에서 목록을 확인합니다.
 
@@ -170,5 +172,6 @@ python -m app.seed
 | `AL_FRONTEND_DIR` | `frontend/` | 정적 서빙할 폴더 |
 | `GOV24_SERVICE_KEY` | 없음 | 정부24 공공서비스 API 인증키 |
 | `LH_SERVICE_KEY` | 없음 | LH 분양임대공고 API 인증키 |
+| `ONTONG_YOUTH_KEY` | 없음 | 온통청년 청년정책 API 인증키 |
 
 ※ 이벤트·정책은 프로토타입용 예시입니다. 실제 대상·조건·금액은 온통청년·복지로·고용24·정부24에서 확인해야 합니다.

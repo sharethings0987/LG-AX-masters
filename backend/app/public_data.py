@@ -1,4 +1,4 @@
-"""Server-side proxies for public benefit and LH housing notice APIs."""
+"""Server-side proxies for public benefit, LH housing notice and youth policy APIs."""
 from __future__ import annotations
 
 import logging
@@ -15,6 +15,8 @@ router = APIRouter(prefix="/api/public", tags=["public-data"])
 
 GOV24_BASE_URL = "https://api.odcloud.kr/api/gov24/v3"
 LH_URL = "https://apis.data.go.kr/B552555/lhLeaseNoticeInfo1/lhLeaseNoticeInfo1"
+YOUTH_POLICY_URL = "https://www.youthcenter.go.kr/go/ythip/getPlcy"
+YOUTH_SOURCE = "온통청년 청년정책"
 
 
 def _upstream_error_code(response: httpx.Response) -> str | None:
@@ -134,3 +136,50 @@ async def list_lh_notices(
         },
         "LH 임대공고",
     )
+
+
+def _youth_result(payload: Any) -> Any:
+    """온통청년은 오류도 HTTP 200으로 줄 수 있어 resultCode와 result를 확인한다."""
+    if isinstance(payload, dict) and isinstance(payload.get("result"), dict):
+        return payload
+    code = payload.get("resultCode") if isinstance(payload, dict) else None
+    code = str(code) if code is not None else ""
+    logger.warning("%s upstream returned no result (resultCode=%s)", YOUTH_SOURCE, code or "-")
+    detail = f"{YOUTH_SOURCE} API가 결과를 돌려주지 않았습니다. "
+    if re.fullmatch(r"[A-Za-z0-9_.-]{1,80}", code):
+        detail += f"오류 코드: {code}. "
+    raise HTTPException(502, detail + "인증키와 활용 신청 상태를 확인해 주세요.")
+
+
+@router.get("/youth-policies")
+async def list_youth_policies(
+    page: int = Query(1, ge=1),
+    per_page: int = Query(20, ge=1, le=100),
+    keyword: str | None = Query(None, max_length=100),
+    name: str | None = Query(None, max_length=100),
+):
+    key = _service_key("ONTONG_YOUTH_KEY", YOUTH_SOURCE)
+    params: dict[str, str | int] = {
+        "apiKeyNm": key,
+        "pageNum": page,
+        "pageSize": per_page,
+        "pageType": "1",
+        "rtnType": "json",
+    }
+    if keyword and keyword.strip():
+        params["plcyKywdNm"] = keyword.strip()
+    if name and name.strip():
+        params["plcyNm"] = name.strip()
+    return _youth_result(await _fetch_json(YOUTH_POLICY_URL, params, YOUTH_SOURCE))
+
+
+@router.get("/youth-policies/{policy_no}")
+async def youth_policy_detail(
+    policy_no: str = PathParam(..., pattern=r"^[A-Za-z0-9_-]{1,40}$"),
+):
+    key = _service_key("ONTONG_YOUTH_KEY", YOUTH_SOURCE)
+    return _youth_result(await _fetch_json(
+        YOUTH_POLICY_URL,
+        {"apiKeyNm": key, "pageType": "2", "plcyNo": policy_no, "rtnType": "json"},
+        YOUTH_SOURCE,
+    ))

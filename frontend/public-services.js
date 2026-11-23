@@ -9,6 +9,9 @@
   let tab = 'benefits';
   let page = 1;
   let totalPages = null;
+  let youthQuery = '';
+  const youthSearch = document.getElementById('youth-search');
+  const youthKeyword = document.getElementById('youth-keyword');
 
   const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
@@ -27,13 +30,19 @@
   };
   const rowsFrom = payload => {
     const candidates = [
-      payload?.data, payload?.dsList, payload?.items?.item, payload?.items,
+      payload?.result?.youthPolicyList, payload?.data, payload?.dsList, payload?.items?.item, payload?.items,
       payload?.response?.body?.items?.item, payload?.response?.body?.items,
     ];
     const rows = candidates.find(value => Array.isArray(value) || (value && typeof value === 'object'));
     return Array.isArray(rows) ? rows : rows ? [rows] : [];
   };
   const getTotalPages = payload => {
+    const paging = payload?.result?.pagging;
+    if (paging) {
+      const count = Number(paging.totCount);
+      const size = Number(paging.pageSize) || PAGE_SIZE;
+      return Number.isFinite(count) && count > 0 ? Math.ceil(count / size) : null;
+    }
     const total = Number(first(payload, 'totalCount', 'total_count', 'ALL_CNT', 'dsTotalCnt'));
     const perPage = Number(first(payload, 'perPage', 'per_page', 'PG_SZ')) || PAGE_SIZE;
     return Number.isFinite(total) && total > 0 ? Math.ceil(total / perPage) : null;
@@ -75,6 +84,24 @@
     return `<article class="card"><h2>${esc(title || 'LH 임대공고')}</h2><div class="meta">${esc(area)}${type ? ` · ${esc(type)}` : ''}${state ? ` · ${esc(state)}` : ''}</div><p class="content">${posted ? `공고일 ${esc(posted)}` : ''}${closing ? ` · 마감 ${esc(closing)}` : ''}</p><div class="actions">${sourceLink(item, true)}</div></article>`;
   }
 
+  const ymd = value => /^\d{8}$/.test(String(value)) ? `${String(value).slice(0, 4)}.${String(value).slice(4, 6)}.${String(value).slice(6)}` : String(value ?? '');
+
+  function youthCard(item) {
+    const title = first(item, 'plcyNm');
+    const category = [first(item, 'lclsfNm'), first(item, 'mclsfNm')].filter(Boolean).join(' > ');
+    const provider = first(item, 'sprvsnInstCdNm', 'operInstCdNm');
+    const summary = first(item, 'plcyExplnCn');
+    const support = first(item, 'plcySprtCn');
+    const minAge = Number(first(item, 'sprtTrgtMinAge'));
+    const maxAge = Number(first(item, 'sprtTrgtMaxAge'));
+    const age = maxAge > 0 ? `만 ${minAge > 0 ? minAge : 0}~${maxAge}세` : '';
+    const apply = String(first(item, 'aplyYmd')).replace(/\d{8}/g, ymd);
+    const meta = [provider, category, age].filter(Boolean).map(esc).join(' · ');
+    const url = safeUrl(first(item, 'aplyUrlAddr', 'refUrlAddr1'));
+    const link = url ? `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">신청·안내 보기</a>` : '';
+    return `<article class="card"><h2>${esc(title || '청년정책')}</h2><div class="meta">${meta}</div>${summary ? `<p class="content">${esc(summary)}</p>` : ''}${support ? `<p class="content"><b>지원내용</b><br>${esc(support)}</p>` : ''}${apply ? `<p class="content"><b>신청기간</b> ${esc(apply)}</p>` : ''}<div class="actions">${link}</div></article>`;
+  }
+
   function updatePager(count) {
     pageLabel.textContent = `${page} 페이지`;
     previous.disabled = page <= 1;
@@ -88,16 +115,20 @@
     previous.disabled = true;
     next.disabled = true;
     pageLabel.textContent = '';
-    const path = tab === 'benefits'
-      ? `/api/public/benefits?page=${page}&per_page=${PAGE_SIZE}`
-      : `/api/public/lh-notices?page=${page}&per_page=${PAGE_SIZE}`;
+    youthSearch.classList.toggle('hidden', tab !== 'youth');
+    const paths = {
+      benefits: `/api/public/benefits?page=${page}&per_page=${PAGE_SIZE}`,
+      youth: `/api/public/youth-policies?page=${page}&per_page=${PAGE_SIZE}${youthQuery ? `&name=${encodeURIComponent(youthQuery)}` : ''}`,
+      lh: `/api/public/lh-notices?page=${page}&per_page=${PAGE_SIZE}`,
+    };
+    const path = paths[tab];
     try {
       const payload = await request(path);
       const rows = rowsFrom(payload);
       totalPages = getTotalPages(payload);
       itemsEl.innerHTML = rows.length
-        ? rows.map((item, index) => tab === 'benefits' ? benefitCard(item, index) : lhCard(item)).join('')
-        : '<div class="card">표시할 공고가 없습니다.</div>';
+        ? rows.map((item, index) => tab === 'benefits' ? benefitCard(item, index) : tab === 'youth' ? youthCard(item) : lhCard(item)).join('')
+        : `<div class="card">${tab === 'youth' ? '조건에 맞는 청년정책이 없습니다.' : '표시할 공고가 없습니다.'}</div>`;
       statusEl.textContent = '';
       updatePager(rows.length);
     } catch (error) {
@@ -131,6 +162,12 @@
     document.querySelectorAll('[data-tab]').forEach(item => item.classList.toggle('active', item === button));
     load();
   }));
+  youthSearch.addEventListener('submit', event => {
+    event.preventDefault();
+    youthQuery = youthKeyword.value.trim();
+    page = 1;
+    load();
+  });
   previous.addEventListener('click', () => { if (page > 1) { page -= 1; load(); } });
   next.addEventListener('click', () => { page += 1; load(); });
   itemsEl.addEventListener('click', event => {
