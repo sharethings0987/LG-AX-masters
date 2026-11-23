@@ -125,10 +125,11 @@ body.sw{margin:0;padding:0;background:#15181c;overflow:hidden;color:#1f2a2e}
 /* 창밖: 터널 / 지상 */
 .out{position:absolute;inset:0}
 .tunnel{background:#1c1f25}
-.tunnel:before{content:"";position:absolute;inset:-20px 0;background:repeating-linear-gradient(180deg,transparent 0 60px,rgba(255,220,150,.55) 60px 64px,transparent 64px 140px);animation:tun 1.1s linear infinite}
-@keyframes tun{to{transform:translateY(140px)}}
+/* 터널 조명: 세로 빛줄이 오른쪽에서 왼쪽으로 지나간다(열차 진행). 속도는 --tun(완행~직통)으로 바뀐다. */
+.tunnel:before{content:"";position:absolute;top:0;bottom:0;left:0;right:-140px;background:repeating-linear-gradient(90deg,transparent 0 60px,rgba(255,220,150,.55) 60px 66px,transparent 66px 140px);animation:tun var(--tun,1.1s) linear infinite}
+@keyframes tun{from{transform:translateX(0)}to{transform:translateX(-140px)}}
 .ground{background:linear-gradient(#8fd0f7,#d8f1ff 70%,#bfe3c7 70%)}
-.ground .bld{position:absolute;left:0;bottom:30%;width:400%;height:46%;background:repeating-linear-gradient(90deg,#9fb5c9 0 18px,transparent 18px 26px,#b6c6d6 26px 52px,transparent 52px 60px,#8aa2b8 60px 74px,transparent 74px 90px);clip-path:polygon(0 40%,4% 40%,4% 10%,7% 10%,7% 55%,11% 55%,11% 20%,14% 20%,14% 60%,18% 60%,18% 0,21% 0,21% 45%,25% 45%,25% 25%,29% 25%,29% 50%,100% 50%,100% 100%,0 100%);animation:bld 9s linear infinite}
+.ground .bld{position:absolute;left:0;bottom:30%;width:400%;height:46%;background:repeating-linear-gradient(90deg,#9fb5c9 0 18px,transparent 18px 26px,#b6c6d6 26px 52px,transparent 52px 60px,#8aa2b8 60px 74px,transparent 74px 90px);clip-path:polygon(0 40%,4% 40%,4% 10%,7% 10%,7% 55%,11% 55%,11% 20%,14% 20%,14% 60%,18% 60%,18% 0,21% 0,21% 45%,25% 45%,25% 25%,29% 25%,29% 50%,100% 50%,100% 100%,0 100%);animation:bld var(--bld,9s) linear infinite}
 .ground .cld{position:absolute;top:14%;left:0;width:300%;height:24px;background:radial-gradient(circle at 10% 50%,#fff 0 12px,transparent 13px),radial-gradient(circle at 14% 40%,#fff 0 16px,transparent 17px),radial-gradient(circle at 55% 50%,#fff 0 10px,transparent 11px),radial-gradient(circle at 58% 45%,#fff 0 14px,transparent 15px);animation:bld 22s linear infinite}
 @keyframes bld{to{transform:translateX(-50%)}}
 .ground .lbl{position:absolute;left:4px;top:4px;font-size:9px;background:rgba(255,255,255,.8);border-radius:6px;padding:0 5px;color:#2b5a3a}
@@ -1501,6 +1502,10 @@ const doors = open => $s('door').classList.toggle('open', open);
 function setOutside() {
   const g = G, stopped = !g || S !== 'play' || g.paused || !!g.dec || !!MOD || UI.busy;
   $s('stage').classList.toggle('stopped', stopped);
+  // 창밖 속도: 완행·급행·특급·직통에 맞춰 빛줄·건물이 빨리 지나간다(정차 중에는 위 stopped로 멈춤)
+  const sp = g ? g.speed : 1;
+  $s('stage').style.setProperty('--tun', ['', '1.3s', '.8s', '.45s', '.22s'][sp] || '1.3s');
+  $s('stage').style.setProperty('--bld', ['', '11s', '7s', '4s', '2s'][sp] || '11s');
   const mood = g && g.yr && g.yr.n ? g.yr.mood / g.yr.n : g ? g.st.mood : 55;
   const sunny = !!g && S === 'play' && mood > 62, gloomy = !!g && S === 'play' && mood <= 45;
   $s('stage').classList.toggle('sunny', sunny); $s('stage').classList.toggle('gloomy', gloomy);
