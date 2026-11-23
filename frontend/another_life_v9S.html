@@ -262,6 +262,7 @@ body.sw{margin:0;padding:0;background:#15181c;overflow:hidden;color:#1f2a2e}
  --bg:#f5f0fb;--card:#fffdff;--ln:#e3d9f0;--ac:#a8467a;--ink:#2b2438;--mu:#7d7490;color:var(--ink)}
 #endp .w{max-width:none;margin:0;padding:16px 22px}
 #endp .lines{display:flex;flex-wrap:wrap;gap:6px;margin:4px 22px 0;padding-top:16px}
+#endp .w .lines{margin:10px 0 0;padding-top:0}
 #endp .lines span{color:#fff;font-size:12px;font-weight:700;border-radius:12px;padding:2px 10px}
 #foot{position:absolute;left:16px;top:778px;font-size:11px;color:#555;z-index:2}
 #block{position:absolute;inset:0;z-index:20;display:none}
@@ -1298,12 +1299,12 @@ function endPolicyHTML(){const met=k=>G.done[k]||G.heard[k]||G.miss[k];let n=0;
  <div style="margin-top:10px;font-size:12.5px"><a href="public-services.html" target="_blank" rel="noopener">청년 혜택·LH 임대공고 더 보기 ↗</a> · <a href="statistics.html" target="_blank" rel="noopener">2025 인구·가구 통계 ↗</a></div></div>`}
 const QL=q=>q<=2?'빠듯한 형편':q==3?'평범한 형편':'여유 있는 형편';
 /* ===== 엔딩: 종착역(AGE_END세) ===== */
-function vEnd(){const m=G.me,el=Object.keys(G.elig),miss=el.filter(k=>!G.done[k]),done=Object.keys(G.done);if(!LTO)LTO=G.mode=='my'?'me':'ch';
+function vEnd(linesH){const m=G.me,el=Object.keys(G.elig),miss=el.filter(k=>!G.done[k]),done=Object.keys(G.done);if(!LTO)LTO=G.mode=='my'?'me':'ch';
  const top=G.log.filter(l=>0);const hl=G.map.map(c=>c.t);
  const sum=`${ageWord(AGE_END,true)}이 된 ${m.n}은(는) ${G.job=='쉬는중'?'잠시 쉬어가는 중이다':G.job+'으로 일하고 있다'}. ${G.h=='자가'?'내 집에서 ':G.h=='전세'?'전셋집에서 ':G.h=='월세'?'월세방에서 ':'본가에서 '}${G.pn?G.f.married?`${G.pn}와(과) 함께 가정을 이루고 `:`${G.pn}와(과) 함께 시간을 보내며 `:''}${G.f.kid?'아이를 키우고 ':''}${G.f.pet?'고양이와 함께 ':''}살아간다. ${G.fr.filter(f=>f.bond>=60).length?`곁에는 ${G.fr.filter(f=>f.bond>=60).map(f=>f.n).join(', ')}처럼 오래 이어진 사람들이 있다.`:'오래 이어진 인연은 많지 않지만, 하나하나가 소중하다.'}`;
  const to=LTO=='me'?'5년 뒤의 나에게':`${ageWord(AGE_END,true)}의 ${m.n}에게`;
- return `<div class="w"><div class="se" style="font-size:28px;font-weight:700">${ageWord(AGE_END,true)} 번째 생일, 종착역</div><div class="mu">${m.n}의 ${ageWord(AGE_START)} 살부터 ${ageWord(AGE_END,true)}까지</div>
- <div class="pn id" style="margin-top:12px"><div class="post">${av(m.cols,64)}<div style="flex:1"><p style="margin:0">${sum}</p></div></div><div style="margin-top:10px">${barsHTML(G)}</div></div>
+ return `<div class="w"><div class="se" style="font-size:28px;font-weight:700">${ageWord(AGE_END,true)} 번째 생일, 종착역</div><div class="mu">${m.n}의 ${ageWord(AGE_START)} 살부터 ${ageWord(AGE_END,true)}까지</div>${linesH||''}
+ <div class="pn id" style="margin-top:12px"><div class="post">${av(m.cols,64)}<div style="flex:1"><p style="margin:0">${sum}</p></div></div></div>
  <div class="pn"><h4>인생 지도 <span>그해를 대표하는 순간</span></h4><div class="mp" style="grid-template-columns:repeat(5,1fr)">${G.map.map(c=>`<div style="border-radius:4px;padding:6px;font-size:12px;background:${c.mood>62?'rgba(90,163,134,.25)':c.mood>45?'rgba(216,178,90,.25)':'rgba(201,138,138,.25)'}"><b>${c.age}세</b><div class="mu">${esc(c.t.slice(0,34))}</div></div>`).join('')}</div></div>
  <div class="pn"><h4>${ageWord(AGE_START)} 살 때 마음속에 정했던 것</h4><div class="mu">게임을 시작할 때 목표를 따로 적지 않았어요. 마음속에 정해둔 게 있었다면, 지금은 어떤가요?</div><div class="chips" style="margin-top:8px">${['이뤘다','절반쯤 이뤘다','다른 걸 얻었다','처음부터 정한 게 없다','아직 가는 중이다'].map(t=>`<button class="chip ${G.ans==t?'on':''}" data-a="ans:${t}">${t}</button>`).join('')}</div>${G.ans?`<p class="mu" style="margin-top:8px">${G.ans=='이뤘다'?'그 마음을 지켜낸 시간이었어요.':G.ans=='절반쯤 이뤘다'?'절반의 길을 걸어왔다는 건 나머지 절반도 갈 수 있다는 뜻이에요.':G.ans=='다른 걸 얻었다'?'계획에 없던 것이 삶을 채우기도 해요.':G.ans=='아직 가는 중이다'?`${ageWord(AGE_END,true)}은 끝이 아니라 다음 장의 시작이에요.`:'정하지 않고 걸어온 것도 하나의 선택이에요.'}</p>`:''}</div>
  <div class="pn"><h4>이 삶에서 고마웠던 것</h4><div class="chips">${['사람','선택의 용기','우연한 행운','내가 버틴 시간','도움이 된 제도'].map(t=>`<button class="chip ${G.thx==t?'on':''}" data-a="thx:${t}">${t}</button>`).join('')}</div></div>
@@ -2077,7 +2078,8 @@ draw = function () {
       const lines = [];
       if (G.jobAt) { let j = null; for (let m = 0; m <= G.m; m++) { const jm = G.jobAt[m] || j; if (jm && jm !== j) { lines.push(`<span style="background:${lineCol(jm)}">${lineName(jm)} · ${AGE_START + Math.floor(m / 12)}세 ${j ? '환승' : '출발'}</span>`); j = jm; } } }
       keepInputs(() => {
-        endp.innerHTML = `<div class="endlogo en">${GAME_NAME}</div><div class="lines"><b style="margin-right:6px">타고 온 노선</b>${lines.join('')}</div>` + vEnd();
+        // 순서: 엔딩 제목 → 타고 온 노선 → 요약 카드 → 인생 지도 → 나머지 섹션
+        endp.innerHTML = `<div class="endlogo en">${GAME_NAME}</div>` + vEnd(`<div class="lines"><b style="margin-right:6px">타고 온 노선</b>${lines.join('')}</div>`);
       });
       endp.scrollTop = st;
     }
