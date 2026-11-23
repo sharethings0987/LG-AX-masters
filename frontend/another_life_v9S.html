@@ -480,6 +480,20 @@ const EV=[
  {t:'밤새워 낸다',pre:'밤을 새워 제출 버튼을 눌렀다.',p:.5,ok:['서류 합격 연락이 왔다!',{self:8,burn:8,prep:2},1],ko:['연락은 없었다.',{self:-4,burn:8},1]},{t:'포기한다',ok:['잠은 잤다. 찜찜하다.',{burn:-4,self:-3}]}]},
 {id:'ref',c:g=>JB[g.job].s==1&&g.fr.some(f=>f.bond>=45),w:'{fb}',t:'일자리 소개',x:'「우리 회사에서 사람 뽑는데, 한번 지원해볼래?」',max:2,ch:[
  {t:'지원한다',pre:'추천서를 넣었다. 떨린다.',p:.65,ok:['추천 덕분에 서류와 면접을 통과했다. 합격이다!',{hire:1,soc:5},2],ko:['서류는 통과했지만 최종에서 아쉽게 떨어졌다.',{self:-2,soc:3},2]},{t:'지금은 괜찮다고 한다',ok:['마음만 고맙게 받았다.',{soc:1}]}]},
+/* [2.5단계 임시] 취업이 길어질 때 나오는 대체 취업 이벤트(인턴·작은 회사·지인 추천·공시 방향 전환) */
+{id:'intern',pr:g=>g.m-(g.jsM==null?g.m:g.jsM)>=4?2.6:.8,max:3,c:g=>g.job=='취준생',w:'채용 담당자',t:'인턴 제안',x:'「6개월 인턴으로 시작해 보실래요? 잘 맞으면 정규직 전환도 있어요.」',ch:[
+ {t:'인턴부터 시작한다',pre:'인턴 출근 첫날. 명찰에 「인턴」이 붙어 있다.',p:.65,ok:['인턴 기간이 끝나고 정규직 전환 통보를 받았다!',{hire:1,self:3},4],ko:['전환은 안 됐지만 경력 한 줄이 생겼다.',{prep:3,self:2},4]},
+ {t:'정규직 공고만 기다린다',ok:['조금 더 버텨 보기로 했다.',{self:-1}]}],autoW:()=>[.75,.25]},
+{id:'smefirst',pr:g=>g.m-(g.jsM==null?g.m:g.jsM)>=8?3:.4,max:2,c:g=>g.job=='취준생',w:'{f1}',t:'작은 회사부터',x:'「우리 회사 작긴 한데 사람 구해. 일단 시작해 보는 것도 방법이야.」',ch:[
+ {t:'일단 들어가서 경력을 쌓는다',ok:['작은 회사에 입사했다. 생각보다 배울 게 많다.',{hire:'중견·중소',self:2}]},
+ {t:'원하는 곳을 조금 더 노린다',ok:['조금 더 버텨 보기로 했다.',{burn:2}]}],autoW:()=>[.7,.3]},
+{id:'ref2',pr:g=>g.m-(g.jsM==null?g.m:g.jsM)>=10?2.6:.05,max:2,c:g=>g.job=='취준생',w:'{f0}',t:'지인 추천',x:'「우리 팀에 자리 났는데, 내가 추천해 줄까?」 오랜만에 온 연락이다.',ch:[
+ {t:'추천을 받아 지원한다',pre:'추천을 받아 면접을 봤다.',p:.7,ok:['추천 덕분에 최종 합격했다!',{hire:1,soc:4},1],ko:['아쉽게 떨어졌지만 연락해 준 게 고맙다.',{soc:3,prep:1},1]},
+ {t:'내 힘으로 해 보겠다고 한다',ok:['마음만 받았다.',{self:1}]}],autoW:()=>[.8,.2]},
+{id:'exampivot',pr:3,max:2,c:g=>g.job=='공시생'&&g.m-(g.jsM==null?g.m:g.jsM)>=12,w:'나',t:'시험을 계속할까',x:'공부를 시작한 지 1년이 넘었다. 같이 시작한 사람들 중 절반이 떠났다.',ch:[
+ {t:'한 번 더 도전한다',ok:['마음을 다잡았다.',{prep:2,burn:3}]},
+ {t:'민간 취업으로 방향을 바꾼다',ok:['수험서를 정리했다. 이제 자소서를 쓴다.',{job:'취준생',self:2,prep:2}]},
+ {t:'아는 회사에 바로 들어간다',ok:['공부는 접고 작은 회사에 들어갔다.',{hire:'중견·중소',self:2}]}],autoW:()=>[.4,.35,.25]},
 {id:'contract',c:g=>g.f.first1&&!g.f.cdone&&JB[g.job].e&&g.job!='창업',w:'{b}',t:'첫 근로계약서',x:'계약서에 서명하라고 한다. 항목이 많고 용어가 낯설다.',ch:[
  {t:'꼼꼼히 읽고 모르는 건 물어본다',ok:['권리를 알고 시작하니 든든하다.',{self:3,cdone:1,sloppy:0}]},{t:'바쁘니까 그냥 서명한다',ok:['일단 시작했다.',{cdone:1,sloppy:1}]}]},
 {id:'firstpay',c:g=>JB[g.job].e&&g.job!='창업'&&!g.f.fp&&g.f.first1,on:g=>{g.f.fp=1},w:'은행 앱',t:'첫 월급날',x:'통장에 첫 월급이 찍혔다. 어떻게 쓸까?',ch:[
@@ -498,17 +512,17 @@ const EV=[
  {t:'옮긴다',p:.55,ok:['연봉도 오르고 새 환경이 낯설다.',{money:10,self:6,burn:5}],ko:['생각보다 분위기가 안 맞는다.',{self:-8,money:-3}]},{t:'남는다',ok:['안정을 택했다.',{self:-1}]}]},
 {id:'rentup',max:2,a:[21,38],c:g=>g.h=='월세',w:'집주인',t:'월세 인상 통보',x:'월세 5만 원 인상 문자가 왔다.',ch:[
  {t:'받아들인다',ok:['한숨 쉬고 넘겼다.',{money:-8}]},{t:'협상해본다',p:.4,ok:['절반으로 깎았다.',{money:-3,self:4}],ko:['단칼에 거절당했다.',{money:-8,self:-4}]},{t:'다른 집을 알아본다',ok:['이것저것 찾아보다 이웃이 귀띔해줬다.',{rum:'rent'}]}]},
-{id:'love',a:[21,36],c:g=>!g.f.partner,w:'지인',t:'소개 제안',x:'「좋은 사람 있는데 한번 만나볼래?」',ch:[
- {t:'용기 내어 만난다',pre:'약속 장소로 가는 길이 길게 느껴졌다.',p:.5,ok:['대화가 이어졌다. 다음 약속을 잡았다.',{soc:8,partner:1,hp:4},1],ko:['어색하게 끝났다.',{soc:-2},1]},{t:'지금은 나에게 집중한다',ok:['나쁘지 않다. 외롭긴 하다.',{self:2,soc:-1}]}]},
+{id:'love',a:[22,36],max:8,pr:3.2,c:g=>!g.f.partner,w:'지인',t:'소개 제안',x:['「좋은 사람 있는데 한번 만나볼래?」','동아리 모임에서 자꾸 눈이 마주치는 사람이 있다.','친구 결혼식 뒤풀이에서 말이 잘 통하는 사람을 만났다.'],autoW:()=>[.75,.25],ch:[
+ {t:'용기 내어 만난다',pre:'약속 장소로 가는 길이 길게 느껴졌다.',p:.6,ok:['대화가 이어졌다. 다음 약속을 잡았다.',{soc:8,partner:1,hp:4},1],ko:['어색하게 끝났다.',{soc:-2},1]},{t:'지금은 나에게 집중한다',ok:['나쁘지 않다. 외롭긴 하다.',{self:2,soc:-1}]}]},
 {id:'fight',max:3,c:g=>g.f.partner&&!g.f.married,w:'{p}',t:'사소한 말다툼',x:'「요즘 너 나한테 신경 안 쓰는 거 같아.」 맞는 말이라 더 아프다.',ch:[
  {t:'일단 사과하고 시간을 낸다',ok:['화해했다. 서로를 조금 더 알았다.',{soc:5,burn:2,hp:2}]},{t:'나도 힘들다고 솔직히 말한다',p:.6,ok:['한참 이야기하다 같이 울었다. 더 단단해졌다.',{soc:8,hp:3}],ko:['대화가 엇갈렸다. 냉전이 길어졌다.',{soc:-5,hp:-3}]},{t:'일단 피한다',ok:['조용히 지나갔지만 찜찜하다.',{soc:-3}]}]},
-{id:'marry',a:[27,40],c:g=>g.f.partner&&!g.f.married,on:g=>{g.f.marTalk=1},w:'{p}',t:'결혼 이야기',x:'앞으로의 일을 이야기하는 날이 왔다. 「우리 어떻게 할까?」',ch:[
+{id:'marry',a:[26,40],max:5,pr:3.6,autoW:()=>[.7,.3],c:g=>g.f.partner&&!g.f.married&&g.m-(g.pm==null?g.m:g.pm)>=18,on:g=>{g.f.marTalk=1},w:'{p}',t:'결혼 이야기',x:'앞으로의 일을 이야기하는 날이 왔다. 「우리 어떻게 할까?」',ch:[
  {t:'결혼을 준비한다',need:{money:30},ok:['준비할 게 많다. 비용도 만만치 않다.',{married:1,money:-12,hp:5,rum:'newlywed'}]},{t:'조금 더 지켜본다',ok:['서로의 속도를 확인했다.',{self:1}]}]},
 {id:'house',a:[28,40],c:g=>g.h=='월세',w:'공인중개사',t:'집 문제',x:'계약 만기가 다가온다. 전세 사기 뉴스가 자꾸 눈에 걸린다.',ch:[
  {t:'대출을 받아 전세로 옮긴다',need:{money:25},ok:['새 집이 생겼다. 이자가 빠져나간다.',{h:'전세',money:-6,burn:4,hp:3,rum:'jeonse'}]},{t:'공공임대를 알아본다',ok:['서류가 많지만 해볼 만하다.',{rum:'happy'}]},{t:'지금 집에 계속 산다',ok:['당분간은 마음이 편하다.',{money:-2}]}]},
 {id:'buy',a:[33,40],c:g=>g.h=='전세'&&g.st.money>=55,w:'공인중개사',t:'내 집 마련',x:'모은 돈으로 집을 살 수 있을 것 같다. 대출이 걱정이다.',ch:[
  {t:'과감하게 매수한다',ok:['내 집이 생겼다. 이자는 무겁지만 뿌듯하다.',{h:'자가',money:-18,burn:5,hp:6,debt:1500}]},{t:'조금 더 기다린다',ok:['마음의 여유를 택했다.',{self:1}]}]},
-{id:'baby',a:[29,40],ctx:{kid:1},c:g=>g.f.married&&!g.f.kid,w:'{p}',t:'임신 소식',x:'「우리 아이가 생겼어.」',ch:[
+{id:'baby',a:[27,40],max:3,pr:1.8,autoW:()=>[.7,.3],ctx:{kid:1},c:g=>g.f.married&&!g.f.kid,w:'{p}',t:'임신 소식',x:'「우리 아이가 생겼어.」',ch:[
  {t:'기쁘게 맞이한다',ok:['삶의 속도가 달라진다. 언니가 말했다. 「아이 태어나면 받는 지원이 있어」',{kid:1,money:-8,soc:3,hp:6,rum:'birth'}]},{t:'아직은 준비가 안 됐다고 말한다',ok:['대화가 길어졌다.',{}]}]},
 {id:'leaveE',c:g=>g.f.kid&&!g.f.leavedone&&JB[g.job].e,w:'{b}',t:'육아 시기의 근무',x:'아이를 키우며 일하는 게 쉽지 않다. 회사 눈치도 보인다.',ch:[
  {t:'휴직을 낸다',ok:['소득은 줄었지만 아이 곁에 있다. 선배 엄마가 귀띔했다.',{burn:-10,money:-4,hp:3,rum:'leave',leavedone:1}]},{t:'병행하며 버틴다',ok:['버티는 하루가 이어진다.',{burn:8,self:-2,leavedone:1}]}]},
@@ -632,8 +646,8 @@ function newGame(mode,fm={},as){
   used:{},recent:[],done:{},miss:{},chk:{},heard:{},known:{},elig:{},alert:{},rumor:[],feed:[],log:[],sq:[],hl:[],map:[],dec:null,sr:null,auto:false,speed:1,paused:false,cd:2,tid:0,pid:0,yr:{n:0,mood:0,best:null},
   fr:Array.from({length:5},()=>{const s=R()<.5?'M':'F';return mkFriend(pickName(s),s)}),care_:0,sid:0,oc:0,mys:null};
  recalc();genFeed(0);genFeed(1);G.fr.forEach((f,i)=>{if(i<3)spawnOne(i)});S='pro';MOD=null;FFN=0}
-function setJob(j){const e=JB[j].e;G.job=j;if(e){G.hm=G.m;G.f.first1=1;G.f.laid=0;if(!G.boss)G.boss=ri(SUR)+' 팀장'}G.sy=0}
-function hire(){const nj=G.job=='공시생'?'공무원':pickW([['대기업',G.me.q>=4?3.5:2],['중견·중소',4],['스타트업',2.5],['프리랜서',.8]]);setJob(nj);G.prep=0;chg({self:10,money:6,hp:4});addLine(`🎉 ${nj}에 ${nj=='공무원'?'합격했다':nj=='프리랜서'?'자리를 잡았다':'합격했다. 입사 날짜가 정해졌다'}.`,'g',null,'c',5);(ONB[nj]||[]).forEach(o=>G.sq.push({due:G.m+o[0],t:o[1],tone:o[2],fx:o[3]}))}
+function setJob(j){const e=JB[j].e;if(JB[j].s&&!(JB[G.job]&&JB[G.job].s))G.jsM=G.m;G.job=j;if(e){G.hm=G.m;G.f.first1=1;G.f.laid=0;if(!G.boss)G.boss=ri(SUR)+' 팀장'}G.sy=0}
+function hire(force){const nj=force||(G.job=='공시생'?'공무원':null)||pickW([['대기업',G.me.q>=4?3.5:2],['중견·중소',4],['스타트업',2.5],['프리랜서',.8]]);setJob(nj);G.prep=0;chg({self:10,money:6,hp:4});addLine(`🎉 ${nj}에 ${nj=='공무원'?'합격했다':nj=='프리랜서'?'자리를 잡았다':'합격했다. 입사 날짜가 정해졌다'}.`,'g',null,'c',5);(ONB[nj]||[]).forEach(o=>G.sq.push({due:G.m+o[0],t:o[1],tone:o[2],fx:o[3]}))}
 /* ===== 20세 1월 진로 선택 · 학업 · 휴학 · 군 복무 (확률과 기간은 life-stats.js) ===== */
 const LS=()=>window.LIFE;
 /* 반드시 띄워야 하는 결정은 큐에 넣는다(쿨다운 없이 다음 달에 뜬다). ev는 이벤트 객체나, 뜰 때 만드는 함수. */
@@ -720,8 +734,8 @@ function autoIdx(e){const ok=e.ch.map((c,i)=>i).filter(i=>!lock(e.ch[i]));if(!ok
 function addRum(k,src){if(!PK.includes(k)||!ctxOk(POL[k],G)||G.done[k]||G.rumor.some(r=>r.k==k)||(G.sr&&G.sr.k==k))return;G.heard[k]=1;src=src||ri(G.fr).n;G.rumor.push({id:++G.tid,k,ttl:8,src});addLine(`💡 ${src}에게서 들은 이야기: 「${POL[k].h}」 — 서랍에 메모해 뒀다.`,'n',null,'u',2)}
 function chg(fx,s=1){for(const k in fx){const v=fx[k];
  if(k=='prep')G.prep=Math.max(0,G.prep+v*s);else if(LB[k])G.st[k]=clf(G.st[k]+v*s);else if(k=='hp')G.st.mood=clf(G.st.mood+v*s*.6);else if(k=='free')G.st.burn=clf(G.st.burn-v*.4*s);
- else if(k=='money')G.cash+=v*10*s;else if(k=='debt'){G.debt+=v}else if(k=='rum')addRum(v);else if(k=='job')setJob(v);else if(k=='hire')hire();else if(k=='h')G.h=v;
- else if(k=='_b'){const f=G.fr[v[0]];f.bond=clf(f.bond+v[1])}else if(k=='leave'){startLeave(v)}else{G.f[k]=v;if(k=='partner'&&!G.pn){const ps=(G.me.sex=='M'?NM_F:NM_M).filter(n=>n!=G.me.n&&!G.fr.some(f=>f.n==n));G.pn=ri(ps.length?ps:PN);G.plook=genLook(G.me.sex=='M'?'F':'M')}}}
+ else if(k=='money')G.cash+=v*10*s;else if(k=='debt'){G.debt+=v}else if(k=='rum')addRum(v);else if(k=='job')setJob(v);else if(k=='hire')hire(typeof v=='string'?v:null);else if(k=='h')G.h=v;
+ else if(k=='_b'){const f=G.fr[v[0]];f.bond=clf(f.bond+v[1])}else if(k=='leave'){startLeave(v)}else{if(k=='partner'&&v&&!G.f.partner)G.pm=G.m;G.f[k]=v;if(k=='partner'&&!G.pn){const ps=(G.me.sex=='M'?NM_F:NM_M).filter(n=>n!=G.me.n&&!G.fr.some(f=>f.n==n));G.pn=ri(ps.length?ps:PN);G.plook=genLook(G.me.sex=='M'?'F':'M')}}}
  if(G.cash<0){G.debt-=G.cash;G.cash=0}recalc()}
 const tone=fx=>{let s=0;for(const k in fx){const v=fx[k];if(k=='burn')s-=v;else if(['mood','hp','soc','self','health','money'].includes(k))s+=v;else if(k=='hire')s+=8}return s>1?'g':s<-1?'b':'n'};
 /* 친구 반응 알림: 방금 추가한 줄을 알림으로 표시하고 알림 대기열에 넣는다(타임라인에는 안 나오고 기록 탭에는 남음). */
@@ -751,6 +765,9 @@ function tickMonth(){
   else if(G.age>=L.ARMY_LAST_AGE&&mo()>=11)queueEv(()=>armyEv(true),G.m,'army')}
  if(JB[G.job].s==1&&G.sy>=3&&t.self<35){setJob('쉬는중');addLine('오래된 구직에 지쳐 잠시 멈추기로 했다.','b',null,'u',3)}
  else if(JB[G.job].e&&t.burn>=92){setJob('쉬는중');chg({burn:-30,self:-8});addLine('더는 버틸 수 없어 일을 그만두었다.','b',null,'u',4)}
+ /* [2.5단계 임시] 취업 속도: 취준생은 매달 합격할 수 있고 12개월이 지나면 확률이 더 오른다(목표: 졸업 후 평균 6~12개월). 공시생은 6개월 뒤부터 낮은 확률. */
+ else if(!G.dec&&(G.job=='취준생'||G.job=='공시생')){const n=G.m-(G.jsM==null?G.m:G.jsM),gs=G.job=='공시생',p=gs?(n>=6?.05:.01):(n<2?.05:n<12?.11:.2)+Math.min(.04,G.prep*.006);
+  if(R()<p){addLine(gs?'필기에 이어 면접까지 통과했다. 최종 합격자 명단에 내 이름이 있다.':'넣어 둔 지원서 중 한 곳에서 연락이 왔다. 면접을 거쳐 최종 합격했다.','g',null,'c',4);hire()}}
  /* 예약된 이야기 */
  G.sq=G.sq.filter(q=>{if(q.due>G.m)return true;if(q.act){q.act();return false}addLine(q.t,q.tone||tone(q.fx||{}),q.fx,q.tag,q.w,q.fi);if(q.nt)notiLast();if(q.after)q.after();return false});
  /* 친구들의 삶 */
@@ -784,7 +801,7 @@ function pickDecision(){
  const army=G.job=='군 복무',ARMY_EV=['mom','scam','envy','wedf'],ARMY_MI=['m_sns','m_rain','m_parent','m_old','m_sleep'];
  const major=EV.filter(e=>(!army||ARMY_EV.includes(e.id))&&(!e.a||G.age>=e.a[0]&&G.age<=e.a[1])&&(!e.c||e.c(G))&&ctxOk(e,G)&&(G.used[e.id]||0)<(e.max||1));
  const micro=MI.filter(e=>(!army||ARMY_MI.includes(e.id))&&(!e.c||e.c(G))&&ctxOk(e,G)&&!G.recent.includes(e.id));let ev=null;
- if(major.length&&(R()<.62||!micro.length)){ev=pickW(major.map(x=>[x,(x.pr||1)*(G.care&&x.tag&&G.care.includes(x.tag)?2.2:1)]));G.used[ev.id]=(G.used[ev.id]||0)+1;if(ev.on)ev.on(G)}
+ if(major.length&&(R()<.62||!micro.length)){ev=pickW(major.map(x=>[x,(typeof x.pr=='function'?x.pr(G):(x.pr||1))*(G.care&&x.tag&&G.care.includes(x.tag)?2.2:1)]));G.used[ev.id]=(G.used[ev.id]||0)+1;if(ev.on)ev.on(G)}
  else if(micro.length){ev=ri(micro);G.recent.push(ev.id);if(G.recent.length>6)G.recent.shift()}
  if(ev)makeDec(ev)}
 function makeDec(ev){G.dec={e:ev,w:txt(ev.w),t:ev.t,x:txt(ev.x),age:G.age,mo:mo(),hid:false};G.cd=rr(3,6);if(G.auto)setTimeout(()=>{if(G.dec){pickC(autoIdx(G.dec.e));draw()}},ffDelay())}
@@ -1788,12 +1805,12 @@ draw();
       while (S !== 'end' && guard++ < 6000) {
         if (G.dec) { pickC(autoIdx(G.dec.e)); continue; }
         if (MOD) { MOD = null; G.sr = null; if (G.yq) G.yq.cur = null; continue; }
-        tickMonth();
+        tickMonth(); if (G.wait0 == null && G.edu && G.edu.gradM != null && JB[G.job].e) G.wait0 = G.m - G.edu.gradM; if (G.mar35 == null && G.f.married) G.mar35 = G.age;
       }
       const e = G.edu, ageAt = m => m == null ? null : AGE_START + m / 12;
       rows.push({sex: c.sx, rg: c.rg, q: c.q, first: G.firstChoice || '?', school: e ? e.type : '-', retakes: G.retakes || 0,
         grad: e && e.gradM != null ? +ageAt(e.gradM).toFixed(2) : null, gradMonths: e && e.gradM != null ? e.gradM - e.start : null,
-        army: G.mil ? +ageAt(G.mil.start).toFixed(2) : null, leaveM: e ? e.leaveM : 0, endJob: G.job, end: G.m});
+        army: G.mil ? +ageAt(G.mil.start).toFixed(2) : null, leaveM: e ? e.leaveM : 0, endJob: G.job, end: G.m, wait: G.wait0 == null ? null : G.wait0, married: G.mar35 == null ? null : G.mar35, kid: !!G.f.kid});
     }
     draw = keepDraw; if (keepSave) BE.savePlay = keepSave;
     const pct = (n, d) => d ? (100 * n / d).toFixed(1) + '%' : '-';
@@ -1811,6 +1828,7 @@ draw();
     ['M', 'F'].forEach(sx => { const a = grads.filter(r => r.sex === sx && r.school === 'univ4'); lines.push(`  4년제 졸업 소요(입학→졸업) ${sx === 'M' ? '남' : '여'}: 평균 ${(avg(a.map(r => r.gradMonths)) / 12).toFixed(2)}년 (${a.length}명) · 통계 ${(LIFE.GRAD_MONTHS[sx] / 12).toFixed(2)}년`); });
     lines.push(`입대 나이(남 ${males.length}명 중 ${males.filter(r => r.army != null).length}명): ${hist(males.filter(r => r.army != null).map(r => r.army))} · 여성 입대 ${rows.filter(r => r.sex === 'F' && r.army != null).length}명`);
     const lv = enrolled.filter(r => r.sex === 'F'); lines.push(`여학생 휴학 경험 ${pct(lv.filter(r => r.leaveM > 0).length, lv.length)} · 휴학 경험자 평균 휴학 ${(avg(lv.filter(r => r.leaveM > 0).map(r => r.leaveM))).toFixed(1)}개월`);
+    { const w = rows.filter(r => r.wait != null); lines.push(`졸업 후 첫 취업까지(${w.length}명): 평균 ${avg(w.map(r => r.wait)).toFixed(1)}개월 · 결혼 ${pct(rows.filter(r => r.married != null).length, N)} · 자녀 ${pct(rows.filter(r => r.kid).length, N)}`); }
     console.log('[sim] ' + lines.join('\n'));
     console.table(rows);
     window.__SIM = {rows, lines};
