@@ -537,8 +537,8 @@ const EV=[
  {t:'지금 일을 계속한다',ok:['익숙함도 실력이다.',{}]}],autoW:()=>[.15,.45,.4]},
 {id:'contract',c:g=>g.f.first1&&!g.f.cdone&&JB[g.job].e&&g.job!='창업',w:'{b}',t:'첫 근로계약서',x:'계약서에 서명하라고 한다. 항목이 많고 용어가 낯설다.',ch:[
  {t:'꼼꼼히 읽고 모르는 건 물어본다',ok:['권리를 알고 시작하니 든든하다.',{self:3,cdone:1,sloppy:0}]},{t:'바쁘니까 그냥 서명한다',ok:['일단 시작했다.',{cdone:1,sloppy:1}]}]},
-{id:'firstpay',c:g=>JB[g.job].e&&g.job!='창업'&&!g.f.fp&&g.f.first1,on:g=>{g.f.fp=1},w:'은행 앱',t:'첫 월급날',x:'통장에 첫 월급이 찍혔다. 어떻게 쓸까?',ch:[
- {t:'절반은 저축한다',ok:['든든하다. 소소한 선물만 샀다.',{money:8,hp:1}]},{t:'나에게 선물하고 부모님께도 드린다',ok:['뿌듯하다. 통장은 가볍다.',{money:-3,soc:4,hp:4}]},{t:'친구들에게 크게 쏜다',ok:['기분은 최고. 통장은 비었다.',{money:-9,soc:8,hp:3}]}]},
+{id:'firstpay',c:g=>JB[g.job].e&&g.job!='창업'&&!g.f.fp&&g.f.first1,on:g=>{g.f.fp=1},w:'은행 앱',t:'첫 월급날',x:g0=>G.f.sloan?'통장에 첫 월급이 찍혔다. 학자금 상환 안내 문자도 같이 왔다.':'통장에 첫 월급이 찍혔다. 어떻게 쓸까?',ch:[
+ {t:'학자금 대출부터 갚는다',show:g=>!!g.f.sloan,ok:['첫 월급의 절반이 학자금으로 빠져나갔다. 그래도 홀가분하다.',{repay:'repay',self:3}]},{t:'절반은 저축한다',ok:['든든하다. 소소한 선물만 샀다.',{money:8,hp:1}]},{t:'나에게 선물하고 부모님께도 드린다',ok:['뿌듯하다. 통장은 가볍다.',{money:-3,soc:4,hp:4}]},{t:'친구들에게 크게 쏜다',ok:['기분은 최고. 통장은 비었다.',{money:-9,soc:8,hp:3}]}]},
 {id:'wage',pr:1.8,c:g=>g.f.sloppy&&!g.f.wagedone&&['스타트업','중견·중소','프리랜서'].includes(g.job),on:g=>{g.f.wage=1},w:'대표',t:'월급이 안 들어왔다',x:'「이번 달만 늦출게요.」 두 달째 같은 말이다.',ch:[
  {t:'증거를 모아 따져 묻는다',ok:['쉽진 않았지만 방법을 알아보게 됐다. 지인이 말했다. 「그런 경우 대신 지급해주는 제도가 있대」',{self:4,burn:3,rum:'wage',wagedone:1}]},{t:'참고 기다린다',ok:['돈도 마음도 상했다.',{money:-10,self:-5,wagedone:1}]}]},
 {id:'harass',max:2,pr:.7,c:g=>JB[g.job].e&&g.job!='창업'&&g.job!='프리랜서',on:g=>{g.f.harass=1},w:'{b}',t:'회의 중 면박',x:'회의에서 또 사람들 앞에서 면박을 당했다. 출근길이 무겁다.',ch:[
@@ -598,7 +598,7 @@ const EV=[
 {id:'friendloan',a:[24,38],max:2,c:g=>g.st.money>35,w:'{f3}',t:'돈 빌려달라는 부탁',x:'「급해서 그런데… 돈 좀 빌려줄 수 있어? 다음 달에 꼭 갚을게.」',ch:[
  {t:'빌려준다',p:.55,ok:['제때 갚아줬다. 신뢰가 깊어졌다.',{soc:5,_b:[3,8]}],ko:['연락이 뜸해졌다. 돈도 사람도 멀어졌다.',{money:-10,soc:-5}]},{t:'정중히 거절한다',ok:['어색했지만 후회는 없다.',{soc:-2}]},{t:'작은 금액만 준다',ok:['부담 없이 마음을 전했다.',{money:-2,soc:2}]}]},
 {id:'scam',max:2,w:'모르는 번호',t:'수상한 연락',x:['「[국제발신] 고객님 계좌가 정지되었습니다. 아래 링크로 확인하세요.」','「검찰입니다. 귀하의 명의가 범죄에 연루되었습니다.」'],ch:[
- {t:'링크를 눌러본다',ok:['급하게 정보를 입력했다가 금방 후회했다.',{cost:'XL',self:-6,burn:6}]},{t:'차단하고 공식 번호로 직접 확인한다',ok:['침착하게 대응했다. 다행이다.',{self:2}]},{t:'가족에게 물어본다',ok:['엄마도 같은 문자를 받았다고 한다. 같이 웃었다.',{soc:2}]}]},
+ {t:'링크를 눌러본다',ok:['급하게 정보를 입력했다가 금방 후회했다.',{cost:'XL',self:-6,burn:6,scammed:1,then:['scamdebt',2]}]},{t:'차단하고 공식 번호로 직접 확인한다',ok:['침착하게 대응했다. 다행이다.',{self:2}]},{t:'가족에게 물어본다',ok:['엄마도 같은 문자를 받았다고 한다. 같이 웃었다.',{soc:2}]}]},
 /* 4단계 2-1: 연인 이벤트. L = 연인 호감도(G.love 0~100) 변화. 교제 개월 수는 G.m - G.pm. 성공 확률에 호감도·관계·피로·재정이 들어간다. */
 {id:'lv_date1',tag:'rel',pr:4,c:g=>g.f.partner&&g.m-g.pm<=3,w:'{p}',t:'첫 데이트 코스',x:'「주말에 뭐 할까? 네가 정해 줘.」 첫 데이트다.',autoW:()=>[.4,.3,.3],ch:[
  {t:'유명한 맛집을 예약한다',ok:['줄은 길었지만 맛있었다. 대화도 잘 통했다.',{cost:'S',L:6,hp:3}]},{t:'전시회에 간다',ok:['그림 앞에서 한참 이야기했다.',{cost:'S',L:7,self:1}]},{t:'한강을 걷는다',ok:['돈은 안 들었고 밤바람이 좋았다.',{L:5,burn:-2}]}]},
@@ -632,6 +632,16 @@ const EV=[
  {t:'받아들인다',ok:['한동안 아무것도 손에 잡히지 않았다.',{partner:0,mood:-6,soc:-4,self:-3}]},{t:'다시 잘해 보자고 붙잡는다',p:g=>Math.min(.6,.2+(g.st.soc-30)*.005),ok:['다시 시작하기로 했다. 이번엔 다를 거다.',{L:22}],ko:['마음은 이미 떠나 있었다.',{partner:0,mood:-8,self:-4}]}]},
 {id:'lv_home',tag:'rel',c:g=>g.f.married&&g.m-(g.wedM==null?g.m:g.wedM)>=3,w:'{p}',t:'신혼의 집안일',x:'설거지는 누가 할지, 빨래는 언제 할지. 사소한 것들이 쌓인다.',autoW:()=>[.7,.3],ch:[
  {t:'표를 만들어 나눈다',ok:['다툼이 줄었다.',{L:5,burn:-2}]},{t:'보이는 사람이 한다',ok:['한쪽이 지쳐 갔다.',{L:-5,burn:3}]}]},
+/* ===== 4단계 4: 연쇄 후속 이벤트 — 앞의 선택이 남긴 플래그(G.f)로 열린다. then:[id,개월]로 예약되기도 한다 ===== */
+{id:'foreignjob',pr:4,c:g=>g.f.exch&&g.job=='취준생',w:'외국계 인사팀',t:'외국계 기업 채용',x:'교환학생 경험을 본 외국계 회사에서 면접 제안이 왔다.',ch:[
+ {t:'영어 면접을 본다',pre:'교환학생 때 이야기를 하며 면접을 봤다.',p:g=>Math.min(.8,.45+(g.st.self-50)*.005+g.prep*.03),ok:['외국계 회사에 합격했다!',{hire:'대기업',self:6},1],ko:['아쉽게 떨어졌지만 자신감이 생겼다.',{self:2,prep:1},1]},
+ {t:'국내 기업에 집중한다',ok:['익숙한 길을 택했다.',{}]}]},
+{id:'scamdebt',pr:.01,c:g=>g.f.scammed&&!g.f.scamDone,on:g=>{g.f.scamDone=1},w:'모르는 번호',t:'독촉 전화',x:'그때 입력한 정보로 내 이름의 대출이 나가 있었다. 독촉 전화가 온다.',ch:[
+ {t:'경찰과 금융감독원에 신고한다',ok:['절차가 길지만 일부를 되돌려 받았다.',{gain:'M',burn:6,self:2}]},
+ {t:'창피해서 혼자 갚는다',ok:['빚을 떠안았다. 아무에게도 말하지 못했다.',{borrow:'L',self:-5,burn:5}]}],autoW:()=>[.75,.25]},
+{id:'sloanpay',a:[23,36],max:1,c:g=>g.f.sloan&&isEarner(g)&&g.m-g.hm>=6&&(g.loans||[]).some(l=>l.type=='student'&&l.amt>50),w:'한국장학재단',t:'학자금 상환 고지',x:'월급에서 학자금 상환액이 빠져나가기 시작했다. 한 번에 갚아 버릴까.',ch:[
+ {t:'상여금으로 몰아서 갚는다',ok:['학자금 대출이 끝났다. 어깨가 가볍다.',{repay:'repay',self:4,hp:3}]},
+ {t:'정해진 대로 천천히 갚는다',ok:['이자가 낮으니 천천히 가기로 했다.',{}]}]},
 /* ===== 4단계 3: 「인생을 사는」 생활 이벤트 (학업·일·돈·주거·관계·건강·마음·군 복무·통과의례) ===== */
 {id:'l_course',a:[20,25],c:g=>g.job=='대학생'&&g.edu&&!g.edu.onLeave,w:'학사 포털',t:'수강신청 전쟁',x:'오전 10시 정각. 서버가 열리기 1분 전이다.',ch:[
  {t:'PC방에 가서 광클한다',p:.6,ok:['원하던 과목을 다 담았다!',{self:3,burn:1}],ko:['한 과목이 튕겼다.',{self:-1,burn:2}]},{t:'남는 과목으로 채운다',ok:['시간표가 엉망이 됐다.',{burn:2,self:-1}]}]},
@@ -782,7 +792,7 @@ const CTX=[
  {k:'stu',re:/대학생|대학\s?재학|학자금|장학금|등록금|재학생|휴학|복학|캠퍼스|대학일자리/,ok:g=>g.job=='대학생'&&!!g.edu&&!g.edu.done,probe:g=>{g.job='중견·중소';g.edu=null}},
  {k:'army',re:/장병|전역|입대|입영|병역|군 복무|군복무|제대/,ok:g=>g.job=='군 복무'||!!(g.mil&&g.mil.done&&g.m-g.mil.end<=12),probe:g=>{g.mil=null}},
 ];
-function ctxText(ev){return [ev.t,ev.x,ev.n,ev.d,ev.h,ev.name,ev.summary,ev.support,ev.target].map(v=>Array.isArray(v)?v.join(' '):v||'').join(' ')}
+function ctxText(ev){return [ev.t,ev.x,ev.n,ev.d,ev.h,ev.name,ev.summary,ev.support,ev.target].map(v=>typeof v=='function'?'':Array.isArray(v)?v.join(' '):v||'').join(' ')}
 function ctxOk(ev,g){g=g||G;if(!ev||!g)return true;const T=ctxText(ev),skip=ev.ctx||{};g._ctxT=T;
  try{for(const r of CTX){if(skip[r.k]||!r.re.test(T))continue;if(!r.ok(g))return false}
   // 나이 범위 「만 19~34세」·「만 34세 이하」
@@ -851,7 +861,7 @@ const FT='<footer>※ 이벤트·정책은 프로토타입용 예시이며 실�
 /* ===== 상태 ===== */
 let S='start',G=null,FORM={},MOD=null,TT,TM,LTO=null,FFN=0;
 const tst=t=>{const e=$('toast');e.textContent=t;e.style.opacity=1;clearTimeout(TT);TT=setTimeout(()=>{e.style.opacity=0},4200)};
-const txt=s=>(Array.isArray(s)?ri(s):s).replace(/\{f(\d|b)\}/g,(_,i)=>i=='b'?G.fr.slice().sort((a,b)=>b.bond-a.bond)[0].n:G.fr[i].n).replace(/\{p\}/g,G.pn||'연인').replace(/\{b\}/g,G.boss||'팀장');
+const txt=s=>(typeof s=='function'?s(G):Array.isArray(s)?ri(s):s).replace(/\{f(\d|b)\}/g,(_,i)=>i=='b'?G.fr.slice().sort((a,b)=>b.bond-a.bond)[0].n:G.fr[i].n).replace(/\{p\}/g,G.pn||'연인').replace(/\{b\}/g,G.boss||'팀장');
 const mo=()=>G.m%12+1;
 /* ===== 3단계: 경제 모델 (숫자는 life-stats.js ECON·STAT_RULES, 모두 기획값) =====
  * 현금(cash)·빚(loans, 종류별)·집 자산(house)·보증금(dep)·차(car)는 엔진 내부 값이고 화면에는 「재정」 막대(0~100)로만 보인다.
@@ -1070,7 +1080,7 @@ function chg(fx,s=1){if(!fx)return;const mon=Object.keys(fx).some(k=>MONEY_KEYS.
  else if(k=='money'){const a=amtOf(gradeOf(v));if(v>0)G.cash+=a;else spend(a)}
  else if(k=='cost')spend(amtOf(v));else if(k=='gain')G.cash+=amtOf(v);
  else if(k=='borrow'){const a=amtOf(v);addLoan('private',a);G.cash+=a}
- else if(k=='loan')addLoan(v,v=='student'?EC.tuitionLoan:amtOf('M'));
+ else if(k=='loan'){addLoan(v,v=='student'?EC.tuitionLoan:amtOf('M'));if(v=='student')G.f.sloan=1}
  else if(k=='debt')addLoan('card',v);
  else if(k=='car'){const a=amtOf(v);spend(a);G.car=(G.car||0)+a*.7}
  else if(k=='fgone'){if(G.fr[v])G.fr[v].gone=1}else if(k=='then'){const ev=EV.find(e=>e.id==v[0]);if(ev)queueEv(ev,G.m+v[1],'chain')}else if(k=='dropEdu'){if(G.edu){G.edu.done=true;G.edu.dropped=1}}else if(k=='jobLv')G.jobLv=(G.jobLv||0)+v;else if(k=='repay')G.repay=v;
@@ -1145,11 +1155,11 @@ function pickDecision(){
  if(cand.length&&polOk()&&R()<.16+G.st.soc/500){const k=ri(cand),P=POL[k],f=ri(G.fr),fi=G.fr.indexOf(f);G.heard[k]=1;genFeed(fi,k,'요즘 알아보는 중 👀 '+P.h);
   return makeDec({id:'rumor',w:f.n,t:'지나가듯 들은 소문',x:`${f.n}이(가) 말했다. 「${P.h}」`,ch:[{t:'바로 검색해본다',act:()=>{G.rumor.push({id:++G.tid,k,ttl:8,src:f.n});startSr(G.rumor[G.rumor.length-1].id)}},{t:'일단 메모만 해둔다',act:()=>{G.rumor.push({id:++G.tid,k,ttl:8,src:f.n});addLine('메모해뒀다. 시간 날 때 알아봐야지. (서랍 확인)','n')}},{t:'그냥 흘려듣는다',act:()=>{G.miss[k]=1;addLine('그냥 흘려들었다.','n')}}]})}
  /* 4단계 2-1: 연인이 있으면 연인 이벤트를 따로 뽑을 기회 */
- if(G.f.partner&&R()<.3){const lv=EV.filter(e=>/^lv_|^fight$|^marry$|^baby$/.test(e.id)&&(!e.a||G.age>=e.a[0]&&G.age<=e.a[1])&&(!e.c||e.c(G))&&ctxOk(e,G)&&(G.used[e.id]||0)<(e.max||1));if(lv.length){const ev=pickW(lv.map(x=>[x,(typeof x.pr=='function'?x.pr(G):(x.pr||1))*extW(x)]));G.used[ev.id]=(G.used[ev.id]||0)+1;if(ev.on)ev.on(G);return makeDec(ev)}}
+ if(G.f.partner&&R()<.3){const lv=EV.filter(e=>/^lv_|^fight$|^marry$|^baby$/.test(e.id)&&(!e.a||G.age>=e.a[0]&&G.age<=e.a[1])&&(!e.c||e.c(G))&&ctxOk(e,G)&&(G.used[e.id]||0)<evMax(e));if(lv.length){const ev=pickW(lv.map(x=>[x,(typeof x.pr=='function'?x.pr(G):(x.pr||1))*extW(x)]));G.used[ev.id]=(G.used[ev.id]||0)+1;if(ev.on)ev.on(G);return makeDec(ev)}}
  /* 4단계 2: 친구가 거는 이벤트 */
  if(R()<(G.job=='군 복무'?.12:.22)){const fe=pickFriendEv();if(fe)return makeDec(fe)}
  const army=G.job=='군 복무',ARMY_EV=['mom','scam','envy','wedf','lv_army','lv_break'],ARMY_MI=['m_sns','m_rain','m_parent','m_old','m_sleep'];
- const major=EV.filter(e=>(!army||ARMY_EV.includes(e.id)||e.army)&&(army||!e.army)&&(!e.a||G.age>=e.a[0]&&G.age<=e.a[1])&&(!e.c||e.c(G))&&ctxOk(e,G)&&(G.used[e.id]||0)<(e.max||1));
+ const major=EV.filter(e=>(!army||ARMY_EV.includes(e.id)||e.army)&&(army||!e.army)&&(!e.a||G.age>=e.a[0]&&G.age<=e.a[1])&&(!e.c||e.c(G))&&ctxOk(e,G)&&(G.used[e.id]||0)<evMax(e));
  const micro=MI.filter(e=>(!army||ARMY_MI.includes(e.id))&&(!e.c||e.c(G))&&ctxOk(e,G)&&!G.recent.includes(e.id));let ev=null;
  if(major.length&&(R()<.62||!micro.length)){ev=pickW(major.map(x=>[x,(typeof x.pr=='function'?x.pr(G):(x.pr||1))*(G.care&&x.tag&&G.care.includes(x.tag)?2.2:1)*extW(x)]));G.used[ev.id]=(G.used[ev.id]||0)+1;if(ev.on)ev.on(G)}
  else if(micro.length){ev=pickW(micro.map(x=>[x,extW(x)]));G.recent.push(ev.id);if(G.recent.length>6)G.recent.shift()}
@@ -1158,6 +1168,9 @@ function pickDecision(){
 function evDoms(e){if(!e._dom){e._dom=new Set();(e.ch||[]).forEach(c=>[c.ok,c.ko].forEach(r=>{if(r&&r[1]&&typeof r[1]=='object')domsOf(r[1]).forEach(d=>e._dom.add(d))}))}return e._dom}
 function extW(e){let m=0;evDoms(e).forEach(d=>{const v=G.st[d],n=SR.norm[d];if(v!=null&&n!=null)m=Math.max(m,Math.max(0,Math.abs(v-n)-SR.extremeFree))});return 1+m/SR.extremeDiv}
 /* 4단계 3: 정책 이벤트(소문·도감 알림·청년정책)는 전체 선택 이벤트의 25% 이하, 한 해 최대 2개 */
+/* 4단계 4: 한 번 본 이벤트는 다시 나오지 않는다. 면접·시험·연애처럼 반복이 자연스러운 것만 예외(max까지) */
+const REPEAT=['interview','exam','jobpost','love','marry','baby','tuition','overdue','lv_break','gongchae','susi','ncs','firstjob','schol','lv_busy','debt','mom'];
+const evMax=e=>REPEAT.includes(e.id)?(e.max||1):1;
 const POL_IDS=['rumor','alert','yq'];
 const polOk=()=>!!G&&(G.polY||0)<2&&((G.polN||0)+1)<=.25*((G.evN||0)+1);
 function makeDec(ev){ev=capLocks(ev);G.evN=(G.evN||0)+1;if(POL_IDS.includes(ev.id)){G.polN=(G.polN||0)+1;G.polY=(G.polY||0)+1}G.dec={e:ev,w:txt(ev.w),t:ev.t,x:txt(ev.x),age:G.age,mo:mo(),hid:false};G.cd=rr(3,6);if(G.auto)setTimeout(()=>{if(G.dec){pickC(autoIdx(G.dec.e));draw()}},ffDelay())}
@@ -1179,7 +1192,8 @@ const lock=c=>!!needFail(c);
 function chanceOf(c){if(!c||c.p==null||c.act)return '';const p=typeof c.p=='function'?c.p(G):c.p,C=SR.chance;return p>=C.high?'높음':p>=C.mid?'보통':'낮음'}
 const choiceNote=c=>lock(c)?`<small>🔒 ${needFail(c).join(', ')}</small>`:chanceOf(c)?`<small>성공 가능성: ${chanceOf(c)}</small>`:'';
 /* 한 이벤트에서 잠긴 선택지는 최대 1개, 고를 수 있는 선택지는 최소 2개 */
-function capLocks(ev){if(!ev||!ev.ch)return ev;const L=ev.ch.map((c,i)=>lock(c)?i:-1).filter(i=>i>=0),allow=Math.max(0,Math.min(1,ev.ch.length-2));if(L.length<=allow)return ev;const keep=L.slice(0,allow);return Object.assign({},ev,{ch:ev.ch.map((c,i)=>L.includes(i)&&!keep.includes(i)?Object.assign({},c,{need:null}):c)})}
+function capLocks(ev){if(!ev||!ev.ch)return ev;if(ev.ch.some(c=>c.show))ev=Object.assign({},ev,{ch:ev.ch.filter(c=>!c.show||c.show(G))}); // show: 앞선 선택(플래그)이 있을 때만 보이는 선택지
+const L=ev.ch.map((c,i)=>lock(c)?i:-1).filter(i=>i>=0),allow=Math.max(0,Math.min(1,ev.ch.length-2));if(L.length<=allow)return ev;const keep=L.slice(0,allow);return Object.assign({},ev,{ch:ev.ch.map((c,i)=>L.includes(i)&&!keep.includes(i)?Object.assign({},c,{need:null}):c)})}
 function pickC(i){const d=G.dec;if(!d)return;const c=d.e.ch[i];if(lock(c))return tst('조건이 부족해 지금은 고를 수 없어요');
  G.dec=null;
  if(c.act){addLine(`${d.t} → ${c.t}.`,'q',null,'c',3);c.act();return}
