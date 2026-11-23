@@ -489,7 +489,7 @@ const EV=[
  {t:'인턴부터 시작한다',pre:'인턴 출근 첫날. 명찰에 「인턴」이 붙어 있다.',p:.65,ok:['인턴 기간이 끝나고 정규직 전환 통보를 받았다!',{hire:1,self:3},4],ko:['전환은 안 됐지만 경력 한 줄이 생겼다.',{prep:3,self:2},4]},
  {t:'정규직 공고만 기다린다',ok:['조금 더 버텨 보기로 했다.',{self:-1}]}],autoW:()=>[.75,.25]},
 {id:'smefirst',pr:g=>g.m-(g.jsM==null?g.m:g.jsM)>=8?3:.4,max:2,c:g=>g.job=='취준생',w:'{f1}',t:'작은 회사부터',x:'「우리 회사 작긴 한데 사람 구해. 일단 시작해 보는 것도 방법이야.」',ch:[
- {t:'일단 들어가서 경력을 쌓는다',ok:['작은 회사에 입사했다. 생각보다 배울 게 많다.',{hire:'중견·중소',self:2}]},
+ {t:'일단 들어가서 경력을 쌓는다',ok:['작은 회사에 입사했다. 생각보다 배울 게 많다.',{hire:'중견·중소',smeFirst:1,self:2}]},
  {t:'원하는 곳을 조금 더 노린다',ok:['조금 더 버텨 보기로 했다.',{burn:2}]}],autoW:()=>[.7,.3]},
 {id:'ref2',pr:g=>g.m-(g.jsM==null?g.m:g.jsM)>=10?2.6:.05,max:2,c:g=>g.job=='취준생',w:'{f0}',t:'지인 추천',x:'「우리 팀에 자리 났는데, 내가 추천해 줄까?」 오랜만에 온 연락이다.',ch:[
  {t:'추천을 받아 지원한다',pre:'추천을 받아 면접을 봤다.',p:.7,ok:['추천 덕분에 최종 합격했다!',{hire:1,soc:4},1],ko:['아쉽게 떨어졌지만 연락해 준 게 고맙다.',{soc:3,prep:1},1]},
@@ -498,6 +498,43 @@ const EV=[
  {t:'한 번 더 도전한다',ok:['마음을 다잡았다.',{prep:2,burn:3}]},
  {t:'민간 취업으로 방향을 바꾼다',ok:['수험서를 정리했다. 이제 자소서를 쓴다.',{job:'취준생',self:2,prep:2}]},
  {t:'아는 회사에 바로 들어간다',ok:['공부는 접고 작은 회사에 들어갔다.',{hire:'중견·중소',self:2}]}],autoW:()=>[.4,.35,.25]},
+/* 4단계 2-2: 취업 경로 다양화. 취준 12개월이 넘으면 이 경로들이 먼저 나온다(SEEK12 가중치) */
+{id:'profrec',pr:g=>seekW(g,3),c:g=>g.job=='취준생'&&g.edu&&g.edu.gradM!=null,w:'지도 교수',t:'교수님의 추천',x:'「아는 회사에서 사람을 찾는데, 자네 생각이 나더군.」',ch:[
+ {t:'추천을 받아 지원한다',pre:'교수님 추천서를 들고 면접을 봤다.',p:g=>Math.min(.8,.45+g.prep*.04),ok:['합격했다. 교수님께 제일 먼저 전화를 드렸다.',{hire:'중견·중소',self:4},1],ko:['아쉽게 떨어졌다. 그래도 좋은 경험이었다.',{prep:1},1]},
+ {t:'원하는 분야가 아니라 사양한다',ok:['감사 인사만 드렸다.',{self:1}]}],autoW:()=>[.8,.2]},
+{id:'gongchae',max:2,pr:g=>seekW(g,1.5),c:g=>g.job=='취준생',w:'채용 공고',t:'대기업 공채 시즌',x:'하반기 공채가 열렸다. 서류, 인적성, 면접까지 석 달짜리 레이스다.',ch:[
+ {t:'전력으로 도전한다',pre:'서류와 인적성을 넘고 최종 면접을 봤다.',p:g=>Math.min(.6,.12+g.prep*.05+(g.st.self-50)*.004),ok:['최종 합격! 사원증 사진을 찍었다.',{hire:'대기업',self:8},3],ko:['최종에서 떨어졌다. 그래도 끝까지 갔다.',{prep:2,self:-3,burn:4},3]},
+ {t:'이번 시즌은 건너뛴다',ok:['준비가 더 필요하다고 느꼈다.',{prep:1}]}]},
+{id:'susi',max:2,pr:g=>seekW(g,1.5),c:g=>g.job=='취준생',w:'채용 플랫폼',t:'수시 채용 공고',x:'경력 무관 수시 채용 공고가 떴다. 마감이 이번 주다.',ch:[
+ {t:'바로 지원한다',pre:'포트폴리오를 정리해 보냈다.',p:g=>Math.min(.75,.35+g.prep*.04+(g.st.self-50)*.003),ok:['수시 채용에 붙었다!',{hire:1,self:4},2],ko:['연락이 없었다.',{self:-2,prep:1},2]},
+ {t:'공채를 기다린다',ok:['조금 더 준비하기로 했다.',{}]}]},
+{id:'ncs',max:2,pr:g=>seekW(g,1.2),c:g=>g.job=='취준생'||g.job=='공시생',w:'공공기관 채용',t:'공공기관 NCS 채용',x:'공공기관 채용 공고가 났다. 필기는 NCS 직업기초능력이다.',ch:[
+ {t:'NCS를 준비해 응시한다',pre:'필기를 보고 면접까지 갔다.',p:g=>Math.min(.6,.18+g.prep*.05),ok:['공공기관에 합격했다. 안정적인 출발이다.',{hire:'공무원',self:6},3],ko:['필기에서 아깝게 떨어졌다.',{prep:2,self:-2},3]},
+ {t:'민간 기업에 집중한다',ok:['선택과 집중.',{}]}]},
+{id:'whv',a:[20,30],max:1,pr:g=>seekW(g,1.2),c:g=>['취준생','쉬는중'].includes(g.job)&&!g.f.whv,w:'워킹홀리데이 카페',t:'워킹홀리데이',x:'호주 워킹홀리데이 비자 신청이 열렸다. 1년 동안 일하며 살아 볼 수 있다.',ch:[
+ {t:'떠난다',need:{money:30},ok:['짐을 쌌다. 낯선 나라에서 1년을 살아 보기로 했다.',{whv:1,job:'쉬는중',cost:'M',self:4,hp:5,burn:-6,then:['whvback',12]}]},
+ {t:'여기서 계속 준비한다',ok:['다음 기회로 미뤘다.',{}]}],autoW:()=>[.3,.7]},
+{id:'whvback',pr:.01,c:g=>g.f.whv&&!g.f.whvDone,on:g=>{g.f.whvDone=1},w:'인천공항',t:'1년 만의 귀국',x:'영어도, 혼자 사는 법도 늘었다. 이제 뭘 할까.',ch:[
+ {t:'외국계 기업에 지원한다',p:g=>Math.min(.75,.4+g.prep*.03+(g.st.self-50)*.004),ok:['외국계 회사에 합격했다.',{hire:'대기업',self:6}],ko:['아직 자리가 없다. 다시 준비를 시작했다.',{job:'취준생',prep:3}]},
+ {t:'다시 차근차근 준비한다',ok:['경험을 자소서에 적었다.',{job:'취준생',prep:3,self:3}]}]},
+{id:'seekbiz',a:[24,36],max:1,pr:g=>seekW(g,.8),c:g=>g.job=='취준생'&&g.st.self>=45,w:'나',t:'차라리 내가 만들까',x:'취업 문은 좁은데 하고 싶은 아이템은 있다.',ch:[
+ {t:'작게 창업한다',pre:'사업자 등록을 했다. 통장이 가벼워진다.',p:g=>Math.min(.55,.25+(g.st.self-50)*.006+g.prep*.02),ok:['첫 매출이 났다! 작지만 내 일이다.',{job:'창업',self:8,cost:'M'},4],ko:['몇 달 만에 접었다. 배운 건 남았다.',{cost:'L',self:-5,prep:2},4]},
+ {t:'취업 준비를 이어 간다',ok:['아이디어는 메모장에 남겼다.',{}]}],autoW:()=>[.25,.75]},
+{id:'cert',max:1,pr:g=>seekW(g,1.2),c:g=>['취준생','쉬는중'].includes(g.job)&&!g.f.cert,w:'직업훈련원',t:'기술을 배워 볼까',x:'전기·용접·설비 같은 기술 자격증은 일자리가 꾸준하다고 한다.',ch:[
+ {t:'자격증 과정을 시작한다',ok:['6개월 과정에 등록했다. 손에 기름이 묻는다.',{cert:1,cost:'S',prep:2,self:2,then:['certdone',6]}]},
+ {t:'사무직을 계속 노린다',ok:['원래 계획대로 간다.',{}]}],autoW:()=>[.35,.65]},
+{id:'certdone',pr:.01,c:g=>g.f.cert&&!g.f.certDone,on:g=>{g.f.certDone=1},w:'직업훈련원',t:'자격증 시험',x:'6개월 과정이 끝나고 실기 시험 날이다.',ch:[
+ {t:'시험을 본다',p:g=>Math.min(.85,.55+g.prep*.03),ok:['합격! 현장직으로 바로 채용됐다.',{hire:'중견·중소',self:6}],ko:['한 번 떨어졌다. 다음 회차를 노린다.',{prep:2,self:-2}]}]},
+{id:'smejump',a:[24,36],max:1,c:g=>g.job=='중견·중소'&&g.f.smeFirst&&g.m-g.hm>=18,w:'헤드헌터',t:'경력직 이직 기회',x:'작은 회사에서 쌓은 경력을 보고 큰 회사에서 연락이 왔다.',ch:[
+ {t:'이직에 도전한다',p:g=>Math.min(.7,.35+(g.st.self-50)*.005+g.prep*.02),ok:['더 큰 회사로 옮겼다. 연봉도 올랐다.',{hire:'대기업',jobLv:1,self:6}],ko:['최종에서 떨어졌다. 지금 회사도 나쁘지 않다.',{self:-2}]},
+ {t:'지금 회사에서 더 성장한다',ok:['자리를 지키기로 했다.',{jobLv:1}]}]},
+{id:'dropout',max:1,c:g=>g.job=='대학생'&&g.edu&&g.edu.onLeave&&!g.edu.done,w:'나',t:'휴학 중 생긴 다른 꿈',x:'쉬는 동안 해 보니 전공보다 이 일이 더 맞는 것 같다.',ch:[
+ {t:'복학한다',ok:['일단 졸업은 하기로 했다.',{self:1}]},
+ {t:'자퇴하고 그 길로 간다',ok:['학교를 그만두고 일을 찾기로 했다. 주변의 걱정이 크다.',{dropEdu:1,job:'취준생',self:3,prep:2}]}],autoW:()=>[.85,.15]},
+{id:'career2',a:[30,36],max:1,c:g=>isEarner(g)&&g.job!='창업'&&(g.st.burn>=55||g.st.self<45),w:'나',t:'서른의 전직',x:'이 일을 10년 더 할 수 있을까. 다른 일을 처음부터 배워 볼까.',ch:[
+ {t:'회사를 나와 새 분야를 준비한다',ok:['서른에 다시 신입이 되기로 했다.',{job:'취준생',prep:3,self:-2,burn:-10}]},
+ {t:'퇴근 후 조금씩 배워 본다',ok:['주말마다 수업을 듣는다.',{prep:2,burn:3,self:2}]},
+ {t:'지금 일을 계속한다',ok:['익숙함도 실력이다.',{}]}],autoW:()=>[.15,.45,.4]},
 {id:'contract',c:g=>g.f.first1&&!g.f.cdone&&JB[g.job].e&&g.job!='창업',w:'{b}',t:'첫 근로계약서',x:'계약서에 서명하라고 한다. 항목이 많고 용어가 낯설다.',ch:[
  {t:'꼼꼼히 읽고 모르는 건 물어본다',ok:['권리를 알고 시작하니 든든하다.',{self:3,cdone:1,sloppy:0}]},{t:'바쁘니까 그냥 서명한다',ok:['일단 시작했다.',{cdone:1,sloppy:1}]}]},
 {id:'firstpay',c:g=>JB[g.job].e&&g.job!='창업'&&!g.f.fp&&g.f.first1,on:g=>{g.f.fp=1},w:'은행 앱',t:'첫 월급날',x:'통장에 첫 월급이 찍혔다. 어떻게 쓸까?',ch:[
@@ -548,7 +585,7 @@ const EV=[
  {t:'가만히 들어준다',ok:['서로 비슷한 마음이었다는 걸 알았다.',{soc:8,self:4,hp:2,_b:[2,10]}]},{t:'나도 솔직히 말한다',ok:['오래 쌓인 얘기를 나눴다. 속이 시원하다.',{soc:10,burn:-6,hp:2,_b:[2,10]}]}]},
 {id:'reunion',a:[26,38],max:2,w:'{f3}',t:'동창 모임',x:'「이번에 동창 모임 하는데 올래?」 다들 요즘 어떻게 사는지 궁금하다.',ch:[
  {t:'참석해서 솔직하게 말한다',p:.7,ok:['다들 비슷하게 고민 중이었다.',{soc:8,self:3,hp:2,_b:[3,6]}],ko:['분위기가 어색했지만 후련했다.',{soc:2,self:1}]},{t:'근황을 조금 부풀려서 말한다',ok:['돌아오는 길이 허전했다.',{self:-3,soc:2}]},{t:'가지 않는다',ok:['편했지만 한편으론 궁금했다.',{soc:-2}]}]},
-{id:'restartE',max:3,c:g=>g.job=='쉬는중',w:'{f2}',t:'다시 시작할 수 있을까',x:'「요즘 어때? 천천히 해도 돼.」 {f2}이(가) 조심스럽게 안부를 물었다.',ch:[
+{id:'restartE',max:3,c:g=>g.job=='쉬는중'&&(!g.f.whv||g.f.whvDone),w:'{f2}',t:'다시 시작할 수 있을까',x:'「요즘 어때? 천천히 해도 돼.」 {f2}이(가) 조심스럽게 안부를 물었다.',ch:[
  {t:'작게라도 다시 시작해본다',ok:['첫걸음은 가벼웠다. 친구가 센터 얘기를 꺼냈다.',{job:'취준생',self:4,hp:2,rum:'challenge'}]},{t:'조금 더 쉰다',ok:['당장은 마음이 편하다.',{burn:-4,soc:-2}]}]},
 {id:'pet',a:[22,38],max:1,c:g=>!g.f.pet,w:'보호소',t:'눈이 마주친 고양이',x:'지나가다 들른 보호소. 작은 고양이가 계속 나를 쳐다본다.',ch:[
  {t:'입양한다',ok:['집에 오는 길이 설렌다. 돈은 들지만 마음이 따뜻하다.',{pet:1,money:-5,hp:6,soc:3}]},{t:'마음만 두고 돌아선다',ok:['한동안 생각이 났다.',{}]}]},
@@ -671,6 +708,8 @@ function ctxAudit(){const base=()=>({age:28,job:'중견·중소',h:'월세',m:60
 /* 친구 탭 맨 위 연인 카드: 아바타·이름·교제 기간·호감도 막대 */
 function loverCard(){const g=G;if(!g.f.partner||!g.pn)return '';const mm=g.m-(g.pm==null?g.m:g.pm),y=Math.floor(mm/12),dur=(y?y+'년 ':'')+(mm%12)+'개월';
  return `<div class="frl" style="background:rgba(232,120,160,.08);border-radius:10px;padding:8px">${av(g.plook,44)}<div style="flex:1;min-width:0"><b>${esc(g.pn)}</b> <span class="kd">${g.f.married?'배우자':'연인'}</span> <span class="mu">${g.f.married?'결혼 '+(g.wedM!=null?Math.floor((g.m-g.wedM)/12)+1+'년차':''):'교제 '+dur}</span><div class="bd" title="호감도 ${rd(g.love||0)}"><i style="width:${clf(g.love||0)}%;background:#e5679a"></i></div></div></div>`}
+/* 취준 12개월이 넘으면 대체 취업 경로 이벤트가 먼저(가중치 ×3) */
+const seekW=(g,b)=>(g.jsM!=null&&JB[g.job]&&JB[g.job].s==1&&g.m-g.jsM>=12)?b*3:b;
 const FST=b=>b>=60?'절친':b>=30?'친구':'아는 사이',FLV=b=>b>=60?2:b>=30?1:0;
 const FEV=[
  {id:'fe_alba',lv:0,a:[20,25],c:g=>NONEARN.includes(g.job)&&!g.f.alba,t:'같이 알바할래?',x:'「{F}: 주말 카페 알바 자리가 두 개 났대. 같이 하자!」',ch:[
@@ -939,7 +978,7 @@ function chg(fx,s=1){if(!fx)return;const mon=Object.keys(fx).some(k=>MONEY_KEYS.
  else if(k=='loan')addLoan(v,v=='student'?EC.tuitionLoan:amtOf('M'));
  else if(k=='debt')addLoan('card',v);
  else if(k=='car'){const a=amtOf(v);spend(a);G.car=(G.car||0)+a*.7}
- else if(k=='fgone'){if(G.fr[v])G.fr[v].gone=1}else if(k=='jobLv')G.jobLv=(G.jobLv||0)+v;else if(k=='repay')G.repay=v;
+ else if(k=='fgone'){if(G.fr[v])G.fr[v].gone=1}else if(k=='then'){const ev=EV.find(e=>e.id==v[0]);if(ev)queueEv(ev,G.m+v[1],'chain')}else if(k=='dropEdu'){if(G.edu){G.edu.done=true;G.edu.dropped=1}}else if(k=='jobLv')G.jobLv=(G.jobLv||0)+v;else if(k=='repay')G.repay=v;
  else if(k=='rum')addRum(v);else if(k=='job')setJob(v);else if(k=='hire')hire(typeof v=='string'?v:null);else if(k=='h')setHome(v);
  else if(k=='_b'){const f=G.fr[v[0]];f.bond=clf(f.bond+v[1])}else if(k=='leave'){startLeave(v)}else if(k=='L'){G.love=clf((G.love||50)+v)}
  else if(k=='partner'&&!v){if(G.f.partner&&!G.f.married){G.f.partner=0;G.pn=null;G.plook=null;G.love=0;G.loveLowM=0;G.f.exM=G.m;G.f.cohabit=0;G.f.marTalk=0}}
