@@ -332,7 +332,8 @@ body.sw{margin:0;padding:0;background:#15181c;overflow:hidden;color:#1f2a2e}
 details.dm{border-bottom:1px solid var(--ln);padding:6px 0}details.dm summary{cursor:pointer;font-size:13px}
 .endlogo{font:700 22px "Outfit","NEXON Lv2 Gothic","Noto Sans KR",sans-serif;padding:14px 22px 0;color:var(--ac)}
 #foot .en{font-weight:700}
-#tl .pins{margin:2px 0 8px;padding:6px 8px;border-radius:12px;background:rgba(255,214,90,.16);border:1px solid rgba(200,160,40,.35)}#tl .pin{position:relative;padding:2px 0}#tl .pin+.pin{border-top:1px dashed var(--ln)}#tl .pinok{position:absolute;right:2px;top:2px;border:1px solid var(--ln);background:var(--card);color:var(--ink);border-radius:10px;font:inherit;font-size:11px;padding:1px 8px;cursor:pointer}
+#tl .tli.star{margin:6px 0;padding:6px 8px;border-radius:12px;background:rgba(255,214,90,.16);border:1px solid rgba(200,160,40,.35)}#tl .tli.star .tld{margin-top:0}#tl .tli.star.nw{animation:tlin .3s ease-out both,tlhls 2.5s ease both}
+@keyframes tlhls{0%,40%{background:rgba(255,214,90,.42)}100%{background:rgba(255,214,90,.16)}}
 #endp details.pcd{border:1px solid var(--ln);border-radius:8px;padding:6px 10px;margin:6px 0;background:var(--card)}#endp details.pcd summary{cursor:pointer;font-size:13.5px}#endp details.pcd a{font-size:12.5px}
 #tl .fxc{margin-top:3px;font-size:11.5px;color:var(--mu);letter-spacing:-.2px}
 </style></head><body><div id="app"></div><div id="toast"></div>
@@ -1440,7 +1441,6 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b
  else if(k=='ping'){const f=G.fr[+v];f.ping=G.m;f.bond=clf(f.bond+6);const tr=ri(TRUE[f.job]);G.sq.push({due:G.m+1,t:`${f.n}에게서 답장이 왔다. 「${tr[0]}」 안부를 묻길 잘했다.`,tone:'g',fx:{soc:4,hp:1},tag:'f',fi:+v,w:2});addLine(`${f.n}에게 안부 메시지를 보냈다.`,'q',null,'c',undefined,+v);touch(+v);MOD=null;draw()}
  else if(k=='yr'){MOD={k:'yr',i:+v};draw()}
   else if(k=='stip'){const s=findStory(+v);if(s&&s.k){addRum(s.k,G.fr[s.fi].n);const r=G.rumor.find(x=>x.k==s.k);if(r&&!G.auto)startSr(r.id);else{MOD=null;draw()}}}
- else if(k=='rd'){const l=G.log.find(x=>x.o==+v);if(l)l.rd=1;draw()}
  else if(k=='role'){tst((v=='money'?'재정':LB[v])+' — '+(v=='money'?MONEY_ROLE:ROLE[v]))}
  else if(k=='mys'){MOD={k:'my',mood:'😊'};draw()}
  else if(k=='mood'){const t=($('mys')||{}).value||'';MOD.mood=v;draw();if($('mys'))$('mys').value=t}
@@ -1771,33 +1771,26 @@ function tlBody(l) {
   return `<div class="ln ${l.tn}"><span>${t}</span></div>`;
 }
 /* 4단계 피드(홈): 나에게 일어난 일(선택 결과·진로·돈·관계 변화)과 세상·정책 소식만. 친구 소식은 스토리, 친구 반응은 알림 배너,
- * 덜 중요한 일상 문장은 기록 탭(일기장)에만 쌓는다. 한 달에 최대 1개, 중요 항목(★)은 예외이고 읽기 전까지 맨 위에 고정한다. */
+ * 덜 중요한 일상 문장은 기록 탭(일기장)에만 쌓는다. 한 달에 최대 1개, 중요 항목(★)은 예외이고 시간 순서대로 들어가되 노란 박스로 강조한다. */
 const feedLine = l => !l.nt && (l.k === 'c' || l.k === 'u' || l.k === 'me') && l.tn !== 'q';
 function tlItems() {
   const g = G, raw = [];
-  g.log.slice(0, 120).forEach(l => { if (feedLine(l) && (l.rd || !isStar(l))) raw.push({o: l.o, m: l.m, age: l.age, mo: l.mo, star: isStar(l), h: () => tlBody(l)}); });
+  g.log.slice(0, 120).forEach(l => { if (feedLine(l)) raw.push({o: l.o, m: l.m, age: l.age, mo: l.mo, star: isStar(l), h: () => tlBody(l)}); });
   raw.sort((a, b) => a.o - b.o);
   const starM = new Set(raw.filter(x => x.star).map(x => x.m)), cnt = {};
   const keep = raw.filter(x => x.star || (!starM.has(x.m) && (cnt[x.m] = (cnt[x.m] || 0) + 1) <= 1));
   return keep.sort((a, b) => b.o - a.o).slice(0, 40);
 }
-function pinnedHTML() {
-  const pins = G.log.filter(l => feedLine(l) && isStar(l) && !l.rd).slice(0, 3);
-  if (!pins.length) return '';
-  // 3개를 넘는 오래된 중요 항목은 읽은 것으로 넘긴다(타임라인으로 내려간다)
-  G.log.filter(l => feedLine(l) && isStar(l) && !l.rd).slice(3).forEach(l => { l.rd = 1; });
-  return `<div class="pins">${pins.map(l => `<div class="pin"><div class="mu">★ ${l.age}세 ${l.mo}월</div>${tlBody(l)}<button class="pinok" data-a="rd:${l.o}">읽음 ✓</button></div>`).join('')}</div>`;
-}
 function tlHTML(items) {
   const seen = UI.tlSeen, now = Date.now(), born = UI.tlBorn || (UI.tlBorn = new Map());
   let prev = null;
   return items.map(x => {
-    const key = x.age + '|' + x.mo, showDate = key !== prev; prev = key;
+    const key = x.age + '|' + x.mo, showDate = x.star || key !== prev; prev = x.star ? null : key;
     const yearStart = x.mo === FIRST_MO, col = yearStart ? lineCol((G.jobAt && G.jobAt[x.m]) || G.job) : '';
     if (seen && !seen.has(x.o) && !born.has(x.o)) born.set(x.o, now);
-    // 새 항목은 1.5초 동안 하이라이트. 그사이 다시 그려져도 애니메이션이 이어지게 지난 시간만큼 앞당긴다.
-    const age = born.has(x.o) ? now - born.get(x.o) : 1e9, isNew = age < 1500;
-    return `<div class="tli${isNew ? ' nw' : ''}${showDate ? '' : ' cont'}"${isNew ? ` style="animation-delay:-${age}ms"` : ''}>${showDate ? `<div class="tld"${col ? ` style="color:${col}"` : ''}><span class="en">${x.age}</span>세 <span class="en">${x.mo}</span>월</div>` : ''}${x.h()}</div>`;
+    // 새 항목은 1.5초(중요 항목은 2.5초) 동안 하이라이트. 그사이 다시 그려져도 애니메이션이 이어지게 지난 시간만큼 앞당긴다.
+    const age = born.has(x.o) ? now - born.get(x.o) : 1e9, isNew = age < (x.star ? 2500 : 1500);
+    return `<div class="tli${x.star ? ' star' : ''}${isNew ? ' nw' : ''}${showDate ? '' : ' cont'}"${isNew ? ` style="animation-delay:-${age}ms"` : ''}>${showDate ? `<div class="tld"${col ? ` style="color:${col}"` : ''}>${x.star ? '★ ' : ''}<span class="en">${x.age}</span>세 <span class="en">${x.mo}</span>월</div>` : ''}${x.h()}</div>`;
   }).join('') || '<div class="mu">이야기가 시작되기를 기다리는 중…</div>';
 }
 
@@ -1848,7 +1841,7 @@ function renderPhone() {
   // 타임라인: 읽던 위치를 지키고, 아래로 내려 읽는 중이면 끌어올리지 않고 「새 소식 n개 ↑」를 띄운다.
   const tl = $s('tl'), st = tl.scrollTop, h0 = tl.scrollHeight;
   const fresh = UI.tlSeen ? p.items.filter(x => !UI.tlSeen.has(x.o)).length : 0;
-  tl.innerHTML = pinnedHTML() + p.tl;
+  tl.innerHTML = p.tl;
   UI.tlSeen = new Set(p.items.map(x => x.o));
   if (st > 8) {
     tl.scrollTop = st + (tl.scrollHeight - h0);
