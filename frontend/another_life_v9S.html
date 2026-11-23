@@ -987,7 +987,7 @@ function newGame(mode,fm={},as){
   used:{},recent:[],done:{},miss:{},chk:{},heard:{},known:{},elig:{},alert:{},rumor:[],feed:[],log:[],sq:[],hl:[],map:[],dec:null,sr:null,auto:false,speed:1,paused:false,cd:2,tid:0,pid:0,yr:{n:0,mood:0,best:null},
   fr:Array.from({length:5},()=>{const s=R()<.5?'M':'F';return mkFriend(pickName(s),s)}),care_:0,sid:0,oc:0,mys:null};
  econInit(G);genFeed(0);genFeed(1);G.fr.forEach((f,i)=>{if(i<3)spawnOne(i)});S='pro';MOD=null;FFN=0}
-function setJob(j){const e=JB[j].e;if(JB[j].s&&!(JB[G.job]&&JB[G.job].s))G.jsM=G.m;G.job=j;if(e){G.hm=G.m;G.jobLv=0;G.f.alba=0;G.f.first1=1;G.f.laid=0;if(!G.boss)G.boss=ri(SUR)+' 팀장'}G.sy=0}
+function setJob(j){const e=JB[j].e;if(G&&G.job!=j)G.transY=Math.floor(G.m/12);if(JB[j].s&&!(JB[G.job]&&JB[G.job].s))G.jsM=G.m;G.job=j;if(e){G.hm=G.m;G.jobLv=0;G.f.alba=0;G.f.first1=1;G.f.laid=0;if(!G.boss)G.boss=ri(SUR)+' 팀장'}G.sy=0}
 function hire(force){const nj=force||(G.job=='공시생'?'공무원':null)||pickW([['대기업',G.me.q>=4?3.5:2],['중견·중소',4],['스타트업',2.5],['프리랜서',.8]]);setJob(nj);G.prep=0;chg({self:10,money:6,hp:4});addLine(`🎉 ${nj}에 ${nj=='공무원'?'합격했다':nj=='프리랜서'?'자리를 잡았다':'합격했다. 입사 날짜가 정해졌다'}.`,'g',null,'c',5);(ONB[nj]||[]).forEach(o=>G.sq.push({due:G.m+o[0],t:o[1],tone:o[2],fx:o[3]}))}
 /* ===== 20세 1월 진로 선택 · 학업 · 휴학 · 군 복무 (확률과 기간은 life-stats.js) ===== */
 const LS=()=>window.LIFE;
@@ -1087,7 +1087,7 @@ function chg(fx,s=1){if(!fx)return;const mon=Object.keys(fx).some(k=>MONEY_KEYS.
  else if(k=='rum')addRum(v);else if(k=='job')setJob(v);else if(k=='hire')hire(typeof v=='string'?v:null);else if(k=='h')setHome(v);
  else if(k=='_b'){const f=G.fr[v[0]];f.bond=clf(f.bond+v[1])}else if(k=='leave'){startLeave(v)}else if(k=='L'){G.love=clf((G.love||50)+v)}
  else if(k=='partner'&&!v){if(G.f.partner&&!G.f.married){G.f.partner=0;G.pn=null;G.plook=null;G.love=0;G.loveLowM=0;G.f.exM=G.m;G.f.cohabit=0;G.f.marTalk=0}}
- else{if(k=='partner'&&v&&!G.f.partner){G.pm=G.m;G.love=60;G.loveLowM=0}if(k=='married'&&v&&!G.f.married)G.wedM=G.m;if(k=='alba'&&v)G.albaInc=rr(EC.partTime[0],EC.partTime[1]);G.f[k]=v;if(k=='partner'&&!G.pn){const ps=(G.me.sex=='M'?NM_F:NM_M).filter(n=>n!=G.me.n&&!G.fr.some(f=>f.n==n));G.pn=ri(ps.length?ps:(G.me.sex=='M'?NM_F:NM_M));G.plook=genLook(G.me.sex=='M'?'F':'M')}}}
+ else{if(k=='partner'&&v&&!G.f.partner){G.pm=G.m;G.love=60;G.loveLowM=0}if(k=='married'&&v&&!G.f.married){G.wedM=G.m;G.transY=Math.floor(G.m/12)}if(k=='alba'&&v)G.albaInc=rr(EC.partTime[0],EC.partTime[1]);G.f[k]=v;if(k=='partner'&&!G.pn){const ps=(G.me.sex=='M'?NM_F:NM_M).filter(n=>n!=G.me.n&&!G.fr.some(f=>f.n==n));G.pn=ri(ps.length?ps:(G.me.sex=='M'?NM_F:NM_M));G.plook=genLook(G.me.sex=='M'?'F':'M')}}}
  recalc();
  // 돈이 바뀐 선택은 같은 달에 재정 막대에 바로 반영한다(목표값이 바뀐 만큼 막대도 움직인다)
  if(mon){const d=finTarget(G)-tb;G.st.money=clf(G.st.money+d);if(G.yrDom)G.yrDom.add('money')}}
@@ -1153,7 +1153,7 @@ function pickDecision(){
  if(al){G.alert[al]=1;const P=POL[al];return makeDec({id:'alert',w:'📌 도감',t:'저장해둔 제도',x:`예전에 알아둔 「${P.n}」. 지금 상황이 조건에 맞을 수 있어요.`,ch:[{t:'지금 확인해본다',act:()=>acquire(al)},{t:'나중에 하자',ok:['미뤘다.',{}]}]})}
  const cand=PK.filter(k=>POL[k].ok(G)&&!G.done[k]&&!G.miss[k]&&!G.heard[k]);
  if(cand.length&&polOk()&&R()<.16+G.st.soc/500){const k=ri(cand),P=POL[k],f=ri(G.fr),fi=G.fr.indexOf(f);G.heard[k]=1;genFeed(fi,k,'요즘 알아보는 중 👀 '+P.h);
-  return makeDec({id:'rumor',w:f.n,t:'지나가듯 들은 소문',x:`${f.n}이(가) 말했다. 「${P.h}」`,ch:[{t:'바로 검색해본다',act:()=>{G.rumor.push({id:++G.tid,k,ttl:8,src:f.n});startSr(G.rumor[G.rumor.length-1].id)}},{t:'일단 메모만 해둔다',act:()=>{G.rumor.push({id:++G.tid,k,ttl:8,src:f.n});addLine('메모해뒀다. 시간 날 때 알아봐야지. (서랍 확인)','n')}},{t:'그냥 흘려듣는다',act:()=>{G.miss[k]=1;addLine('그냥 흘려들었다.','n')}}]})}
+  return makeDec({id:'rumor',autoW:()=>[0,1,0],w:f.n,t:'지나가듯 들은 소문',x:`${f.n}이(가) 말했다. 「${P.h}」`,ch:[{t:'바로 검색해본다',act:()=>{G.rumor.push({id:++G.tid,k,ttl:8,src:f.n});startSr(G.rumor[G.rumor.length-1].id)}},{t:'일단 메모만 해둔다',act:()=>{G.rumor.push({id:++G.tid,k,ttl:8,src:f.n});addLine('메모해뒀다. 시간 날 때 알아봐야지. (서랍 확인)','n')}},{t:'그냥 흘려듣는다',act:()=>{G.miss[k]=1;addLine('그냥 흘려들었다.','n')}}]})}
  /* 4단계 2-1: 연인이 있으면 연인 이벤트를 따로 뽑을 기회 */
  if(G.f.partner&&R()<.3){const lv=EV.filter(e=>/^lv_|^fight$|^marry$|^baby$/.test(e.id)&&(!e.a||G.age>=e.a[0]&&G.age<=e.a[1])&&(!e.c||e.c(G))&&ctxOk(e,G)&&(G.used[e.id]||0)<evMax(e));if(lv.length){const ev=pickW(lv.map(x=>[x,(typeof x.pr=='function'?x.pr(G):(x.pr||1))*extW(x)]));G.used[ev.id]=(G.used[ev.id]||0)+1;if(ev.on)ev.on(G);return makeDec(ev)}}
  /* 4단계 2: 친구가 거는 이벤트 */
@@ -1173,7 +1173,7 @@ const REPEAT=['interview','exam','jobpost','love','marry','baby','tuition','over
 const evMax=e=>REPEAT.includes(e.id)?(e.max||1):1;
 const POL_IDS=['rumor','alert','yq'];
 const polOk=()=>!!G&&(G.polY||0)<2&&((G.polN||0)+1)<=.25*((G.evN||0)+1);
-function makeDec(ev){ev=capLocks(ev);G.evN=(G.evN||0)+1;if(POL_IDS.includes(ev.id)){G.polN=(G.polN||0)+1;G.polY=(G.polY||0)+1}G.dec={e:ev,w:txt(ev.w),t:ev.t,x:txt(ev.x),age:G.age,mo:mo(),hid:false};G.cd=rr(3,6);if(G.auto)setTimeout(()=>{if(G.dec){pickC(autoIdx(G.dec.e));draw()}},ffDelay())}
+function makeDec(ev){ev=capLocks(ev);G.evN=(G.evN||0)+1;if(POL_IDS.includes(ev.id)){G.polN=(G.polN||0)+1;G.polY=(G.polY||0)+1}G.dec={e:ev,w:txt(ev.w),t:ev.t,x:txt(ev.x),age:G.age,mo:mo(),hid:false};G.cd=Math.floor(G.m/12)===G.transY?2:rr(2,3); /* 4단계 5: 전환기(진로·입학·입대·전역·졸업·취업·이직·결혼이 있는 해)는 더 자주, 선택 사이 최소 2개월 */if(G.auto)setTimeout(()=>{if(G.dec){pickC(autoIdx(G.dec.e));draw()}},ffDelay())}
 const ffDelay=()=>FFN?20:700;
 /* 3단계: 선택지 잠금(need) — 상태(재정 포함)·피로 상한·모아 둔 돈·빚·나이·직업·학적·성별·이전 선택 플래그 */
 function needFail(c){if(!c||!c.need)return null;const g=G,out=[];for(const k in c.need){const v=c.need[k];
@@ -1194,7 +1194,7 @@ const choiceNote=c=>lock(c)?`<small>🔒 ${needFail(c).join(', ')}</small>`:chan
 /* 한 이벤트에서 잠긴 선택지는 최대 1개, 고를 수 있는 선택지는 최소 2개 */
 function capLocks(ev){if(!ev||!ev.ch)return ev;if(ev.ch.some(c=>c.show))ev=Object.assign({},ev,{ch:ev.ch.filter(c=>!c.show||c.show(G))}); // show: 앞선 선택(플래그)이 있을 때만 보이는 선택지
 const L=ev.ch.map((c,i)=>lock(c)?i:-1).filter(i=>i>=0),allow=Math.max(0,Math.min(1,ev.ch.length-2));if(L.length<=allow)return ev;const keep=L.slice(0,allow);return Object.assign({},ev,{ch:ev.ch.map((c,i)=>L.includes(i)&&!keep.includes(i)?Object.assign({},c,{need:null}):c)})}
-function pickC(i){const d=G.dec;if(!d)return;const c=d.e.ch[i];if(lock(c))return tst('조건이 부족해 지금은 고를 수 없어요');
+function pickC(i){const d=G.dec;if(!d)return;const c=d.e.ch[i];if(lock(c))return tst('조건이 부족해 지금은 고를 수 없어요');G.holdUntil=Date.now()+500; /* 선택하면 0.5초 뒤 출발 */
  G.dec=null;
  if(c.act){addLine(`${d.t} → ${c.t}.`,'q',null,'c',3);c.act();return}
  /* ③ 결과 크기: fx가 함수면 지금 상태로 계산한다 */
@@ -1220,10 +1220,11 @@ function saveMyStory(t,m){addLine(`내 스토리 ${m} 「${t}」`,'q',m=='😢'|
  const f=G.fr.slice().sort((a,b)=>b.bond-a.bond)[0],mm={'😊':'좋아 보이네! 무슨 좋은 일 있어?','😐':'요즘 어때? 얘기 좀 하자.','😮‍💨':'스토리 봤어. 요즘 많이 지쳤지?','😢':'괜찮아? 스토리 보고 걱정돼서 연락했어.'}[m];
  G.sq.push({due:G.m+rr(1,2),t:`${f.n}이(가) 내 스토리를 보고 연락했다. 「${mm}」 말하고 나니 한결 가벼워졌다.`,tone:'g',fx:{soc:6,burn:-4,hp:2},tag:'f',fi:G.fr.indexOf(f),w:3,nt:1});f.bond=clf(f.bond+8);G.mys={t,mood:m,exp:G.m+2};G.sq.push({due:G.m+1,t:`내 스토리에 ${rr(2,5)}명이 이모지로 반응했다.`,tone:'g',fx:{soc:2},tag:'u',w:2})}
 /* ===== 검색 · 정책 ===== */
-function startSr(id){const r=G.rumor.find(x=>x.id==id);if(!r)return;const P=POL[r.k],d=SITE[P.w],b=d.split('.')[0];
+function startSr(id){const r=G.rumor.find(x=>x.id==id);if(!r)return;if(G.auto||FFN){addLine('메모해 뒀다. 시간 날 때 알아봐야지. (챙겨둔 것)','n');MOD=null;return} /* 자동결정·직통 중에는 검색 창을 열지 않고 메모만 한다(열차가 멈추지 않게) */
+const P=POL[r.k],d=SITE[P.w],b=d.split('.')[0];
  const o=[{t:`${P.n} 신청·자격 안내`,u:'www.'+d,ok:1},{t:`[즉시 입금] ${P.n} 대행 신청`,u:`www.${b}-help.com`,why:'공공기관 주소(.go.kr)가 아니고 대행 수수료를 요구한다.'},{t:`${P.n} 후기 (3년 전 글)`,u:'blog.naver.com/…',why:'오래된 개인 후기라 지금 대상·금액과 다를 수 있다.'},{t:`${P.n} 신청하기 | ${P.w}`,u:`${d}.apply-now.com`,why:'주소 뒤에 .com이 붙은 가짜 사이트다. 진짜 공공기관은 도메인이 .go.kr로 끝난다.'}].sort(()=>R()-.5);
  G.sr={k:r.k,rid:r.id,opts:o,tries:2,why:''};MOD={k:'sr'};draw()}
-function acquire(k){const P=POL[k];G.rumor=G.rumor.filter(r=>r.k!=k);G.sr=null;G.heard[k]=1;
+function acquire(k){const P=POL[k];setTimeout(()=>{if(G&&G.auto&&MOD&&MOD.k=='pol'){MOD=null;draw();loop()}},FFN?20:900);G.rumor=G.rumor.filter(r=>r.k!=k);G.sr=null;G.heard[k]=1;
  if(P.ok(G)){chg(P.fx);chg({hp:3});G.done[k]=G.age;addLine(`✅ 「${P.n}」 혜택을 챙겼다. (${fxT(P.fx)})`,'g',null,'c',5);MOD={k:'pol',id:k,got:1}}else{G.chk[k]=1;MOD={k:'pol',id:k,got:0}}}
 function srPick(i){const s=G.sr;if(!s)return;const o=s.opts[i];if(!o||o.dead)return;
  if(o.ok){acquire(s.k)}
@@ -1231,7 +1232,7 @@ function srPick(i){const s=G.sr;if(!s)return;const o=s.opts[i];if(!o||o.dead)ret
  draw()}
 /* ===== 루프 ===== */
 function loop(){clearTimeout(TM);if(S!='play'||!G)return;
- if(!G.paused&&!G.dec&&!MOD){tickMonth();if(S=='play'){if(FFN){FFN++;if(G.dec)FFN=0;if(FFN%4==0||!FFN)draw()}else draw()}else return}
+ if(!G.paused&&!G.dec&&!MOD&&!(G.holdUntil>Date.now())){tickMonth();if(S=='play'){if(FFN){FFN++;if(G.dec)FFN=0;if(FFN%4==0||!FFN)draw()}else draw()}else return}
  if(G.dec&&FFN){FFN=0;draw()}
  TM=setTimeout(loop,FFN?60:SPD[G.speed])}
 /* ===== 화면 ===== */
@@ -2089,7 +2090,8 @@ draw = function () {
     led(`이번 역은 ${G.age}세역입니다 · 내리실 문은 없습니다 · 다음 역은 ${G.age + 1}세역`);
     // 정차가 끝나면 반드시 다시 그린다. 그사이 결정 창이 떠서 loop가 그리지 않더라도 대기 중인 환승을 놓치지 않는다.
     if (!fast()) withBusy(() => sleep(900)).then(() => { if (S === 'play') { draw(); loop(); } });
-  } else if (G.ledNews && !UI.busy) { led(G.ledNews); G.ledNews = null; UI.ledHold = G.m + 1; } // 새 스토리·소식 예고
+  } else if (G.dec && !UI.busy) { led(`⏸ 정차 중 · 갈림길 「${G.dec.t}」 · 고르면 0.5초 뒤 출발합니다`); }
+  else if (G.ledNews && !UI.busy) { led(G.ledNews); G.ledNews = null; UI.ledHold = G.m + 1; } // 새 스토리·소식 예고
   else if (!UI.busy && !UI.ledMsg.startsWith('이번 역은') && G.m >= UI.ledHold) led(defaultLed());
   UI.lastAge = G.age;
 
@@ -2134,7 +2136,7 @@ startArc = function (fi) {
   if (G) G.ride = {fi, from: G.m + 1, to: G.m + 6};
   return _startArc.apply(this, arguments);
 };
-/* TODO(subway-conflict): 자동결정·직통 중 소문 갈림길에서 「바로 검색해본다」가 뽑히면 검색 창(MOD 'sr')에서 열차가 선다(메모 B5).
+/* (해결, 4단계 5) 자동결정·직통 중 소문 갈림길은 「메모만 해둔다」로 처리하고 검색 창(MOD 'sr')·제도 결과 창을 열지 않는다(메모 B5).
  *   v8-C와 같은 동작이고 엔진(makeDec 자동 선택)은 건드리지 않았다. 검색 선택지를 빼거나 「메모만」을 고르게 할지는 나중에 정한다.
  * TODO(subway-conflict): v8-C 방 장면(roomHTML)의 마스코트 말풍선 안내(소문 도착·지쳐 보임·안부 권유)는 지하철 UI에 자리가 없다(메모 A4).
  *   LED 전광판이나 폰 알림으로 옮길지 정해야 한다. roomHTML() 코드는 그대로 남겨 두었다.
@@ -2224,7 +2226,7 @@ draw();
       const e = G.edu, ageAt = m => m == null ? null : AGE_START + m / 12;
       rows.push({sex: c.sx, rg: c.rg, q: c.q, first: G.firstChoice || '?', school: e ? e.type : '-', retakes: G.retakes || 0,
         grad: e && e.gradM != null ? +ageAt(e.gradM).toFixed(2) : null, gradMonths: e && e.gradM != null ? e.gradM - e.start : null,
-        army: G.mil ? +ageAt(G.mil.start).toFixed(2) : null, leaveM: e ? e.leaveM : 0, endJob: G.job, end: G.m, wait: G.wait0 == null ? null : G.wait0, married: G.mar35 == null ? null : G.mar35, kid: !!G.f.kid, d26: G.d26 || 0, i26: G.i26 || 0, f26: G.f26 || 0, maxDebt: G.maxUnsec || 0, snap: G.maxSnap || "", choices: G.log.filter(l => l.tn === "q").map(l => l.t).filter(t => /링크|돌려 막|급전|빌린다|도전한다|매수|전세로|월세방|이사한다|결혼을 준비/.test(t)).join(" / "), endFin: Math.round(G.st.money)});
+        army: G.mil ? +ageAt(G.mil.start).toFixed(2) : null, leaveM: e ? e.leaveM : 0, endJob: G.job, end: G.m, wait: G.wait0 == null ? null : G.wait0, married: G.mar35 == null ? null : G.mar35, kid: !!G.f.kid, evN: G.evN || 0, d26: G.d26 || 0, i26: G.i26 || 0, f26: G.f26 || 0, maxDebt: G.maxUnsec || 0, snap: G.maxSnap || "", choices: G.log.filter(l => l.tn === "q").map(l => l.t).filter(t => /링크|돌려 막|급전|빌린다|도전한다|매수|전세로|월세방|이사한다|결혼을 준비/.test(t)).join(" / "), endFin: Math.round(G.st.money)});
     }
     draw = keepDraw; if (keepSave) BE.savePlay = keepSave;
     const pct = (n, d) => d ? (100 * n / d).toFixed(1) + '%' : '-';
@@ -2244,7 +2246,7 @@ draw();
     lines.push(`입대 나이(남 ${males.length}명 중 ${males.filter(r => r.army != null).length}명): ${hist(males.filter(r => r.army != null).map(r => r.army))} · 여성 입대 ${rows.filter(r => r.sex === 'F' && r.army != null).length}명`);
     const lv = enrolled.filter(r => r.sex === 'F'); lines.push(`여학생 휴학 경험 ${pct(lv.filter(r => r.leaveM > 0).length, lv.length)} · 휴학 경험자 평균 휴학 ${(avg(lv.filter(r => r.leaveM > 0).map(r => r.leaveM))).toFixed(1)}개월`);
     { const md = a => { const s = a.slice().sort((x, y) => x - y); return s.length ? s[s.length >> 1] : 0; }; lines.push(`26세 무담보 빚 중앙값 ${Math.round(md(rows.map(r => r.d26)))} / 연 소득 중앙값 ${Math.round(md(rows.map(r => r.i26)))} · 26세 재정 중앙값 ${Math.round(md(rows.map(r => r.f26)))} · 36세 재정 중앙값 ${md(rows.map(r => r.endFin))} · 무담보 빚 2000+ 판 ${rows.filter(r => r.maxDebt >= 2000).length}`); }
-    { const w = rows.filter(r => r.wait != null); lines.push(`졸업 후 첫 취업까지(${w.length}명): 평균 ${avg(w.map(r => r.wait)).toFixed(1)}개월 · 결혼 ${pct(rows.filter(r => r.married != null).length, N)} · 자녀 ${pct(rows.filter(r => r.kid).length, N)}`); }
+    { const w = rows.filter(r => r.wait != null); lines.push(`졸업 후 첫 취업까지(${w.length}명): 평균 ${avg(w.map(r => r.wait)).toFixed(1)}개월 · 선택 이벤트 판당 평균 ${avg(rows.map(r => r.evN)).toFixed(1)}개 · 결혼 ${pct(rows.filter(r => r.married != null).length, N)} · 자녀 ${pct(rows.filter(r => r.kid).length, N)}`); }
     console.log('[sim] ' + lines.join('\n'));
     rows.filter(r => r.maxDebt >= 2000).slice(0, 8).forEach(r => console.log("[debt2000] " + Math.round(r.maxDebt) + " | " + r.snap + " | " + r.choices));
     console.table(rows);
