@@ -632,6 +632,101 @@ const EV=[
  {t:'받아들인다',ok:['한동안 아무것도 손에 잡히지 않았다.',{partner:0,mood:-6,soc:-4,self:-3}]},{t:'다시 잘해 보자고 붙잡는다',p:g=>Math.min(.6,.2+(g.st.soc-30)*.005),ok:['다시 시작하기로 했다. 이번엔 다를 거다.',{L:22}],ko:['마음은 이미 떠나 있었다.',{partner:0,mood:-8,self:-4}]}]},
 {id:'lv_home',tag:'rel',c:g=>g.f.married&&g.m-(g.wedM==null?g.m:g.wedM)>=3,w:'{p}',t:'신혼의 집안일',x:'설거지는 누가 할지, 빨래는 언제 할지. 사소한 것들이 쌓인다.',autoW:()=>[.7,.3],ch:[
  {t:'표를 만들어 나눈다',ok:['다툼이 줄었다.',{L:5,burn:-2}]},{t:'보이는 사람이 한다',ok:['한쪽이 지쳐 갔다.',{L:-5,burn:3}]}]},
+/* ===== 4단계 3: 「인생을 사는」 생활 이벤트 (학업·일·돈·주거·관계·건강·마음·군 복무·통과의례) ===== */
+{id:'l_course',a:[20,25],c:g=>g.job=='대학생'&&g.edu&&!g.edu.onLeave,w:'학사 포털',t:'수강신청 전쟁',x:'오전 10시 정각. 서버가 열리기 1분 전이다.',ch:[
+ {t:'PC방에 가서 광클한다',p:.6,ok:['원하던 과목을 다 담았다!',{self:3,burn:1}],ko:['한 과목이 튕겼다.',{self:-1,burn:2}]},{t:'남는 과목으로 채운다',ok:['시간표가 엉망이 됐다.',{burn:2,self:-1}]}]},
+{id:'l_major',a:[20,23],c:g=>g.job=='대학생'&&g.edu&&g.edu.semDone>=1&&g.edu.semDone<=4,w:'학과 사무실',t:'전과 고민',x:'전공 수업이 도무지 재미가 없다. 전과 신청 기간이다.',ch:[
+ {t:'전과를 신청한다',p:g=>Math.min(.75,.4+(g.st.self-50)*.006),ok:['원하던 과로 옮겼다. 공부가 재밌어졌다.',{self:5,prep:1,hp:3}],ko:['전과 시험에서 떨어졌다.',{self:-4}]},{t:'지금 전공을 계속한다',ok:['일단 졸업까지 가 보기로 했다.',{}]}]},
+{id:'l_club',a:[20,23],c:g=>g.job=='대학생',w:'동아리 박람회',t:'동아리 가입',x:'중앙 광장에 동아리 부스가 줄지어 있다.',ch:[
+ {t:'밴드 동아리',ok:['합주실에서 밤을 새웠다. 친구가 많이 생겼다.',{cost:'S',soc:7,burn:-2,hp:3}]},{t:'취업 학회',ok:['스터디와 발표가 이어진다.',{prep:2,soc:3,burn:2}]},{t:'가입하지 않는다',ok:['조용한 학기를 보냈다.',{soc:-2}]}]},
+{id:'l_exch',a:[20,24],max:1,c:g=>g.job=='대학생'&&g.edu&&g.edu.semDone>=2&&!g.edu.onLeave,w:'국제교류처',t:'교환학생',x:'교환학생 모집 공고가 붙었다. 한 학기 동안 외국 대학에서 공부할 수 있다.',ch:[
+ {t:'지원해서 떠난다',need:{money:40},ok:['낯선 도시에서 한 학기를 살았다. 시야가 넓어졌다.',{exch:1,cost:'L',self:6,hp:5,soc:3}]},{t:'포기한다',ok:['비용이 마음에 걸렸다.',{self:-1}]}]},
+{id:'l_team',a:[20,25],c:g=>g.job=='대학생',w:'조별과제',t:'무임승차 조원',x:'발표 이틀 전, 한 조원이 연락이 안 된다.',ch:[
+ {t:'혼자 다 한다',ok:['A+를 받았다. 대신 사흘을 못 잤다.',{burn:6,self:2,health:-1}]},{t:'교수님께 사정을 말씀드린다',p:.6,ok:['점수를 따로 받았다.',{self:3}],ko:['괜히 일만 커졌다.',{soc:-3,burn:2}]},{t:'그냥 넘어간다',ok:['찜찜하게 끝났다.',{self:-2}]}]},
+{id:'l_overtime',max:2,c:g=>isEarner(g)&&g.job!='프리랜서',w:'{b}',t:'야근 행렬',x:'이번 주만 세 번째 야근이다. 팀 분위기가 다들 남는 쪽이다.',ch:[
+ {t:'끝까지 남는다',ok:['인정은 받았지만 몸이 무겁다.',{burn:7,self:2,health:-2}]},{t:'할 일만 하고 퇴근한다',ok:['눈치는 보이지만 저녁이 생겼다.',{burn:-3,self:-1}]}]},
+{id:'l_quit',max:1,c:g=>isEarner(g)&&g.st.burn>=65,w:'나',t:'퇴사 충동',x:'출근길 지하철에서 사직서 양식을 검색하고 있었다.',ch:[
+ {t:'사직서를 낸다',ok:['홀가분하다. 그리고 막막하다.',{job:'쉬는중',burn:-25,self:-3}]},{t:'긴 휴가로 버틴다',ok:['일주일 쉬니 조금 살 것 같다.',{burn:-10,cost:'S'}]},{t:'그냥 참는다',ok:['오늘도 출근했다.',{burn:3,mood:-3}]}],autoW:()=>[.2,.5,.3]},
+{id:'l_side',a:[24,36],max:1,c:g=>isEarner(g)&&g.job!='창업',w:'나',t:'부업',x:'퇴근 후 시간을 쓰면 부수입을 만들 수 있을 것 같다.',ch:[
+ {t:'시작한다',ok:['통장이 조금 두꺼워졌다. 잠은 줄었다.',{gain:'M',burn:6,self:3}]},{t:'쉬는 시간이 더 소중하다',ok:['저녁은 나를 위해 쓴다.',{burn:-2}]}]},
+{id:'l_raise',max:1,c:g=>isEarner(g)&&g.m-g.hm>=12&&!['공무원','창업','프리랜서'].includes(g.job),w:'{b}',t:'연봉 협상',x:'연봉 협상 면담이다. 「올해는 회사 사정이 어려워서…」',ch:[
+ {t:'성과를 들어 당당히 요구한다',p:g=>Math.min(.75,.3+(g.st.self-50)*.008),ok:['원하던 만큼 올랐다.',{jobLv:1,self:4}],ko:['분위기만 어색해졌다.',{self:-3,soc:-2}]},{t:'제안을 받아들인다',ok:['무난하게 끝났다.',{}]}]},
+{id:'l_junior',a:[25,36],max:1,c:g=>isEarner(g)&&g.m-g.hm>=24,w:'신입',t:'첫 후배',x:'「선배님, 이건 어떻게 해요?」 처음으로 후배가 생겼다.',ch:[
+ {t:'하나하나 챙긴다',ok:['후배가 금방 자리를 잡았다. 뿌듯하다.',{soc:4,burn:2,self:3}]},{t:'알아서 배우게 둔다',ok:['내 일이 줄지는 않았다.',{}]}]},
+{id:'l_mistake',max:1,c:g=>isEarner(g),w:'{b}',t:'큰 실수',x:'보고서 숫자 하나가 틀린 채로 나갔다.',ch:[
+ {t:'바로 보고하고 수습한다',ok:['혼났지만 빨리 정리됐다.',{self:-2,burn:2,soc:2}]},{t:'조용히 고쳐 둔다',p:.5,ok:['아무도 몰랐다. 심장이 쿵쾅댔다.',{burn:3}],ko:['결국 들켰다. 더 크게 혼났다.',{self:-6,burn:6}]}],autoW:()=>[.7,.3]},
+{id:'l_wfh',max:1,c:g=>isEarner(g)&&['대기업','스타트업','프리랜서'].includes(g.job),w:'회사 공지',t:'재택근무',x:'이번 분기부터 재택근무를 고를 수 있다.',ch:[
+ {t:'집에서 일한다',ok:['출퇴근이 사라졌다. 대신 사람을 덜 본다.',{burn:-4,soc:-3}]},{t:'사무실로 나간다',ok:['동료들과의 점심이 즐겁다.',{soc:3}]}]},
+{id:'l_savings',a:[22,36],max:1,c:g=>isEarner(g),w:'은행',t:'적금 가입',x:'월급이 들어오면 바로 빠져나가는 적금을 들까.',ch:[
+ {t:'매달 꼬박 넣는다',ok:['통장 잔고가 쌓이는 맛이 있다.',{repay:'save',self:2}]},{t:'지금은 쓰는 게 먼저다',ok:['다음 달부터 하기로 했다.',{hp:1}]}]},
+{id:'l_invest',a:[24,36],max:1,c:g=>isEarner(g)&&g.st.money>=35,w:'{f2}',t:'투자 권유',x:'「이거 진짜 확실한 정보야. 지금 들어가면 두 배야.」',ch:[
+ {t:'크게 넣는다',p:.35,ok:['정말 올랐다! 믿기지 않는다.',{gain:'L',hp:4}],ko:['반토막이 났다. 잠이 오지 않는다.',{cost:'XL',self:-6,burn:5}]},{t:'소액만 넣어 본다',p:.55,ok:['조금 벌었다.',{gain:'S'}],ko:['조금 잃었다. 수업료라 생각한다.',{cost:'S'}]},{t:'확실한 건 없다며 거절한다',ok:['마음은 편하다.',{self:1}]}],autoW:()=>[.15,.45,.4]},
+{id:'l_coin',a:[21,30],max:1,c:g=>g.job!='군 복무',w:'단톡방',t:'코인 열풍',x:'단톡방이 코인 이야기로 시끄럽다. 다들 벌었다는데 나만 없다.',ch:[
+ {t:'대출을 받아서라도 들어간다',ok:['차트만 들여다보는 날이 시작됐다.',{coin:1,borrow:'L',burn:6,then:['coinres',4]}]},{t:'여윳돈만 조금 넣는다',p:.5,ok:['치킨값을 벌었다.',{gain:'S',hp:2}],ko:['치킨값을 잃었다.',{cost:'S'}]},{t:'관심 끈다',ok:['남의 수익 인증은 보지 않기로 했다.',{self:1}]}],autoW:()=>[.08,.4,.52]},
+{id:'coinres',pr:.01,c:g=>g.f.coin&&!g.f.coinDone,on:g=>{g.f.coinDone=1},w:'코인 앱',t:'차트의 끝',x:'넉 달째 차트만 봤다. 이제 결정해야 한다.',ch:[
+ {t:'전부 판다',p:.3,ok:['운 좋게 올랐을 때 팔았다. 빚을 갚고도 남았다.',{gain:'XL',hp:5}],ko:['손해를 보고 팔았다. 빚만 남았다.',{cost:'L',self:-8,burn:6}]},{t:'끝까지 버틴다',p:.2,ok:['기적처럼 올랐다.',{gain:'XL'}],ko:['휴지 조각이 됐다.',{cost:'XL',self:-10,burn:8,mood:-6}]}]},
+{id:'l_bigspend',a:[21,36],max:1,c:g=>g.st.money>=40,w:'쇼핑 앱',t:'갖고 싶은 것',x:'장바구니에 몇 달째 담아 둔 노트북이 할인 중이다.',ch:[
+ {t:'산다',ok:['매일 쓰는 물건이라 후회는 없다.',{cost:'M',hp:4}]},{t:'참는다',ok:['장바구니에서 지웠다.',{self:1}]}]},
+{id:'l_budget',max:1,c:g=>g.st.money<35&&g.job!='군 복무',w:'나',t:'가계부',x:'이번 달도 어디에 썼는지 모르게 돈이 사라졌다.',ch:[
+ {t:'가계부를 쓰며 지출을 줄인다',ok:['배달 앱을 지웠다. 조금씩 남는다.',{repay:'repay',self:3,hp:-1}]},{t:'적당히 산다',ok:['다음 달엔 아껴야지.',{}]}]},
+{id:'l_gift',a:[25,36],max:1,c:g=>g.me.q>=3&&R()<.5,w:'할머니',t:'할머니의 봉투',x:'「집 구할 때 보태라.」 할머니가 두툼한 봉투를 건넸다.',ch:[
+ {t:'감사히 받는다',ok:['마음이 뭉클했다.',{gain:'L',soc:3,hp:3}]},{t:'괜찮다고 사양한다',ok:['할머니가 서운해하셨다.',{soc:1}]}]},
+{id:'l_roommate',max:1,c:g=>g.h=='월세'&&!g.f.cohabit&&!g.f.married,ctx:{rent:1},w:'부동산 앱',t:'룸메이트',x:'월세를 나눌 룸메이트를 구해 볼까.',ch:[
+ {t:'룸메이트를 구한다',p:.6,ok:['생활 패턴이 잘 맞는다. 월세가 줄었다.',{roommate:1,soc:3}],ko:['생활 습관이 달라 매일 신경전이다.',{roommate:1,burn:5,soc:-2}]},{t:'혼자 산다',ok:['조용한 게 좋다.',{}]}]},
+{id:'l_moveup',a:[24,36],max:1,c:g=>g.h=='월세',ctx:{rent:1},w:'부동산',t:'좀 더 나은 집',x:'창문 없는 방에서 2년을 살았다. 햇빛 드는 집으로 옮길까.',ch:[
+ {t:'이사한다',need:{money:40},ok:['아침 햇살에 눈을 떴다.',{cost:'M',hp:5,burn:-3}]},{t:'조금 더 버틴다',ok:['돈을 더 모으기로 했다.',{}]}]},
+{id:'l_fraud',max:1,c:g=>g.h=='전세',w:'뉴스',t:'전세 사기 뉴스',x:'우리 동네에서 전세 사기가 터졌다는 뉴스가 떴다.',ch:[
+ {t:'등기부등본과 보증보험을 확인한다',ok:['다행히 문제없었다. 보증보험도 들어 뒀다.',{self:3,cost:'S'}]},{t:'설마 하고 넘어간다',p:.85,ok:['아무 일도 없었다.',{}],ko:['집주인이 연락 두절이다. 보증금이 묶였다.',{cost:'XL',burn:10,self:-8}]}],autoW:()=>[.7,.3]},
+{id:'l_dorm',a:[20,22],max:1,c:g=>g.job=='대학생'&&g.h=='본가'&&g.me.rg!='서울',w:'기숙사',t:'기숙사 입사',x:'통학이 왕복 세 시간이다. 기숙사 추가 모집이 떴다.',ch:[
+ {t:'기숙사에 들어간다',ok:['통학 시간이 사라졌다. 룸메이트도 생겼다.',{h:'기숙사',soc:4,burn:-4}]},{t:'통학한다',ok:['지하철에서 책을 읽는다.',{burn:3}]}]},
+{id:'l_alone',max:1,c:g=>g.h!='본가'&&g.h!='기숙사'&&!g.f.married&&!g.f.cohabit,w:'나',t:'혼자 사는 밤',x:'불 꺼진 방에 들어오니 갑자기 집이 너무 조용하다.',ch:[
+ {t:'엄마에게 전화한다',ok:['「밥은 먹었니」 한마디에 마음이 풀렸다.',{soc:3,hp:3}]},{t:'음악을 틀고 요리한다',ok:['혼자도 괜찮다.',{self:2,burn:-2}]}]},
+{id:'l_famfight',a:[21,30],max:1,c:g=>g.h=='본가',w:'아빠',t:'가족 갈등',x:'「언제까지 그렇게 살 거니?」 저녁 식탁에서 언성이 높아졌다.',ch:[
+ {t:'차분히 내 계획을 설명한다',p:g=>Math.min(.8,.4+(g.st.self-50)*.006),ok:['처음으로 진지하게 들어 주셨다.',{soc:4,burn:-3}],ko:['결국 말다툼으로 끝났다.',{soc:-3,burn:3}]},{t:'방문을 닫고 들어간다',ok:['한동안 냉랭했다.',{soc:-4,burn:3}]},{t:'독립을 결심한다',ok:['집을 알아보기 시작했다.',{indepTalk:1,self:3}]}]},
+{id:'l_sibling',a:[23,34],max:1,c:g=>isEarner(g)&&g.me.q<=3,w:'엄마',t:'동생 학원비',x:'「동생 학원비가 좀 모자라서…」 엄마가 말끝을 흐렸다.',ch:[
+ {t:'보태 드린다',ok:['고맙다는 문자가 왔다.',{cost:'M',soc:5,hp:2}]},{t:'지금은 어렵다고 말한다',ok:['미안한 마음이 오래 남았다.',{soc:-2,self:-1}]}]},
+{id:'l_checkup',a:[28,36],max:1,c:g=>!g.f.care,w:'엄마',t:'부모님 건강검진',x:'부모님 연세가 신경 쓰이기 시작했다.',ch:[
+ {t:'종합검진을 예약해 드린다',ok:['함께 병원에 다녀왔다. 결과가 괜찮아서 다행이다.',{cost:'S',soc:5,hp:3}]},{t:'다음에 하자고 한다',ok:['마음 한쪽이 불편하다.',{}]}]},
+{id:'l_ex',a:[23,36],max:1,c:g=>g.f.exM!=null&&!g.f.partner&&g.m-g.f.exM>=6,w:'모르는 번호',t:'전 연인의 연락',x:'「잘 지내?」 헤어진 사람에게서 문자가 왔다.',ch:[
+ {t:'짧게 안부만 나눈다',ok:['담담했다. 이제 괜찮다.',{self:3}]},{t:'다시 만나 본다',p:.3,ok:['다시 시작하기로 했다.',{partner:1,hp:4}],ko:['역시 아니었다. 이번엔 정말 끝이다.',{mood:-5,self:-2}]},{t:'답하지 않는다',ok:['휴대폰을 엎어 두었다.',{}]}]},
+{id:'l_xmas',max:1,c:g=>!g.f.partner,w:'{f1}',t:'혼자 보내는 크리스마스',x:'거리는 반짝이는데 약속이 없다.',ch:[
+ {t:'솔로 친구들과 모인다',ok:['떡볶이 파티가 제일 웃겼다.',{cost:'S',soc:5,hp:3}]},{t:'혼자 영화를 본다',ok:['나쁘지 않았다.',{burn:-3,soc:-1}]}]},
+{id:'l_run',a:[22,36],max:1,c:g=>g.job!='군 복무',w:'러닝 크루',t:'마라톤 신청',x:'10km 마라톤 참가 신청이 열렸다.',ch:[
+ {t:'신청하고 연습한다',need:{health:50},p:g=>Math.min(.9,.3+g.st.health*.007),ok:['완주했다! 메달이 생각보다 무겁다.',{health:6,self:5,hp:3}],ko:['중간에 걸었다. 그래도 끝까지 갔다.',{health:3,self:1}]},{t:'구경만 간다',ok:['다음엔 나도 뛰어야지.',{}]}]},
+{id:'l_insomnia',max:2,c:g=>g.st.burn>=55,w:'새벽 3시',t:'잠이 오지 않는다',x:'며칠째 새벽에 눈이 떠진다.',ch:[
+ {t:'병원에 가 본다',ok:['수면 습관을 바꾸라는 처방을 받았다.',{cost:'S',burn:-8,health:3}]},{t:'술로 잠을 청한다',ok:['잠은 들었지만 아침이 더 힘들다.',{burn:-2,health:-5}]},{t:'그냥 버틴다',ok:['눈 밑이 어두워졌다.',{burn:4,health:-2}]}],autoW:()=>[.5,.15,.35]},
+{id:'l_dental',a:[22,36],max:1,c:g=>g.job!='군 복무',w:'치과',t:'욱신거리는 어금니',x:'찬물을 마실 때마다 이가 시리다.',ch:[
+ {t:'바로 치료한다',ok:['치료비는 아팠지만 이는 안 아프다.',{cost:'M',health:4}]},{t:'미룬다',ok:['진통제로 버틴다.',{health:-4,burn:2}]}]},
+{id:'l_hobby',max:1,c:g=>g.st.burn<65,w:'나',t:'새 취미',x:'일과 공부 말고 나만의 시간이 필요하다.',ch:[
+ {t:'그림을 배운다',ok:['손이 바쁘니 머리가 쉬었다.',{cost:'S',hp:4,burn:-4}]},{t:'책을 읽는다',ok:['한 달에 두 권씩 읽게 됐다.',{self:3,burn:-2}]},{t:'게임으로 푼다',ok:['재밌었지만 밤이 짧아졌다.',{hp:2,burn:1,health:-1}]}]},
+{id:'l_counsel',max:1,c:g=>g.st.mood<45,w:'나',t:'마음이 무겁다',x:'이유 없이 우울한 날이 길어진다.',ch:[
+ {t:'상담센터에 가 본다',ok:['말하고 나니 조금 가벼워졌다.',{burn:-8,self:3,hp:4,rum:'mind'}]},{t:'친구에게 털어놓는다',ok:['혼자가 아니었다.',{soc:4,hp:3}]},{t:'혼자 견딘다',ok:['하루하루 버틴다.',{burn:3,mood:-3}]}],autoW:()=>[.4,.4,.2]},
+{id:'l_diet',a:[27,36],max:1,w:'건강검진',t:'경고 판정',x:'검진표에 「체중 관리 필요」가 빨갛게 찍혔다.',ch:[
+ {t:'식단과 운동을 시작한다',ok:['석 달 만에 몸이 가벼워졌다.',{health:6,self:3,hp:-1}]},{t:'그냥 넘긴다',ok:['다음 검진이 무섭다.',{health:-3}]}]},
+{id:'l_burnout',max:1,c:g=>isEarner(g)&&g.st.burn>=75,w:'내 몸',t:'번아웃',x:'아침에 일어나 출근 준비를 하다 그대로 주저앉았다.',ch:[
+ {t:'휴직을 신청한다',ok:['석 달을 쉬었다. 다시 숨이 쉬어진다.',{burn:-25,self:-2,cost:'M'}]},{t:'약을 먹으며 버틴다',ok:['몸이 계속 신호를 보낸다.',{health:-6,burn:4}]}],autoW:()=>[.7,.3]},
+{id:'l_arm_train',army:1,c:g=>g.job=='군 복무',w:'중대장',t:'혹한기 훈련',x:'영하 15도. 텐트에서 일주일을 보내야 한다.',ch:[
+ {t:'이를 악물고 해낸다',ok:['끝나고 나니 뭐든 할 수 있을 것 같다.',{health:3,self:4,burn:4}]},{t:'아프다고 빠진다',ok:['편했지만 눈치가 보인다.',{self:-3,burn:-2,soc:-2}]}]},
+{id:'l_arm_leave',army:1,c:g=>g.job=='군 복무',w:'행정반',t:'정기 휴가',x:'휴가 날짜가 나왔다. 어떻게 보낼까.',ch:[
+ {t:'친구들을 몰아서 만난다',ok:['사흘 내내 웃었다.',{soc:6,cost:'S',burn:-4}]},{t:'집에서 가족과 보낸다',ok:['엄마 밥이 제일이다.',{soc:3,hp:4,burn:-5}]}]},
+{id:'l_arm_senior',army:1,c:g=>g.job=='군 복무',w:'선임',t:'부조리',x:'선임이 개인 빨래를 떠넘긴다.',ch:[
+ {t:'참는다',ok:['전역까지 몇 달 남았는지 세어 본다.',{burn:5,self:-3}]},{t:'마음의 편지로 알린다',p:.6,ok:['조용히 정리됐다.',{self:4}],ko:['생활관 분위기가 차가워졌다.',{soc:-4,burn:3}]}]},
+{id:'l_arm_study',army:1,c:g=>g.job=='군 복무',w:'사지방',t:'자기계발',x:'개인 정비 시간에 뭘 할까.',ch:[
+ {t:'자격증·토익 공부를 한다',ok:['전역하면 쓸 무기가 하나 생겼다.',{prep:2,self:3,burn:2}]},{t:'운동한다',ok:['몸이 단단해졌다.',{health:5,burn:-2}]},{t:'푹 쉰다',ok:['잠이 보약이다.',{burn:-4}]}]},
+{id:'l_arm_save',army:1,c:g=>g.job=='군 복무',w:'국군 복지',t:'장병 적금',x:'월급 일부를 적금으로 넣으면 전역할 때 목돈이 된다.',ch:[
+ {t:'가입한다',ok:['전역 날이 기다려지는 이유가 하나 늘었다.',{repay:'save',self:2}]},{t:'PX에서 쓴다',ok:['냉동 만두가 맛있다.',{hp:2}]}]},
+{id:'l_30',a:[30,30],max:1,w:'나',t:'서른 살 생일',x:'서른이 됐다. 스무 살 때 상상한 서른과는 많이 다르다.',ch:[
+ {t:'친구들과 파티를 한다',ok:['다들 「아직 젊다」고 외쳤다.',{soc:5,cost:'S',hp:3}]},{t:'혼자 지난 10년을 돌아본다',ok:['생각보다 많이 걸어왔다.',{self:4}]}]},
+{id:'l_license',a:[20,23],max:1,c:g=>g.job!='군 복무',w:'운전면허 학원',t:'운전면허',x:'방학에 운전면허를 따 둘까.',ch:[
+ {t:'딴다',p:.75,ok:['한 번에 붙었다!',{cost:'S',self:3}],ko:['도로주행에서 떨어졌다. 재시험이다.',{cost:'S',self:-2}]},{t:'나중에 딴다',ok:['급할 때 따기로 했다.',{}]}]},
+{id:'l_vote',a:[20,21],max:1,w:'선거관리위원회',t:'첫 투표',x:'생애 첫 투표 안내문이 왔다.',ch:[
+ {t:'공약을 비교하고 투표한다',ok:['인증 사진을 찍었다. 어른이 된 기분이다.',{self:2}]},{t:'귀찮아서 안 간다',ok:['뉴스를 보며 조금 후회했다.',{}]}]},
+{id:'l_10th',a:[28,29],max:1,w:'고교 동창',t:'졸업 10주년',x:'「우리 졸업 10년 됐다! 다 모이자.」',ch:[
+ {t:'간다',ok:['다들 달라졌고, 다들 그대로였다.',{soc:6,cost:'S',hp:3}]},{t:'안 간다',ok:['단톡방 사진만 넘겨 봤다.',{soc:-1}]}]},
+{id:'l_wedrush',a:[29,34],max:1,w:'청첩장',t:'결혼식 러시',x:'이번 달만 청첩장이 네 장이다.',ch:[
+ {t:'다 챙긴다',ok:['주말이 사라졌다. 축의금도.',{cost:'M',soc:5,burn:3}]},{t:'가까운 사람만 간다',ok:['적당히 선을 그었다.',{soc:-1,cost:'S'}]}]},
+{id:'l_parents30',a:[27,36],max:1,c:g=>isEarner(g),w:'엄마',t:'부모님 결혼기념일',x:'부모님 결혼 30주년이다.',ch:[
+ {t:'여행을 보내 드린다',need:{money:40},ok:['사진 속 부모님이 소녀, 소년처럼 웃는다.',{cost:'L',soc:5,hp:5}]},{t:'가족 식사를 한다',ok:['오랜만에 다 같이 모였다.',{cost:'S',soc:3,hp:2}]}]},
 /* 3단계: 돈 흐름 이벤트 (빚 구조·상환 비율·알바·부모 지원·장학금) */
 {id:'overdue',max:2,c:g=>(g.loans||[]).some(l=>l.type=='card'&&l.amt>50),w:'카드사',t:'연체 안내',x:'「고객님, 결제 대금이 3개월째 연체 중입니다.」 문자 한 통에 손이 차가워졌다.',ch:[
  {t:'채무 상담을 받아 본다',ok:['갚을 순서를 같이 정리했다. 숨이 조금 쉬어진다.',{repay:'repay',burn:-4,self:2,rum:'credit'}]},
@@ -774,7 +869,7 @@ function incomeOf(g,noise){const j=g.job,q=g.me.q,alba=g.f.alba?(g.albaInc||60):
  return sw&&noise?base*(1-sw+2*sw*R()):base}
 function livingOf(g){const L=EC.living;let c;
  if(g.job=='군 복무')c=EC.army;else if(g.h=='본가')c=L.본가+L.본가PerQ*g.me.q;else if(g.h=='월세')c=L.월세+(g.me.rg=='서울'?EC.rent.서울:EC.rent.기타);else c=L[g.h]||L.월세;
- return Math.max(15,c+(g.f.married?EC.married:g.f.cohabit?-15:0)+(g.f.kid?EC.kid:0)+(g.f.pet?EC.pet:0))}
+ return Math.max(15,c+(g.f.married?EC.married:g.f.cohabit?-15:g.f.roommate&&g.h=='월세'?-25:0)+(g.f.kid?EC.kid:0)+(g.f.pet?EC.pet:0))}
 function loanMin(g,l){const T=l.type,earn=isEarner(g);
  if(T=='student')return earn?Math.min(l.amt,Math.max(5,incomeOf(g)*EC.studentMinShare)):0; // 재학·구직 중 상환 유예
  if(T=='living')return earn?Math.min(l.amt,Math.max(3,l.amt*.03)):0;
@@ -1023,7 +1118,7 @@ function tickMonth(){
    if(JB[j].e){chg((JB[G.job].s&&!glad)?{self:-1}:{soc:1});addStory(i,"mood",{t:`${j} 합격! 새 출발 🎉`,e:"🎉💼",news:1})}
    else if(j=='쉬는중'||j=='취준생')addStory(i,'inner',{t:'잠깐 쉬어 가는 중. 다시 시작할 거야.',e:'🌧️',news:1})}})}
  /* 3단계 7: 「정체된 해」 방지 — 10월까지 선택이 건드린 영역이 2개 미만이면 다른 영역의 소소한 선택을 하나 예약한다 */
- if(G.m%12==0)G.yrDom=new Set();
+ if(G.m%12==0){G.yrDom=new Set();G.polY=0}
  else if(mo()==10&&(G.yrDom||new Set()).size<2&&!(G.fq||[]).some(x=>x.tag=='dom')){const have=G.yrDom||new Set(),c=MI.filter(e=>(!e.c||e.c(G))&&ctxOk(e,G)&&[...evDoms(e)].some(d=>!have.has(d)));if(c.length&&G.job!='군 복무')queueEv(ri(c),G.m,'dom')}
  if(G.m%12==0&&G.m>0){G.map.push({age:pa,mood:G.yr.mood/G.yr.n,e:JEM[G.job],t:G.yr.best?G.yr.best.t:'조용한 한 해였다.'});G.yr={n:0,mood:0,best:null}}
  /* 일상 */
@@ -1044,17 +1139,17 @@ function tickMonth(){
 function pickDecision(){
  const qi=(G.fq||[]).findIndex(x=>x.due<=G.m);
  if(qi>=0){const x=G.fq.splice(qi,1)[0],ev=typeof x.ev=='function'?x.ev():x.ev;if(ev&&!ctxOk(ev,G))console.info('[ctxOk] 상황이 바뀌어 대기 중이던 이벤트를 건너뜀:',ev.id);else if(ev){if(EV.includes(ev))G.used[ev.id]=(G.used[ev.id]||0)+1;return makeDec(ev)}}
- const al=PK.find(k=>G.known[k]&&!G.done[k]&&!G.alert[k]&&POL[k].ok(G));
+ const al=polOk()&&PK.find(k=>G.known[k]&&!G.done[k]&&!G.alert[k]&&POL[k].ok(G));
  if(al){G.alert[al]=1;const P=POL[al];return makeDec({id:'alert',w:'📌 도감',t:'저장해둔 제도',x:`예전에 알아둔 「${P.n}」. 지금 상황이 조건에 맞을 수 있어요.`,ch:[{t:'지금 확인해본다',act:()=>acquire(al)},{t:'나중에 하자',ok:['미뤘다.',{}]}]})}
  const cand=PK.filter(k=>POL[k].ok(G)&&!G.done[k]&&!G.miss[k]&&!G.heard[k]);
- if(cand.length&&R()<.16+G.st.soc/500){const k=ri(cand),P=POL[k],f=ri(G.fr),fi=G.fr.indexOf(f);G.heard[k]=1;genFeed(fi,k,'요즘 알아보는 중 👀 '+P.h);
+ if(cand.length&&polOk()&&R()<.16+G.st.soc/500){const k=ri(cand),P=POL[k],f=ri(G.fr),fi=G.fr.indexOf(f);G.heard[k]=1;genFeed(fi,k,'요즘 알아보는 중 👀 '+P.h);
   return makeDec({id:'rumor',w:f.n,t:'지나가듯 들은 소문',x:`${f.n}이(가) 말했다. 「${P.h}」`,ch:[{t:'바로 검색해본다',act:()=>{G.rumor.push({id:++G.tid,k,ttl:8,src:f.n});startSr(G.rumor[G.rumor.length-1].id)}},{t:'일단 메모만 해둔다',act:()=>{G.rumor.push({id:++G.tid,k,ttl:8,src:f.n});addLine('메모해뒀다. 시간 날 때 알아봐야지. (서랍 확인)','n')}},{t:'그냥 흘려듣는다',act:()=>{G.miss[k]=1;addLine('그냥 흘려들었다.','n')}}]})}
  /* 4단계 2-1: 연인이 있으면 연인 이벤트를 따로 뽑을 기회 */
  if(G.f.partner&&R()<.3){const lv=EV.filter(e=>/^lv_|^fight$|^marry$|^baby$/.test(e.id)&&(!e.a||G.age>=e.a[0]&&G.age<=e.a[1])&&(!e.c||e.c(G))&&ctxOk(e,G)&&(G.used[e.id]||0)<(e.max||1));if(lv.length){const ev=pickW(lv.map(x=>[x,(typeof x.pr=='function'?x.pr(G):(x.pr||1))*extW(x)]));G.used[ev.id]=(G.used[ev.id]||0)+1;if(ev.on)ev.on(G);return makeDec(ev)}}
  /* 4단계 2: 친구가 거는 이벤트 */
  if(R()<(G.job=='군 복무'?.12:.22)){const fe=pickFriendEv();if(fe)return makeDec(fe)}
  const army=G.job=='군 복무',ARMY_EV=['mom','scam','envy','wedf','lv_army','lv_break'],ARMY_MI=['m_sns','m_rain','m_parent','m_old','m_sleep'];
- const major=EV.filter(e=>(!army||ARMY_EV.includes(e.id))&&(!e.a||G.age>=e.a[0]&&G.age<=e.a[1])&&(!e.c||e.c(G))&&ctxOk(e,G)&&(G.used[e.id]||0)<(e.max||1));
+ const major=EV.filter(e=>(!army||ARMY_EV.includes(e.id)||e.army)&&(army||!e.army)&&(!e.a||G.age>=e.a[0]&&G.age<=e.a[1])&&(!e.c||e.c(G))&&ctxOk(e,G)&&(G.used[e.id]||0)<(e.max||1));
  const micro=MI.filter(e=>(!army||ARMY_MI.includes(e.id))&&(!e.c||e.c(G))&&ctxOk(e,G)&&!G.recent.includes(e.id));let ev=null;
  if(major.length&&(R()<.62||!micro.length)){ev=pickW(major.map(x=>[x,(typeof x.pr=='function'?x.pr(G):(x.pr||1))*(G.care&&x.tag&&G.care.includes(x.tag)?2.2:1)*extW(x)]));G.used[ev.id]=(G.used[ev.id]||0)+1;if(ev.on)ev.on(G)}
  else if(micro.length){ev=pickW(micro.map(x=>[x,extW(x)]));G.recent.push(ev.id);if(G.recent.length>6)G.recent.shift()}
@@ -1062,7 +1157,10 @@ function pickDecision(){
 /* 3단계 7: 상태가 극단일수록 그 상태를 건드리는 이벤트가 자주 나온다. 가중치 = 1 + (기준에서 벗어난 정도 ÷ 25) */
 function evDoms(e){if(!e._dom){e._dom=new Set();(e.ch||[]).forEach(c=>[c.ok,c.ko].forEach(r=>{if(r&&r[1]&&typeof r[1]=='object')domsOf(r[1]).forEach(d=>e._dom.add(d))}))}return e._dom}
 function extW(e){let m=0;evDoms(e).forEach(d=>{const v=G.st[d],n=SR.norm[d];if(v!=null&&n!=null)m=Math.max(m,Math.max(0,Math.abs(v-n)-SR.extremeFree))});return 1+m/SR.extremeDiv}
-function makeDec(ev){ev=capLocks(ev);G.dec={e:ev,w:txt(ev.w),t:ev.t,x:txt(ev.x),age:G.age,mo:mo(),hid:false};G.cd=rr(3,6);if(G.auto)setTimeout(()=>{if(G.dec){pickC(autoIdx(G.dec.e));draw()}},ffDelay())}
+/* 4단계 3: 정책 이벤트(소문·도감 알림·청년정책)는 전체 선택 이벤트의 25% 이하, 한 해 최대 2개 */
+const POL_IDS=['rumor','alert','yq'];
+const polOk=()=>!!G&&(G.polY||0)<2&&((G.polN||0)+1)<=.25*((G.evN||0)+1);
+function makeDec(ev){ev=capLocks(ev);G.evN=(G.evN||0)+1;if(POL_IDS.includes(ev.id)){G.polN=(G.polN||0)+1;G.polY=(G.polY||0)+1}G.dec={e:ev,w:txt(ev.w),t:ev.t,x:txt(ev.x),age:G.age,mo:mo(),hid:false};G.cd=rr(3,6);if(G.auto)setTimeout(()=>{if(G.dec){pickC(autoIdx(G.dec.e));draw()}},ffDelay())}
 const ffDelay=()=>FFN?20:700;
 /* 3단계: 선택지 잠금(need) — 상태(재정 포함)·피로 상한·모아 둔 돈·빚·나이·직업·학적·성별·이전 선택 플래그 */
 function needFail(c){if(!c||!c.need)return null;const g=G,out=[];for(const k in c.need){const v=c.need[k];

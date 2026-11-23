@@ -248,7 +248,7 @@
   const origPick = pickDecision;
   pickDecision = function () {
     const g = G;
-    if (g && !g.auto && g.yq && g.yq.ready) {
+    if (g && !g.auto && g.yq && g.yq.ready && (typeof polOk !== 'function' || polOk())) {
       const ready = g.yq.ready;
       if (ready.profile === profile(g) && g.m - ready.m <= 6 && policyFits(g, ready.data.policy)) return announce(g, ready);
       g.yq.ready = null; // 상황이 바뀌어 맞지 않는 정책은 버린다
