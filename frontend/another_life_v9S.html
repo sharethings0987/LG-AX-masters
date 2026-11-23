@@ -268,7 +268,7 @@ body.sw{margin:0;padding:0;background:#15181c;overflow:hidden;color:#1f2a2e}
 #stage.busy #block{display:block}
 
 /* ===== 1단계: 첫 페이지 넓은 패널 (노선도와 좌우 끝을 맞춤) ===== */
-#hero.pro{left:382px;top:180px;width:882px;max-height:none;height:448px;padding:16px 22px;display:flex;flex-direction:column;overflow:hidden}
+#hero.pro{left:382px;top:180px;width:882px;max-height:none;height:560px;padding:16px 22px;display:flex;flex-direction:column;overflow:hidden}
 #hero .pro-hd{font-size:13px;color:var(--mu);margin-bottom:10px}#hero .pro-hd span:first-child{font:700 18px "NEXON Lv2 Gothic","Noto Sans KR",sans-serif;color:var(--ink);margin-right:10px}
 #hero .pro-cols{flex:1;display:grid;grid-template-columns:230px 280px 1fr;gap:22px;min-height:0}
 #hero .pro-who{text-align:center}#hero .pro-who svg{display:block;margin:0 auto 6px;shape-rendering:crispEdges}
@@ -277,8 +277,8 @@ body.sw{margin:0;padding:0;background:#15181c;overflow:hidden;color:#1f2a2e}
 #hero .pro-who .chap{font-size:12px;color:var(--mu);margin-top:6px}
 #hero .pro-st .h{font-size:12px;color:var(--mu);margin-bottom:4px}
 #hero .bar5{display:flex;align-items:center;gap:8px;font-size:13.5px;height:30px}#hero .bar5 label{width:50px;color:var(--mu)}#hero .bar5 .b{flex:1;height:9px;background:#e9ece9;border-radius:5px;overflow:hidden}#hero .bar5 .b i{display:block;height:100%}#hero .bar5 em{width:30px;text-align:right;font-style:normal;font-weight:600}
-#hero .pro-tx{overflow:auto;font-size:14px;line-height:1.75;border-left:1px solid #eceeec;padding-left:20px}#hero .pro-tx p{margin:0 0 10px}
-#hero .pro-ft{display:flex;align-items:center;gap:16px;margin-top:10px}#hero .pro-ft .btn{width:auto;flex:1;margin:0}#hero .pro-ft .lk{width:auto;margin:0;flex:none}
+#hero .pro-tx{overflow:auto;font-size:16.5px;line-height:1.7;border-left:1px solid #eceeec;padding-left:20px}#hero .pro-tx p{margin:0 0 10px}
+#hero .pro-ft{display:flex;flex-direction:column;align-items:stretch;gap:8px;margin-top:12px}#hero .pro-ft .btn{width:100%;margin:0;padding:13px;font-size:16px}#hero .pro-ft .btn.sec{background:#fff;color:#1f2a2e;border:1px solid #c9cec9}
 /* ===== 1단계: 시작 화면 승강장 ===== */
 #plt{position:absolute;inset:0;z-index:4;overflow:hidden;background:#e9e6dc;transition:opacity .35s}
 #plt[hidden]{display:none}
@@ -860,7 +860,7 @@ function vStart(){const L=letters();return `<div class="w"><div class="se" style
  ${L.length?`<div class="pn"><h4>💌 내가 쓴 편지함</h4>${L.slice(0,5).map(l=>`<div class="lg"><span class="mu">${esc(l.to)} · ${esc(l.date)}</span><br>${esc(l.text)}</div>`).join('')}</div>`:''}</div>`+FT}
 function vForm(){const g=(k,t,o)=>`<div style="margin-top:12px"><b>${t}</b><div class="chips" style="margin-top:4px"><button class="chip ${FORM[k]==null||FORM[k]=='r'?'on':''}" data-a="f:${k}:r">🎲 랜덤</button>${o.map(x=>`<button class="chip ${FORM[k]==x[0]?'on':''}" data-a="f:${k}:${x[0]}">${x[1]}</button>`).join('')}</div></div>`;
  return `<div class="w"><div class="se" style="font-size:24px;font-weight:700">내 인생에 적용해보기</div><div class="pn" style="margin-top:12px"><div class="mu">고른 항목만 반영되고, 나머지는 랜덤이에요.</div>${g('rg','사는 지역',RG.map(r=>[r,r]))}${g('q','집안 형편',[['low','빠듯한 편'],['mid','보통'],['high','여유 있는 편']])}${g('path','20세의 길',[['대학생','대학 재학'],['직장','바로 취업'],['준비','시험 준비']])}${g('care','요즘 가장 큰 고민 (관련 사건이 더 자주 와요)',Object.keys(CARE).map(c=>[c,c]))}<button class="btn" data-a="new:go">이 조건으로 시작</button><button class="btn sec" data-a="home">← 처음으로</button></div></div>`}
-function vPro(){const m=G.me,P={서울:'서울에서 자랐다. 모든 게 가깝고 모든 게 비싸다.','경기·인천':'경기·인천에서 자랐다. 서울까지 한 시간 반, 출퇴근이라는 단어가 일찍 익숙했다.','비수도권 대도시':'지방 대도시에서 자랐다. 서울의 기회는 늘 조금 멀리 있었다.','지방 소도시':'지방 소도시에서 자랐다. 학원도 일자리도 선택지가 적었다.'}[m.rg],F=m.q<=2?'집 형편은 빠듯했다. 용돈이라는 말이 낯설다.':m.q==3?'평범한 가정이다. 큰 걱정은 없지만 큰 여유도 없다.':'넉넉한 편이다. 하지만 기대도 그만큼 컸다.',T='고등학교 졸업식을 마친 1월이다. 친구들은 대학으로, 일터로, 재수 학원으로 흩어진다.';
+function vPro(){const m=G.me,P={서울:'서울에서 자랐다. 모든 게 가깝고 모든 게 비싸다.','경기·인천':'경기·인천에서 자랐다. 서울까지 한 시간 반, 출퇴근이라는 단어가 일찍 익숙했다.','비수도권 대도시':'지방 대도시에서 자랐다. 서울의 기회는 늘 조금 멀리 있었다.','지방 소도시':'지방 소도시에서 자랐다. 학원도 일자리도 선택지가 적었다.'}[m.rg],F=m.q<=2?'집 형편은 빠듯했다. 용돈이라는 말이 낯설다.':m.q==3?'평범한 가정이다. 큰 걱정은 없지만 큰 여유도 없다.':'넉넉한 편이다. 하지만 기대도 그만큼 컸다.',T='20세 1월, 고등학교 졸업 직후다. 졸업식을 마친 친구들은 대학으로, 일터로, 재수 학원으로 흩어진다.';
  return `<div class="w"><div class="pn id"><div class="mu">신원 기록 · 20세</div><div class="post" style="margin-top:8px">${av(m.cols,64)}<div><div class="se" style="font-size:24px;font-weight:700">${m.n}</div><div class="mu">${m.rg} · 고교 졸업</div></div></div><p>${P}</p><p>${F}</p><p>${T}</p></div>
  <div class="pn"><h4>화면 보는 법</h4><div class="lg"><b>가운데</b> 내 이야기가 위에서부터 쌓여요. 갈림길에서는 선택 창이 떠요.</div><div class="lg"><b>왼쪽</b> 나와 상태, 돈.</div><div class="lg"><b>오른쪽</b> 가족·친구, 친구들의 피드, 정책 서랍, 인생 지도.</div><div class="lg">위의 속도 버튼으로 시간을 빠르게 하거나 멈출 수 있어요. 목표는 마음속으로 정해두세요.</div></div><button class="btn" data-a="begin">${m.n}의 스무 살 시작</button></div>`}
 function bars(){return Object.keys(LB).map(k=>`<div class="sb" title="${ROLE[k]}"><label>${LB[k]}</label><div class="bar"><i style="width:${G.st[k]}%;background:${BC[k]}"></i></div><em>${rd(G.st[k])}</em></div>`).join('')}
@@ -989,7 +989,7 @@ function modalBody(){const k=MOD.k;
  if(k=='peer'){const f=G.fr[MOD.i],a=f.stories.filter(s=>s.exp>=G.m);return `<div class="post">${av(f.cols,56)}<div><div class="se" style="font-size:20px;font-weight:700">${f.n}</div><div class="mu">${f.rg} · ${QL(f.q)} · ${f.job}</div></div></div><p class="mu">친밀도 ${'♥'.repeat(Math.max(1,Math.ceil(f.bond/25)))}</p>${a.length?`<button class="btn sec" data-a="fst:${MOD.i}">스토리 보기 (${a.length})</button>`:''}${f.ping>G.m-6?'<div class="mu" style="margin-top:8px">최근에 안부를 물었어요.</div>':`<button class="btn" data-a="ping:${MOD.i}">💬 안부를 묻는다</button>`}<button class="btn sec" data-a="close">닫기</button>`}
  if(k=='diary')return `<h3 class="se" style="margin:0 0 8px">일기장</h3>${G.log.map(l=>`<div class="lg"><span class="mu">${l.age}세 ${l.mo}월</span> ${esc(l.t)}</div>`).join('')}<button class="btn sec" data-a="close">닫기</button>`;
  return modalBodyOld()}
-function vPro(){const m=G.me,P={서울:'서울에서 자랐다. 모든 게 가깝고 모든 게 비싸다.','경기·인천':'경기·인천에서 자랐다. 서울까지 한 시간 반, 출퇴근이라는 단어가 일찍 익숙했다.','비수도권 대도시':'지방 대도시에서 자랐다. 서울의 기회는 늘 조금 멀리 있었다.','지방 소도시':'지방 소도시에서 자랐다. 학원도 일자리도 선택지가 적었다.'}[m.rg],F=m.q<=2?'집 형편은 빠듯했다. 용돈이라는 말이 낯설다.':m.q==3?'평범한 가정이다. 큰 걱정은 없지만 큰 여유도 없다.':'넉넉한 편이다. 하지만 기대도 그만큼 컸다.',T='고등학교 졸업식을 마친 1월이다. 친구들은 대학으로, 일터로, 재수 학원으로 흩어진다.';
+function vPro(){const m=G.me,P={서울:'서울에서 자랐다. 모든 게 가깝고 모든 게 비싸다.','경기·인천':'경기·인천에서 자랐다. 서울까지 한 시간 반, 출퇴근이라는 단어가 일찍 익숙했다.','비수도권 대도시':'지방 대도시에서 자랐다. 서울의 기회는 늘 조금 멀리 있었다.','지방 소도시':'지방 소도시에서 자랐다. 학원도 일자리도 선택지가 적었다.'}[m.rg],F=m.q<=2?'집 형편은 빠듯했다. 용돈이라는 말이 낯설다.':m.q==3?'평범한 가정이다. 큰 걱정은 없지만 큰 여유도 없다.':'넉넉한 편이다. 하지만 기대도 그만큼 컸다.',T='20세 1월, 고등학교 졸업 직후다. 졸업식을 마친 친구들은 대학으로, 일터로, 재수 학원으로 흩어진다.';
  const guide=VARI=='A'?'<div class="lg"><b>한 줄기</b> 내 이야기와 친구들 소식이 시간순으로 한 흐름에 쌓여요.</div><div class="lg">위쪽 동그라미는 친구들의 스토리(2개월 뒤 사라져요). 갈림길이 오면 흐름이 멈추고 카드가 뜨는데, 거기서 바로 골라요.</div><div class="lg">오른쪽엔 오늘의 나, 챙겨둔 것, 곁의 사람들이 항상 보여요.</div>':'<div class="lg"><b>맨 위 필름스트립</b>이 스무 살부터 마흔까지의 1년 칸이에요. 지나간 해는 그해의 장면으로 채워져요.</div><div class="lg"><b>왼쪽</b> 이번 달 장면 카드. 갈림길이 오면 카드가 선택지로 바뀌어요.</div><div class="lg"><b>오른쪽</b> 친구들의 스토리와 피드, DM. <b>아래</b> 챙겨둔 것과 곁의 사람들.</div>';
  return `<div class="w"><div class="pn id"><div class="mu">나의 첫 페이지 · 20세</div><div class="post" style="margin-top:8px">${av(m.cols,64)}<div><div class="se" style="font-size:24px;font-weight:700">${m.n}</div><div class="mu">${m.rg} · 고교 졸업</div></div></div><p>${P}</p><p>${F}</p><p>${T}</p></div><div class="pn"><h4>화면 보는 법</h4>${guide}<div class="lg">위의 속도 버튼으로 시간을 빠르게 하거나 멈출 수 있어요. 목표는 마음속으로 정해두세요.</div></div><button class="btn" data-a="begin">${m.n}의 스무 살 시작</button></div>`}
 let VARI='S'; // v9-S 지하철 UI (backend.js가 읽는 전역 이름은 그대로 둔다)
@@ -1342,7 +1342,7 @@ function heroPro() {
       <div class="pro-st"><div class="h">상태 0–100</div>${barsHTML(g)}</div>
       <div class="pro-tx">${ps.map(p => `<p>${esc(p)}</p>`).join('')}</div>
     </div>
-    <div class="pro-ft"><button class="btn" data-a="begin">🚪 문이 열립니다 — 탑승</button><button class="lk" data-a="new:other">다른 사람으로 다시 뽑기</button></div>`;
+    <div class="pro-ft"><button class="btn" data-a="begin">🚪 문이 열립니다 — 탑승</button><button class="btn sec" data-a="new:other">다른 사람으로 다시 뽑기</button></div>`;
 }
 
 /* ---------- 휴대폰 ---------- */
