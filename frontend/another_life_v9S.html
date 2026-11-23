@@ -516,12 +516,12 @@ const EV=[
  {t:'옮긴다',p:.55,ok:['연봉도 오르고 새 환경이 낯설다.',{jobLv:1,self:6,burn:5}],ko:['생각보다 분위기가 안 맞는다.',{self:-8,money:-3}]},{t:'남는다',ok:['안정을 택했다.',{self:-1}]}]},
 {id:'rentup',max:2,a:[21,38],c:g=>g.h=='월세',w:'집주인',t:'월세 인상 통보',x:'집주인에게서 월세를 올리겠다는 문자가 왔다.',ch:[
  {t:'받아들인다',ok:['한숨 쉬고 넘겼다.',{money:-8}]},{t:'협상해본다',p:.4,ok:['절반으로 깎았다.',{money:-3,self:4}],ko:['단칼에 거절당했다.',{money:-8,self:-4}]},{t:'다른 집을 알아본다',ok:['이것저것 찾아보다 이웃이 귀띔해줬다.',{rum:'rent'}]}]},
-{id:'love',a:[22,36],max:8,pr:3.2,c:g=>!g.f.partner,w:'지인',t:'소개 제안',x:['「좋은 사람 있는데 한번 만나볼래?」','동아리 모임에서 자꾸 눈이 마주치는 사람이 있다.','친구 결혼식 뒤풀이에서 말이 잘 통하는 사람을 만났다.'],autoW:()=>[.75,.25],ch:[
+{id:'love',a:[22,36],max:8,pr:3.2,c:g=>!g.f.partner&&(g.f.exM==null||g.m-g.f.exM>=12),w:'지인',t:'소개 제안',x:['「좋은 사람 있는데 한번 만나볼래?」','동아리 모임에서 자꾸 눈이 마주치는 사람이 있다.','친구 결혼식 뒤풀이에서 말이 잘 통하는 사람을 만났다.'],autoW:()=>[.75,.25],ch:[
  {t:'용기 내어 만난다',pre:'약속 장소로 가는 길이 길게 느껴졌다.',p:g=>Math.max(.3,Math.min(.85,.58+(g.st.soc-50)*.004+(g.st.mood-50)*.003)),ok:['대화가 이어졌다. 다음 약속을 잡았다.',{soc:8,partner:1,hp:4},1],ko:['어색하게 끝났다.',{soc:-2},1]},{t:'지금은 나에게 집중한다',ok:['나쁘지 않다. 외롭긴 하다.',{self:2,soc:-1}]}]},
-{id:'fight',max:3,c:g=>g.f.partner&&!g.f.married,w:'{p}',t:'사소한 말다툼',x:'「요즘 너 나한테 신경 안 쓰는 거 같아.」 맞는 말이라 더 아프다.',ch:[
- {t:'일단 사과하고 시간을 낸다',ok:['화해했다. 서로를 조금 더 알았다.',{soc:5,burn:2,hp:2}]},{t:'나도 힘들다고 솔직히 말한다',p:.6,ok:['한참 이야기하다 같이 울었다. 더 단단해졌다.',{soc:8,hp:3}],ko:['대화가 엇갈렸다. 냉전이 길어졌다.',{soc:-5,hp:-3}]},{t:'일단 피한다',ok:['조용히 지나갔지만 찜찜하다.',{soc:-3}]}]},
-{id:'marry',a:[26,40],max:5,pr:3.6,autoW:()=>[.7,.3],c:g=>g.f.partner&&!g.f.married&&g.m-(g.pm==null?g.m:g.pm)>=18,on:g=>{g.f.marTalk=1},w:'{p}',t:'결혼 이야기',x:'앞으로의 일을 이야기하는 날이 왔다. 「우리 어떻게 할까?」',ch:[
- {t:'결혼을 준비한다',need:{money:30},ok:['준비할 게 많다. 비용도 만만치 않다.',{married:1,cost:'XL',hp:5,rum:'newlywed'}]},{t:'조금 더 지켜본다',ok:['서로의 속도를 확인했다.',{self:1}]}]},
+{id:'fight',max:3,c:g=>g.f.partner&&!g.f.married,w:'{p}',t:'사소한 말다툼',x:'「요즘 너 나한테 신경 안 쓰는 거 같아.」 맞는 말이라 더 아프다.',autoW:()=>[.5,.35,.15],ch:[
+ {t:'일단 사과하고 시간을 낸다',ok:['화해했다. 서로를 조금 더 알았다.',{soc:5,burn:2,hp:2,L:6}]},{t:'나도 힘들다고 솔직히 말한다',p:g=>Math.min(.85,.3+(g.love||50)*.005),ok:['한참 이야기하다 같이 울었다. 더 단단해졌다.',{soc:8,hp:3,L:10}],ko:['대화가 엇갈렸다. 냉전이 길어졌다.',{soc:-5,hp:-3,L:-10}]},{t:'일단 피한다',ok:['조용히 지나갔지만 찜찜하다.',{soc:-3,L:-6}]}]},
+{id:'marry',a:[24,40],max:5,pr:3.6,autoW:()=>[.75,.25],c:g=>g.f.partner&&!g.f.married&&(g.love||0)>=70&&g.m-(g.pm==null?g.m:g.pm)>=24&&g.st.money>=25,on:g=>{g.f.marTalk=1},w:'{p}',t:'결혼 이야기',x:'앞으로의 일을 이야기하는 날이 왔다. 「우리 어떻게 할까?」',ch:[
+ {t:'결혼을 준비한다',need:{money:30},ok:['준비할 게 많다. 비용도 만만치 않다.',{married:1,cost:'XL',hp:5,L:8,rum:'newlywed'}]},{t:'조금 더 지켜본다',ok:['서로의 속도를 확인했다.',{self:1,L:-3}]}]},
 {id:'house',a:[28,40],c:g=>g.h=='월세',w:'공인중개사',t:'집 문제',x:'계약 만기가 다가온다. 전세 사기 뉴스가 자꾸 눈에 걸린다.',ch:[
  {t:'대출을 받아 전세로 옮긴다',need:{money:35},ok:['새 집이 생겼다. 이자가 빠져나간다.',{h:'전세',burn:4,hp:3,rum:'jeonse'}]},{t:'공공임대를 알아본다',ok:['서류가 많지만 해볼 만하다.',{rum:'happy'}]},{t:'지금 집에 계속 산다',ok:['당분간은 마음이 편하다.',{money:-2}]}]},
 {id:'buy',a:[33,40],c:g=>g.h=='전세'&&g.st.money>=55,w:'공인중개사',t:'내 집 마련',x:'모은 돈으로 집을 살 수 있을 것 같다. 대출이 걱정이다.',ch:[
@@ -562,6 +562,39 @@ const EV=[
  {t:'빌려준다',p:.55,ok:['제때 갚아줬다. 신뢰가 깊어졌다.',{soc:5,_b:[3,8]}],ko:['연락이 뜸해졌다. 돈도 사람도 멀어졌다.',{money:-10,soc:-5}]},{t:'정중히 거절한다',ok:['어색했지만 후회는 없다.',{soc:-2}]},{t:'작은 금액만 준다',ok:['부담 없이 마음을 전했다.',{money:-2,soc:2}]}]},
 {id:'scam',max:2,w:'모르는 번호',t:'수상한 연락',x:['「[국제발신] 고객님 계좌가 정지되었습니다. 아래 링크로 확인하세요.」','「검찰입니다. 귀하의 명의가 범죄에 연루되었습니다.」'],ch:[
  {t:'링크를 눌러본다',ok:['급하게 정보를 입력했다가 금방 후회했다.',{cost:'XL',self:-6,burn:6}]},{t:'차단하고 공식 번호로 직접 확인한다',ok:['침착하게 대응했다. 다행이다.',{self:2}]},{t:'가족에게 물어본다',ok:['엄마도 같은 문자를 받았다고 한다. 같이 웃었다.',{soc:2}]}]},
+/* 4단계 2-1: 연인 이벤트. L = 연인 호감도(G.love 0~100) 변화. 교제 개월 수는 G.m - G.pm. 성공 확률에 호감도·관계·피로·재정이 들어간다. */
+{id:'lv_date1',tag:'rel',pr:4,c:g=>g.f.partner&&g.m-g.pm<=3,w:'{p}',t:'첫 데이트 코스',x:'「주말에 뭐 할까? 네가 정해 줘.」 첫 데이트다.',autoW:()=>[.4,.3,.3],ch:[
+ {t:'유명한 맛집을 예약한다',ok:['줄은 길었지만 맛있었다. 대화도 잘 통했다.',{cost:'S',L:6,hp:3}]},{t:'전시회에 간다',ok:['그림 앞에서 한참 이야기했다.',{cost:'S',L:7,self:1}]},{t:'한강을 걷는다',ok:['돈은 안 들었고 밤바람이 좋았다.',{L:5,burn:-2}]}]},
+{id:'lv_100',tag:'rel',pr:4,c:g=>g.f.partner&&g.m-g.pm>=3&&g.m-g.pm<=5,w:'{p}',t:'100일',x:'어느새 만난 지 100일이다.',autoW:()=>[.7,.3],ch:[
+ {t:'선물과 편지를 준비한다',ok:['편지를 읽다 눈시울이 붉어졌다.',{cost:'S',L:8,hp:3}]},{t:'바빠서 그냥 넘긴다',ok:['서운한 기색이 역력했다.',{L:-6}]}]},
+{id:'lv_busy',tag:'rel',max:2,c:g=>g.f.partner&&g.st.burn>=50,w:'{p}',t:'바쁜 시기의 연락',x:'「요즘 연락이 너무 뜸해.」 일정에 치여 답장을 몇 시간씩 미뤘다.',autoW:()=>[.5,.2,.3],ch:[
+ {t:'짧게라도 매일 연락한다',ok:['자기 전 통화가 하루의 쉼표가 됐다.',{L:5,burn:2}]},{t:'일 끝나고 몰아서 한다',ok:['서운함이 쌓여 간다.',{L:-5}]},{t:'지금 사정을 솔직히 말한다',p:g=>Math.min(.85,.3+(g.love||50)*.006),ok:['「그럼 내가 기다릴게.」 마음이 놓였다.',{L:4,burn:-2}],ko:['「항상 바쁘다고만 하네.」 말이 엇갈렸다.',{L:-4}]}]},
+{id:'lv_trip',tag:'rel',c:g=>g.f.partner&&g.m-g.pm>=6,w:'{p}',t:'둘만의 여행',x:'「우리 이번 연휴에 바다 보러 갈래?」',autoW:()=>[.6,.4],ch:[
+ {t:'간다',need:{money:30},ok:['사진 속 우리는 계속 웃고 있다.',{cost:'M',L:10,burn:-6,hp:4}]},{t:'다음에 가자고 한다',ok:['아쉬워했다.',{L:-3}]}]},
+{id:'lv_family',tag:'rel',a:[24,36],c:g=>g.f.partner&&g.m-g.pm>=12,w:'{p}',t:'가족 소개',x:'「이번 명절에 우리 부모님 한번 뵐래?」',autoW:()=>[.7,.3],ch:[
+ {t:'정장을 꺼내 입고 간다',p:g=>Math.min(.85,.45+(g.st.soc-50)*.004+(g.st.self-50)*.003),ok:['「참 반듯하네」라는 말을 들었다.',{L:10,self:3,burn:3}],ko:['긴장해서 말실수를 했다. 그래도 웃어 주셨다.',{L:2,self:-3}]},{t:'아직 이르다고 한다',ok:['조금 서운해했다.',{L:-4}]}]},
+{id:'lv_money',tag:'rel',c:g=>g.f.partner&&g.m-g.pm>=6&&g.st.money<40,w:'{p}',t:'돈 문제로 다툼',x:'데이트 비용, 저축 이야기를 하다 언성이 높아졌다.',autoW:()=>[.5,.3,.2],ch:[
+ {t:'내 사정을 솔직히 말한다',ok:['서로의 형편을 알게 됐다. 통장을 같이 정리했다.',{L:4,self:-1}]},{t:'내가 더 내겠다고 한다',ok:['분위기는 풀렸지만 통장이 가볍다.',{cost:'S',L:2,self:-2}]},{t:'끝까지 따진다',ok:['며칠 연락하지 않았다.',{L:-8,burn:3}]}]},
+{id:'lv_decide',tag:'rel',c:g=>g.f.partner&&(JB[g.job].s==1||g.job=='대학생'),w:'{p}',t:'진로를 함께 상의',x:'다음 진로를 정해야 한다. 연인의 생각도 궁금하다.',autoW:()=>[.7,.3],ch:[
+ {t:'같이 이야기하며 정한다',ok:['내 편이 있다는 게 든든하다.',{L:6,self:2}]},{t:'혼자 정하고 알려 준다',ok:['「나한테는 왜 말 안 했어?」',{L:-5,self:2}]}]},
+{id:'lv_long',tag:'rel',a:[22,34],c:g=>g.f.partner&&!g.f.married&&g.m-g.pm>=6,w:'{p}',t:'장거리 연애',x:'「나 지방 발령 났어…」 이제 주말에만 볼 수 있다.',autoW:()=>[.45,.45,.1],ch:[
+ {t:'주말마다 찾아간다',ok:['기차표가 쌓인다. 그래도 얼굴을 보면 다 괜찮다.',{cost:'S',burn:3,L:7}]},{t:'영상통화로 버틴다',p:g=>Math.min(.8,.25+(g.love||50)*.006),ok:['화면 너머로도 마음은 전해졌다.',{L:3}],ko:['통화가 점점 짧아졌다.',{L:-7}]},{t:'이참에 거리를 둔다',ok:['마음이 식어 가는 게 느껴졌다.',{L:-12}]}]},
+{id:'lv_army',tag:'rel',c:g=>g.f.partner&&g.job=='군 복무',w:'{p}',t:'기다려 줄 수 있을까',x:'입대 후 첫 면회. 「기다릴게」라는 말이 고맙고 미안하다.',autoW:()=>[.75,.25],ch:[
+ {t:'매일 편지를 쓴다',ok:['편지가 서로의 버팀목이 됐다.',{L:8,soc:3}]},{t:'기다려 달라고 못 하겠다',ok:['서로 한동안 말이 없었다.',{L:-12,self:-2}]}]},
+{id:'lv_live',tag:'rel',ctx:{rent:1},a:[24,36],c:g=>g.f.partner&&!g.f.married&&!g.f.cohabit&&g.m-g.pm>=12,w:'{p}',t:'같이 살아 볼까',x:'「월세 두 번 내는 거 아깝지 않아? 우리 같이 살까?」',autoW:()=>[.4,.6],ch:[
+ {t:'같이 산다',need:{money:25},ok:['작은 집에 둘의 짐이 섞였다. 생활비가 줄었다.',{cohabit:1,h:'월세',cost:'M',L:10,hp:3}]},{t:'아직은 이르다고 한다',ok:['서로의 속도를 확인했다.',{L:-2}]}]},
+{id:'lv_jealous',tag:'rel',c:g=>g.f.partner&&g.m-g.pm>=4,w:'{p}',t:'질투',x:'「그 동기랑 왜 그렇게 자주 연락해?」',autoW:()=>[.75,.25],ch:[
+ {t:'메시지를 보여 주며 안심시킨다',ok:['오해가 풀렸다.',{L:5}]},{t:'나를 못 믿냐고 서운해한다',ok:['둘 다 마음이 상했다.',{L:-6,burn:2}]}]},
+{id:'lv_sick',tag:'rel',c:g=>g.f.partner&&g.st.health<60,w:'{p}',t:'아픈 날',x:'몸살로 누워 있는데 문 앞에 죽 한 그릇과 약 봉지가 놓여 있었다.',ch:[
+ {t:'고맙다고 전화한다',ok:['목소리만 들어도 나았다.',{L:8,health:3,hp:3}]}]},
+{id:'lv_anniv',tag:'rel',pr:3,c:g=>g.f.partner&&g.m-g.pm>=12&&g.m-g.pm<=14,w:'{p}',t:'1주년',x:'만난 지 1년이다.',autoW:()=>[.5,.5],ch:[
+ {t:'기념 여행을 떠난다',need:{money:30},ok:['1년 전 그날 이야기를 하며 웃었다.',{cost:'M',L:8,burn:-4}]},{t:'집에서 소박하게 보낸다',ok:['둘이 끓인 라면이 제일 맛있었다.',{L:5}]}]},
+{id:'lv_cool',tag:'rel',c:g=>g.f.partner&&g.m-g.pm>=18&&(g.love||50)<65,w:'{p}',t:'권태기',x:'같이 있어도 각자 휴대폰만 본다. 예전 같지 않다.',autoW:()=>[.7,.3],ch:[
+ {t:'처음 만난 곳에서 다시 데이트한다',ok:['설렘이 조금 돌아왔다.',{cost:'S',L:8}]},{t:'잠시 시간을 갖자고 한다',ok:['연락이 줄었다.',{L:-8}]}]},
+{id:'lv_break',tag:'rel',pr:5,max:3,c:g=>g.f.partner&&!g.f.married&&(g.love||50)<30&&(g.loveLowM||0)>=6,w:'{p}',t:'이별 앞에서',x:'「우리… 그만하는 게 맞는 것 같아.」',autoW:()=>[.55,.45],ch:[
+ {t:'받아들인다',ok:['한동안 아무것도 손에 잡히지 않았다.',{partner:0,mood:-6,soc:-4,self:-3}]},{t:'다시 잘해 보자고 붙잡는다',p:g=>Math.min(.6,.2+(g.st.soc-30)*.005),ok:['다시 시작하기로 했다. 이번엔 다를 거다.',{L:22}],ko:['마음은 이미 떠나 있었다.',{partner:0,mood:-8,self:-4}]}]},
+{id:'lv_home',tag:'rel',c:g=>g.f.married&&g.m-(g.wedM==null?g.m:g.wedM)>=3,w:'{p}',t:'신혼의 집안일',x:'설거지는 누가 할지, 빨래는 언제 할지. 사소한 것들이 쌓인다.',autoW:()=>[.7,.3],ch:[
+ {t:'표를 만들어 나눈다',ok:['다툼이 줄었다.',{L:5,burn:-2}]},{t:'보이는 사람이 한다',ok:['한쪽이 지쳐 갔다.',{L:-5,burn:3}]}]},
 /* 3단계: 돈 흐름 이벤트 (빚 구조·상환 비율·알바·부모 지원·장학금) */
 {id:'overdue',max:2,c:g=>(g.loans||[]).some(l=>l.type=='card'&&l.amt>50),w:'카드사',t:'연체 안내',x:'「고객님, 결제 대금이 3개월째 연체 중입니다.」 문자 한 통에 손이 차가워졌다.',ch:[
  {t:'채무 상담을 받아 본다',ok:['갚을 순서를 같이 정리했다. 숨이 조금 쉬어진다.',{repay:'repay',burn:-4,self:2,rum:'credit'}]},
@@ -635,6 +668,9 @@ function ctxAudit(){const base=()=>({age:28,job:'중견·중소',h:'월세',m:60
 /* ===== 4단계 2: 친구 호감도(bond 0~100) · 단계 · 친구가 직접 거는 선택 이벤트(바텀시트 팝업) =====
  * 단계: 아는 사이(<30) · 친구(30~59) · 절친(60+). lv는 이벤트가 열리는 최소 단계(0 아는 사이, 1 친구, 2 절친, -1 멀어짐 전용).
  * 효과의 B는 그 친구 호감도 변화, fade는 연락 끊김. 친구별로 한 번씩만 나온다(f.fu). */
+/* 친구 탭 맨 위 연인 카드: 아바타·이름·교제 기간·호감도 막대 */
+function loverCard(){const g=G;if(!g.f.partner||!g.pn)return '';const mm=g.m-(g.pm==null?g.m:g.pm),y=Math.floor(mm/12),dur=(y?y+'년 ':'')+(mm%12)+'개월';
+ return `<div class="frl" style="background:rgba(232,120,160,.08);border-radius:10px;padding:8px">${av(g.plook,44)}<div style="flex:1;min-width:0"><b>${esc(g.pn)}</b> <span class="kd">${g.f.married?'배우자':'연인'}</span> <span class="mu">${g.f.married?'결혼 '+(g.wedM!=null?Math.floor((g.m-g.wedM)/12)+1+'년차':''):'교제 '+dur}</span><div class="bd" title="호감도 ${rd(g.love||0)}"><i style="width:${clf(g.love||0)}%;background:#e5679a"></i></div></div></div>`}
 const FST=b=>b>=60?'절친':b>=30?'친구':'아는 사이',FLV=b=>b>=60?2:b>=30?1:0;
 const FEV=[
  {id:'fe_alba',lv:0,a:[20,25],c:g=>NONEARN.includes(g.job)&&!g.f.alba,t:'같이 알바할래?',x:'「{F}: 주말 카페 알바 자리가 두 개 났대. 같이 하자!」',ch:[
@@ -699,7 +735,7 @@ function incomeOf(g,noise){const j=g.job,q=g.me.q,alba=g.f.alba?(g.albaInc||60):
  return sw&&noise?base*(1-sw+2*sw*R()):base}
 function livingOf(g){const L=EC.living;let c;
  if(g.job=='군 복무')c=EC.army;else if(g.h=='본가')c=L.본가+L.본가PerQ*g.me.q;else if(g.h=='월세')c=L.월세+(g.me.rg=='서울'?EC.rent.서울:EC.rent.기타);else c=L[g.h]||L.월세;
- return Math.max(15,c+(g.f.married?EC.married:0)+(g.f.kid?EC.kid:0)+(g.f.pet?EC.pet:0))}
+ return Math.max(15,c+(g.f.married?EC.married:g.f.cohabit?-15:0)+(g.f.kid?EC.kid:0)+(g.f.pet?EC.pet:0))}
 function loanMin(g,l){const T=l.type,earn=isEarner(g);
  if(T=='student')return earn?Math.min(l.amt,Math.max(5,incomeOf(g)*EC.studentMinShare)):0; // 재학·구직 중 상환 유예
  if(T=='living')return earn?Math.min(l.amt,Math.max(3,l.amt*.03)):0;
@@ -905,7 +941,9 @@ function chg(fx,s=1){if(!fx)return;const mon=Object.keys(fx).some(k=>MONEY_KEYS.
  else if(k=='car'){const a=amtOf(v);spend(a);G.car=(G.car||0)+a*.7}
  else if(k=='fgone'){if(G.fr[v])G.fr[v].gone=1}else if(k=='jobLv')G.jobLv=(G.jobLv||0)+v;else if(k=='repay')G.repay=v;
  else if(k=='rum')addRum(v);else if(k=='job')setJob(v);else if(k=='hire')hire(typeof v=='string'?v:null);else if(k=='h')setHome(v);
- else if(k=='_b'){const f=G.fr[v[0]];f.bond=clf(f.bond+v[1])}else if(k=='leave'){startLeave(v)}else{if(k=='partner'&&v&&!G.f.partner)G.pm=G.m;if(k=='alba'&&v)G.albaInc=rr(EC.partTime[0],EC.partTime[1]);G.f[k]=v;if(k=='partner'&&!G.pn){const ps=(G.me.sex=='M'?NM_F:NM_M).filter(n=>n!=G.me.n&&!G.fr.some(f=>f.n==n));G.pn=ri(ps.length?ps:(G.me.sex=='M'?NM_F:NM_M));G.plook=genLook(G.me.sex=='M'?'F':'M')}}}
+ else if(k=='_b'){const f=G.fr[v[0]];f.bond=clf(f.bond+v[1])}else if(k=='leave'){startLeave(v)}else if(k=='L'){G.love=clf((G.love||50)+v)}
+ else if(k=='partner'&&!v){if(G.f.partner&&!G.f.married){G.f.partner=0;G.pn=null;G.plook=null;G.love=0;G.loveLowM=0;G.f.exM=G.m;G.f.cohabit=0;G.f.marTalk=0}}
+ else{if(k=='partner'&&v&&!G.f.partner){G.pm=G.m;G.love=60;G.loveLowM=0}if(k=='married'&&v&&!G.f.married)G.wedM=G.m;if(k=='alba'&&v)G.albaInc=rr(EC.partTime[0],EC.partTime[1]);G.f[k]=v;if(k=='partner'&&!G.pn){const ps=(G.me.sex=='M'?NM_F:NM_M).filter(n=>n!=G.me.n&&!G.fr.some(f=>f.n==n));G.pn=ri(ps.length?ps:(G.me.sex=='M'?NM_F:NM_M));G.plook=genLook(G.me.sex=='M'?'F':'M')}}}
  recalc();
  // 돈이 바뀐 선택은 같은 달에 재정 막대에 바로 반영한다(목표값이 바뀐 만큼 막대도 움직인다)
  if(mon){const d=finTarget(G)-tb;G.st.money=clf(G.st.money+d);if(G.yrDom)G.yrDom.add('money')}}
@@ -922,6 +960,7 @@ function tickMonth(){
  G.selfMom=(G.selfMom||0)*SR.selfAnchor.momentumDecay;
  t.burn=clf(t.burn-t.burn*(t.health<=SR.link.sickAt?.006:.012));t.self=clf(t.self+(selfAnchor(G)-t.self)*.02);t.soc=clf(t.soc+(45-t.soc)*.012-.05);
  linkTick();bondTick();
+ if(G.f.partner){G.love=clf((G.love||50)+.12+(G.st.mood-50)*.01-(G.st.burn>70?.25:0));G.loveLowM=G.love<30?(G.loveLowM||0)+1:0}
  t.health=clf(t.health+(t.burn>70?-.35:t.burn<35?.12:0)-(G.age>35?.05:0));
  t.mood=clf(t.mood+((t.soc*.3+t.self*.25+(100-t.burn)*.2+t.health*.15+t.money*.1)*.9-t.mood)*.07);
  if(JB[G.job].s==1){G.prep+=.08;G.sy+=s}
@@ -971,9 +1010,11 @@ function pickDecision(){
  const cand=PK.filter(k=>POL[k].ok(G)&&!G.done[k]&&!G.miss[k]&&!G.heard[k]);
  if(cand.length&&R()<.16+G.st.soc/500){const k=ri(cand),P=POL[k],f=ri(G.fr),fi=G.fr.indexOf(f);G.heard[k]=1;genFeed(fi,k,'요즘 알아보는 중 👀 '+P.h);
   return makeDec({id:'rumor',w:f.n,t:'지나가듯 들은 소문',x:`${f.n}이(가) 말했다. 「${P.h}」`,ch:[{t:'바로 검색해본다',act:()=>{G.rumor.push({id:++G.tid,k,ttl:8,src:f.n});startSr(G.rumor[G.rumor.length-1].id)}},{t:'일단 메모만 해둔다',act:()=>{G.rumor.push({id:++G.tid,k,ttl:8,src:f.n});addLine('메모해뒀다. 시간 날 때 알아봐야지. (서랍 확인)','n')}},{t:'그냥 흘려듣는다',act:()=>{G.miss[k]=1;addLine('그냥 흘려들었다.','n')}}]})}
+ /* 4단계 2-1: 연인이 있으면 연인 이벤트를 따로 뽑을 기회 */
+ if(G.f.partner&&R()<.3){const lv=EV.filter(e=>/^lv_|^fight$|^marry$|^baby$/.test(e.id)&&(!e.a||G.age>=e.a[0]&&G.age<=e.a[1])&&(!e.c||e.c(G))&&ctxOk(e,G)&&(G.used[e.id]||0)<(e.max||1));if(lv.length){const ev=pickW(lv.map(x=>[x,(typeof x.pr=='function'?x.pr(G):(x.pr||1))*extW(x)]));G.used[ev.id]=(G.used[ev.id]||0)+1;if(ev.on)ev.on(G);return makeDec(ev)}}
  /* 4단계 2: 친구가 거는 이벤트 */
  if(R()<(G.job=='군 복무'?.12:.22)){const fe=pickFriendEv();if(fe)return makeDec(fe)}
- const army=G.job=='군 복무',ARMY_EV=['mom','scam','envy','wedf'],ARMY_MI=['m_sns','m_rain','m_parent','m_old','m_sleep'];
+ const army=G.job=='군 복무',ARMY_EV=['mom','scam','envy','wedf','lv_army','lv_break'],ARMY_MI=['m_sns','m_rain','m_parent','m_old','m_sleep'];
  const major=EV.filter(e=>(!army||ARMY_EV.includes(e.id))&&(!e.a||G.age>=e.a[0]&&G.age<=e.a[1])&&(!e.c||e.c(G))&&ctxOk(e,G)&&(G.used[e.id]||0)<(e.max||1));
  const micro=MI.filter(e=>(!army||ARMY_MI.includes(e.id))&&(!e.c||e.c(G))&&ctxOk(e,G)&&!G.recent.includes(e.id));let ev=null;
  if(major.length&&(R()<.62||!micro.length)){ev=pickW(major.map(x=>[x,(typeof x.pr=='function'?x.pr(G):(x.pr||1))*(G.care&&x.tag&&G.care.includes(x.tag)?2.2:1)*extW(x)]));G.used[ev.id]=(G.used[ev.id]||0)+1;if(ev.on)ev.on(G)}
@@ -1207,7 +1248,7 @@ function vPlay(){const items=[];G.log.slice(0,60).forEach(l=>items.push({o:l.o,h
  <div class="hm2"><div class="pn"><h4>내 이야기 <span>친구 소식이 함께 흘러요</span></h4>${decHTML()}<div class="strm">${items.slice(0,36).map(x=>x.h).join('')}</div></div>
  <div>${ringHTML()}<div class="pn"><h4>오늘의 소식</h4>${G.feed[0]?postHTML(G.feed[0]):'<div class="mu">아직 소식이 없어요.</div>'}</div><div class="pn"><h4>인생 지도 <span>한 칸 = 1년</span></h4><div class="mp">${map}</div></div></div></div></div>${FT}<div class="cnav">${nav}</div>${modal()}`}
 modalBody=function(){if(MOD&&MOD.k=='nav'){const t=MOD.t;
- if(t=='friends'){const recent=f=>f.ping>G.m-6;const rows=G.fr.map((f,i)=>`<div class="frl">${av(f.cols,40)}<div style="flex:1;min-width:0"><b>${f.n}</b> <span class="kd">${f.gone?"연락 끊김":FST(f.bond)}</span> <span class="mu">${f.job}</span><div class="bd" title="호감도 ${rd(f.bond)}"><i style="width:${clf(f.bond)}%"></i></div></div><button data-a="ping:${i}" ${recent(f)||f.gone?`disabled title="${f.gone?"연락이 끊겼어요":"최근에 안부를 물었어요"}"`:""}>💬 안부 묻기</button></div>`).join("");const dm=G.fr.map((f,i)=>{const ls=G.log.filter(l=>l.fi===i&&/안부/.test(l.t));return ls.length?`<details class="dm"><summary>${f.n} · 안부 ${ls.length}건</summary>${ls.slice(0,6).map(l=>`<div class="lg"><span class="mu">${l.age}세 ${l.mo}월</span> ${esc(l.t)}</div>`).join('')}</details>`:''}).join('');return `<h3 class="se" style="margin:0 0 8px">친구들</h3>${rows}<h4 class="se" style="margin:14px 0 4px">안부 대화</h4>${dm||'<div class="mu">안부를 물으면 친구별로 대화가 쌓여요.</div>'}<button class="btn sec" data-a="close">닫기</button>`}
+ if(t=='friends'){const recent=f=>f.ping>G.m-6;const rows=G.fr.map((f,i)=>`<div class="frl">${av(f.cols,40)}<div style="flex:1;min-width:0"><b>${f.n}</b> <span class="kd">${f.gone?"연락 끊김":FST(f.bond)}</span> <span class="mu">${f.job}</span><div class="bd" title="호감도 ${rd(f.bond)}"><i style="width:${clf(f.bond)}%"></i></div></div><button data-a="ping:${i}" ${recent(f)||f.gone?`disabled title="${f.gone?"연락이 끊겼어요":"최근에 안부를 물었어요"}"`:""}>💬 안부 묻기</button></div>`).join("");const dm=G.fr.map((f,i)=>{const ls=G.log.filter(l=>l.fi===i&&/안부/.test(l.t));return ls.length?`<details class="dm"><summary>${f.n} · 안부 ${ls.length}건</summary>${ls.slice(0,6).map(l=>`<div class="lg"><span class="mu">${l.age}세 ${l.mo}월</span> ${esc(l.t)}</div>`).join('')}</details>`:''}).join('');return `<h3 class="se" style="margin:0 0 8px">친구들</h3>${loverCard()}${rows}<h4 class="se" style="margin:14px 0 4px">안부 대화</h4>${dm||'<div class="mu">안부를 물으면 친구별로 대화가 쌓여요.</div>'}<button class="btn sec" data-a="close">닫기</button>`}
  if(t=='stash')return `<h3 class="se" style="margin:0 0 8px">챙겨둔 것</h3>${drawerHTML()}<h4 class="se" style="margin:12px 0 4px">제도 도감</h4><div class="mu">알게 된 제도만 이름이 보여요.</div>${PK.map(k=>{const s=G.done[k]?'✅ 챙김':G.known[k]?'📌 저장':G.rumor.some(r=>r.k==k)?'⏳ 소문':G.miss[k]?'놓침':G.heard[k]?'들어봄':'';return `<div class="lg">${s?POL[k].n:'？？？'} <span class="mu">${s}</span></div>`}).join('')}<button class="btn sec" data-a="close">닫기</button>`;
  if(t=='record')return `<h3 class="se" style="margin:0 0 8px">인생 기록</h3>${G.map.map(c=>`<div class="lg"><span style="color:${moodCol(c.mood)}">●</span> <b>${c.age}세</b> ${esc(c.t)}</div>`).join('')||'<div class="mu">아직 기록된 해가 없어요.</div>'}<button class="btn" data-a="diary">일기장 전체 보기</button><button class="btn sec" data-a="close">닫기</button>`}
  return baseMB()};
