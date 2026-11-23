@@ -17,6 +17,7 @@ from fastapi.staticfiles import StaticFiles
 
 from . import db
 from .public_data import router as public_data_router
+from .youth_quiz import router as youth_quiz_router
 from .schemas import (
     LetterIn, LetterOut, PlayCreated, PlayIn, PlayPatch, PlaySummary,
     PolicyCatalog, PolicyIn, PolicyOut,
@@ -36,6 +37,7 @@ async def lifespan(_: FastAPI):
 
 app = FastAPI(title="인생그램 API", version="0.1.0", lifespan=lifespan)
 app.include_router(public_data_router)
+app.include_router(youth_quiz_router)
 
 # HTML을 file://로 직접 열어도 API를 부를 수 있게 개발 중엔 모든 출처를 허용한다.
 # 배포 시 AL_CORS_ORIGINS="https://example.com,https://www.example.com" 처럼 좁힐 것.
