@@ -344,7 +344,8 @@ const AGE_START=20,AGE_END=36,TOTAL_M=(AGE_END-AGE_START)*12;
 function ageWord(n,bare){const T=['','열','스물','서른','마흔','쉰'],O=['','하나','둘','셋','넷','다섯','여섯','일곱','여덟','아홉'],O2=['','한','두','세','네','다섯','여섯','일곱','여덟','아홉'];const t=Math.floor(n/10),o=n%10;if(bare)return(t===2&&o===0?'스물':T[t])+O[o];return(t===2&&o===0?'스무':T[t])+O2[o]}
 const LB={health:'건강',mood:'행복',soc:'관계',self:'자신감',burn:'피로'},BC={health:'#2f8f5f',mood:'#c9902a',soc:'#8a1c3b',self:'#2a6fd0',burn:'#b3312d'};
 const ROLE={health:'몸 상태. 피로가 오래 높으면 떨어져요.',mood:'요즘의 마음. 관계·자신감·피로에 따라 서서히 움직여요.',soc:'곁에 있는 사람들. 높을수록 도움이 되는 소식도 잘 들려요.',self:'스스로를 믿는 힘. 면접·시험 같은 도전에 영향.',burn:'지친 정도. 높으면 퇴사·질병 위험이 커져요.'};
-const NM_M=['도윤','민호','예준','지후','현우','태민','재윤','준서','민재','도현','시우','하준','주원','건우','지원'],NM_F=['하린','서진','소라','수아','다은','유나','채원','나연','서연','지안','하은','예린','윤서','지민','소윤'];
+/* 이름: 성별별 풀(life-stats.js의 NAMES, 2006년생 전후 인기 이름). 본인·친구·연인 모두 성별에 맞는 풀에서만 뽑는다. */
+const NM_M=window.LIFE.NAMES.m.slice(),NM_F=window.LIFE.NAMES.f.slice();
 const NM=NM_M.concat(NM_F),PN=NM,SUR=['김','이','박','최','정'];
 const RG=['서울','경기·인천','비수도권 대도시','지방 소도시'],PATHL={대학생:'대학 재학 중',직장:'고졸 후 취업 2년차',준비:'시험 준비 중'};
 const FAML=['빠듯한 집안 형편','평범한 집안 형편','여유 있는 집안 형편'];
@@ -637,7 +638,7 @@ function fy(f,init){const old=f.job;if(!init){
 function newStory(f){}
 function genFeed(fi,k,cap,kind){const f=G.fr[fi];kind=kind||(k?'info':pickW([['ach',3],['daily',4],['event',2]]));const s=kind=='ach'?ri(SNSL[f.job]):kind=='event'?ri(EVC):ri(GEN);G.feed.unshift({id:++G.pid,fi,age:G.age,m:G.m,o:++G.oc,kind,cap:cap||s[0],e:(cap&&k)?'💡📄':s[1],pc:ri(PHC),l:rr(20,320),k,cms:seedCms(fi)});G.feed=G.feed.slice(0,14)}
 function newGame(mode,fm={},as){
- const used=new Set(),pickName=s=>{const p=(s=='M'?NM_M:NM_F).filter(n=>!used.has(n));const n=ri(p.length?p:NM);used.add(n);return n};
+ const used=new Set(),pickName=s=>{const p=(s=='M'?NM_M:NM_F).filter(n=>!used.has(n));const n=ri(p.length?p:(s=='M'?NM_M:NM_F));used.add(n);return n};
  const sex0=(as&&as.sex)||(R()<.5?'M':'F'),o={sex:sex0};o.n=as?as.n:pickName(sex0);if(as)used.add(as.n);
  if(mode=='my'){if(fm.rg&&fm.rg!='r')o.rg=fm.rg;if(fm.q&&fm.q!='r')o.q={low:rr(1,2),mid:3,high:rr(4,5)}[fm.q];if(fm.path&&fm.path!='r')o.path=fm.path}
  if(as){o.rg=as.rg;o.q=as.q;o.look=as.look}
@@ -736,7 +737,7 @@ function addRum(k,src){if(!PK.includes(k)||!ctxOk(POL[k],G)||G.done[k]||G.rumor.
 function chg(fx,s=1){for(const k in fx){const v=fx[k];
  if(k=='prep')G.prep=Math.max(0,G.prep+v*s);else if(LB[k])G.st[k]=clf(G.st[k]+v*s);else if(k=='hp')G.st.mood=clf(G.st.mood+v*s*.6);else if(k=='free')G.st.burn=clf(G.st.burn-v*.4*s);
  else if(k=='money')G.cash+=v*10*s;else if(k=='debt'){G.debt+=v}else if(k=='rum')addRum(v);else if(k=='job')setJob(v);else if(k=='hire')hire(typeof v=='string'?v:null);else if(k=='h')G.h=v;
- else if(k=='_b'){const f=G.fr[v[0]];f.bond=clf(f.bond+v[1])}else if(k=='leave'){startLeave(v)}else{if(k=='partner'&&v&&!G.f.partner)G.pm=G.m;G.f[k]=v;if(k=='partner'&&!G.pn){const ps=(G.me.sex=='M'?NM_F:NM_M).filter(n=>n!=G.me.n&&!G.fr.some(f=>f.n==n));G.pn=ri(ps.length?ps:PN);G.plook=genLook(G.me.sex=='M'?'F':'M')}}}
+ else if(k=='_b'){const f=G.fr[v[0]];f.bond=clf(f.bond+v[1])}else if(k=='leave'){startLeave(v)}else{if(k=='partner'&&v&&!G.f.partner)G.pm=G.m;G.f[k]=v;if(k=='partner'&&!G.pn){const ps=(G.me.sex=='M'?NM_F:NM_M).filter(n=>n!=G.me.n&&!G.fr.some(f=>f.n==n));G.pn=ri(ps.length?ps:(G.me.sex=='M'?NM_F:NM_M));G.plook=genLook(G.me.sex=='M'?'F':'M')}}}
  if(G.cash<0){G.debt-=G.cash;G.cash=0}recalc()}
 const tone=fx=>{let s=0;for(const k in fx){const v=fx[k];if(k=='burn')s-=v;else if(['mood','hp','soc','self','health','money'].includes(k))s+=v;else if(k=='hire')s+=8}return s>1?'g':s<-1?'b':'n'};
 /* 친구 반응 알림: 방금 추가한 줄을 알림으로 표시하고 알림 대기열에 넣는다(타임라인에는 안 나오고 기록 탭에는 남음). */
@@ -1804,6 +1805,7 @@ draw();
     draw = () => {}; if (keepSave) BE.savePlay = () => {};
     const combos = []; ['M', 'F'].forEach(sx => RG.forEach(rg => [1, 2, 3, 4, 5].forEach(q => combos.push({sx, rg, q}))));
     const rows = [], t0 = performance.now();
+    let nameBad = 0; for (let i = 0; i < 300; i++) { newGame('other'); const ok = p => (p.sex === 'M' ? NM_M : NM_F).includes(p.n); if (!ok(G.me) || !G.fr.every(ok)) nameBad++; chg({partner: 1}); if ((G.me.sex === 'M' ? NM_F : NM_M).indexOf(G.pn) < 0 || G.plook.sex === G.me.sex) nameBad++; }
     for (let i = 0; i < N; i++) {
       const c = combos[i % combos.length];
       newGame('other', {}, {n: '시뮬' + i, sex: c.sx, rg: c.rg, q: c.q});
@@ -1827,6 +1829,7 @@ draw();
     const avg = a => a.length ? (a.reduce((s, x) => s + x, 0) / a.length) : 0;
     const enrolled = rows.filter(r => r.school !== '-'), grads = rows.filter(r => r.grad != null), males = rows.filter(r => r.sex === 'M');
     const lines = [];
+    lines.push(`이름·성별 불일치(300명 뽑기): ${nameBad}건`);
     lines.push(`시뮬레이션 ${N}판 (${((performance.now() - t0) / 1000).toFixed(1)}초) · 끝까지 간 판 ${rows.filter(r => r.end >= TOTAL_M).length}`);
     lines.push(`첫 선택: ` + Object.entries(by(rows, r => r.first)).map(([k, v]) => `${k} ${pct(v, N)}`).join(' · '));
     lines.push(`최종 진학: 4년제 ${pct(rows.filter(r => r.school === 'univ4').length, N)} · 전문대 ${pct(rows.filter(r => r.school === 'college').length, N)} · 진학 합계 ${pct(enrolled.length, N)} · 재수 경험 ${pct(rows.filter(r => r.retakes).length, N)}`);

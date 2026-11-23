@@ -33,6 +33,15 @@ window.LIFE = (() => {
   // [통계] 군 복무기간(육군) 18개월 — 병무청
   const ARMY_MONTHS = 18;
 
+  // [통계] 이름: 2006년생(2026년에 20세) 전후 출생신고 인기 이름 — 대법원 전자가족관계등록시스템 「이름 통계」(출생 연도별 상위 이름)
+  //   성별에 맞는 이름만 뽑는다(본인·친구·연인 공통). 지원·하늘·유진·현서처럼 남녀 모두 흔한 이름은 뺐다.
+  const NAMES = {
+    m: ['민준', '현우', '지훈', '동현', '준혁', '도현', '승민', '민재', '준영', '현준', '지호', '건우', '우진', '성민', '예준',
+        '민성', '준서', '승현', '시우', '정우', '승우', '태민', '민혁', '재현', '상현'],
+    f: ['서연', '민서', '지민', '서현', '수빈', '예은', '하은', '지우', '서윤', '채원', '윤서', '다은', '수연', '지은', '예린',
+        '민지', '은지', '소연', '예진', '가은', '지현', '혜원', '유나', '나연'],
+  };
+
   // ── 기획 값 (밸런스용) ────────────────────────────────────
 
   // [기획] 재수 선택 확률: 진학 희망자 중 약 12%. 형편이 여유로울수록 높게(형편 보정을 그대로 더한다).
@@ -102,7 +111,7 @@ window.LIFE = (() => {
   }
 
   return {
-    COLLEGE_RATE, CAREER_HOPE, GRAD_MONTHS, LEAVE_AVG_MONTHS, YOUTH, ARMY_MONTHS,
+    NAMES, COLLEGE_RATE, CAREER_HOPE, GRAD_MONTHS, LEAVE_AVG_MONTHS, YOUTH, ARMY_MONTHS,
     RETAKE_RATE, RETAKE_BONUS, Q_ADJ, LEAVE_P, LEAVE_LEN, LEAVE_AGAIN_P, COLLEGE3_P,
     DEFER_P, DEFER_MONTHS, HS_JOB_P, ARMY_FIRST_P, ARMY_LAST_AGE, ARMY_STUDENT_SPLIT,
     FAIL_W, RETAKE_SUCCESS, admitP, careerWeights, failWeights, clamp,
