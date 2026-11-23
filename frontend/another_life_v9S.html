@@ -618,7 +618,9 @@ const tst=t=>{const e=$('toast');e.textContent=t;e.style.opacity=1;clearTimeout(
 const txt=s=>(Array.isArray(s)?ri(s):s).replace(/\{f(\d|b)\}/g,(_,i)=>i=='b'?G.fr.slice().sort((a,b)=>b.bond-a.bond)[0].n:G.fr[i].n).replace(/\{p\}/g,G.pn||'연인').replace(/\{b\}/g,G.boss||'팀장');
 const mo=()=>G.m%12+1;
 const nwBar=()=>{const nw=G.cash-G.debt;return clf(nw>=0?25+.55*Math.sqrt(nw):25-2*Math.sqrt(-nw))};
-const recalc=()=>{G.st.money=nwBar()};
+/* [2.5단계 임시] 재정 막대 하한: 집안 형편 기반값 - 15 아래로는 내려가지 않는다(정식 재정 모델은 3단계) */
+const MONEY_BASE={1:20,2:28,3:35,4:45,5:55};
+const recalc=()=>{G.st.money=Math.max(nwBar(),(MONEY_BASE[G.me.q]||35)-15)};
 function genChar(o={}){const q=o.q||pickW([[1,2],[2,3],[3,4],[4,3],[5,2]]),sex=o.sex||(R()<.5?'M':'F'),look=o.look||genLook(sex);
  /* path는 백엔드 플레이 기록 계약(문자열) 때문에 남겨 둔다. 첫 진로 선택에서 정해진다. cols는 예전 코드와 호환되게 look을 가리킨다. */
  return{n:o.n,sex,rg:o.rg||ri(RG),q,path:o.path||'미정',look,cols:look}}
@@ -804,9 +806,13 @@ function pickDecision(){
  if(major.length&&(R()<.62||!micro.length)){ev=pickW(major.map(x=>[x,(typeof x.pr=='function'?x.pr(G):(x.pr||1))*(G.care&&x.tag&&G.care.includes(x.tag)?2.2:1)]));G.used[ev.id]=(G.used[ev.id]||0)+1;if(ev.on)ev.on(G)}
  else if(micro.length){ev=ri(micro);G.recent.push(ev.id);if(G.recent.length>6)G.recent.shift()}
  if(ev)makeDec(ev)}
-function makeDec(ev){G.dec={e:ev,w:txt(ev.w),t:ev.t,x:txt(ev.x),age:G.age,mo:mo(),hid:false};G.cd=rr(3,6);if(G.auto)setTimeout(()=>{if(G.dec){pickC(autoIdx(G.dec.e));draw()}},ffDelay())}
+function makeDec(ev){ev=capLocks(ev);G.dec={e:ev,w:txt(ev.w),t:ev.t,x:txt(ev.x),age:G.age,mo:mo(),hid:false};G.cd=rr(3,6);if(G.auto)setTimeout(()=>{if(G.dec){pickC(autoIdx(G.dec.e));draw()}},ffDelay())}
 const ffDelay=()=>FFN?20:700;
-const lock=c=>c.need&&Object.keys(c.need).some(k=>G.st[k]<c.need[k]);
+/* [2.5단계 임시] 재정 조건은 적힌 값의 절반만 요구한다 */
+const needV=(c,k)=>k=='money'?Math.round(c.need[k]/2):c.need[k];
+const lock=c=>c.need&&Object.keys(c.need).some(k=>G.st[k]<needV(c,k));
+/* 한 이벤트에서 잠긴 선택지는 최대 1개, 고를 수 있는 선택지는 최소 2개 */
+function capLocks(ev){if(!ev||!ev.ch)return ev;const L=ev.ch.map((c,i)=>lock(c)?i:-1).filter(i=>i>=0),allow=Math.max(0,Math.min(1,ev.ch.length-2));if(L.length<=allow)return ev;const keep=L.slice(0,allow);return Object.assign({},ev,{ch:ev.ch.map((c,i)=>L.includes(i)&&!keep.includes(i)?Object.assign({},c,{need:null}):c)})}
 function pickC(i){const d=G.dec;if(!d)return;const c=d.e.ch[i];if(lock(c))return tst('조건이 부족해 지금은 고를 수 없어요');
  G.dec=null;
  if(c.act){addLine(`${d.t} → ${c.t}.`,'q',null,'c',3);c.act();return}
@@ -883,7 +889,7 @@ function pRight(){const m=G.me;
  <div class="pn"><h4>또래들 <span>지금 이 나이에</span></h4>${peers}</div><div class="pn"><h4>정책 서랍 <span>${dr}/${PK.length}</span></h4>${drawer}</div><div class="pn"><h4>인생 지도 <span>한 칸 = 1년</span></h4><div class="mp">${map}</div><div class="mu" id="yrn" style="margin-top:6px">칸을 눌러 그해를 돌아봐요.</div></div>`}
 function modal(){if(MOD)return `<div class="ov"><div class="dc"><div class="bd">${modalBody()}</div></div></div>`;
  const d=G.dec;if(!d||d.hid)return'';
- return `<div class="ov"><div class="dc"><header><span>중대 결정</span><span>${d.age}세 · ${d.mo}월 <button class="sm" data-a="dhide">잠깐 내려 두기 ▾</button></span></header><div class="bd"><h2>${d.t}</h2><div style="color:var(--mu)">${d.w&&d.w.length<9?`<b>${d.w}</b> · `:''}${d.x}</div>${d.e.ch.map((c,i)=>`<button class="cs ${lock(c)?'dis':''}" data-a="c:${i}"><i>${i+1}</i><span>${c.t}${lock(c)?`<small>🔒 ${Object.keys(c.need).map(k=>(k=='money'?'재정':LB[k])+' '+c.need[k]+' 이상 필요').join(', ')}</small>`:''}</span></button>`).join('')}<div class="ft"><button data-a="auto">이제부터 결정을 자동으로 맡기기</button></div></div></div></div>`}
+ return `<div class="ov"><div class="dc"><header><span>중대 결정</span><span>${d.age}세 · ${d.mo}월 <button class="sm" data-a="dhide">잠깐 내려 두기 ▾</button></span></header><div class="bd"><h2>${d.t}</h2><div style="color:var(--mu)">${d.w&&d.w.length<9?`<b>${d.w}</b> · `:''}${d.x}</div>${d.e.ch.map((c,i)=>`<button class="cs ${lock(c)?'dis':''}" data-a="c:${i}"><i>${i+1}</i><span>${c.t}${lock(c)?`<small>🔒 ${Object.keys(c.need).map(k=>(k=='money'?'재정':LB[k])+' '+needV(c,k)+' 이상 필요').join(', ')}</small>`:''}</span></button>`).join('')}<div class="ft"><button data-a="auto">이제부터 결정을 자동으로 맡기기</button></div></div></div></div>`}
 function modalBodyOld(){const k=MOD.k;
  if(k=='story'){const f=G.fr[MOD.i];return `<div class="post">${av(f.cols,48)}<div><b>${f.n}</b><div class="mu">스토리 · ${f.job}</div></div></div><div class="ph" style="height:130px;background:linear-gradient(135deg,${PHC[MOD.i%6][0]},${PHC[MOD.i%6][1]})">${f.story.e}</div><p>${f.story.t}</p>${f.sr?'<div class="mu">답장을 보냈어요.</div>':`<div class="mu">답장 보내기</div><div class="chips" style="margin-top:4px">${Object.keys(TONE).map(t=>`<button class="chip" data-a="srep:${t}">${TONE[t][0]}</button>`).join('')}</div>`}<button class="btn sec" data-a="close">닫기</button>`}
  if(k=='cm'){const p=G.feed.find(x=>x.id==MOD.pid);return `<b>💬 ${G.fr[p.fi].n}에게 댓글</b><div class="ph" style="background:linear-gradient(135deg,${p.pc[0]},${p.pc[1]})">${p.e}</div><p>${p.cap}</p><div class="chips">${Object.keys(TONE).map(t=>`<button class="chip" data-a="cmt:${t}">${TONE[t][0]}</button>`).join('')}</div><button class="btn sec" data-a="close">닫기</button>`}
@@ -965,7 +971,7 @@ function logHTML(l){const t=esc(l.t),meta=`${l.age}세 ${l.mo}월`;
  if(l.k=='c')return `<div class="sm2 ${l.tn}"><span class="em">📝</span><div><div class="mu">${meta} · 나의 이야기</div>${t}</div></div>`;
  if(l.k=='u'||l.k=='me')return `<div class="sm2 ${l.tn}"><span class="em">🔔</span><div><div class="mu">${meta}</div>${t}</div></div>`;
  return `<div class="ln ${l.tn}"><span class="ag2">${meta}</span><span>${t}</span></div>`}
-function decHTML(){const d=G.dec;if(!d)return'';return `<div class="dcd"><div class="mu" style="color:var(--ac)">갈림길 · ${d.age}세 ${d.mo}월</div><h3 class="se">${esc(d.t)}</h3><div class="mu" style="font-size:14px;margin-bottom:4px">${d.w&&d.w.length<9?`<b>${esc(d.w)}</b> · `:''}${esc(d.x)}</div>${d.e.ch.map((c,i)=>`<button class="cs ${lock(c)?'dis':''}" data-a="c:${i}"><i>${i+1}</i><span>${esc(c.t)}${lock(c)?`<small>🔒 ${Object.keys(c.need).map(k=>(k=='money'?'재정':LB[k])+' '+c.need[k]+' 이상 필요').join(', ')}</small>`:''}</span></button>`).join('')}<div class="ft"><button data-a="auto">이제부터 자동으로 맡기기</button></div></div>`}
+function decHTML(){const d=G.dec;if(!d)return'';return `<div class="dcd"><div class="mu" style="color:var(--ac)">갈림길 · ${d.age}세 ${d.mo}월</div><h3 class="se">${esc(d.t)}</h3><div class="mu" style="font-size:14px;margin-bottom:4px">${d.w&&d.w.length<9?`<b>${esc(d.w)}</b> · `:''}${esc(d.x)}</div>${d.e.ch.map((c,i)=>`<button class="cs ${lock(c)?'dis':''}" data-a="c:${i}"><i>${i+1}</i><span>${esc(c.t)}${lock(c)?`<small>🔒 ${Object.keys(c.need).map(k=>(k=='money'?'재정':LB[k])+' '+needV(c,k)+' 이상 필요').join(', ')}</small>`:''}</span></button>`).join('')}<div class="ft"><button data-a="auto">이제부터 자동으로 맡기기</button></div></div>`}
 function condHTML(){const m=G.me,w=wx(),nw=rd(G.cash-G.debt);
  return `<div class="pn id"><div class="post">${av(m.cols,48)}<div style="flex:1"><div class="se" style="font-size:18px;font-weight:700">${m.n}</div><div class="mu">${G.age}세 · ${G.job} · ${G.h}</div></div><div style="text-align:center"><div style="font-size:30px;line-height:1">${w[0]}</div><div class="mu">마음 ${w[1]}</div></div></div><div class="chp">${['health','soc','self','burn'].map(k=>`<div class="chip2" title="${ROLE[k]}"><span>${LB[k]}</span><i><b style="width:${G.st[k]}%;background:${BC[k]}"></b></i><em>${rd(G.st[k])}</em></div>`).join('')}</div><div class="kv"><b>순자산</b><span style="color:${nw<0?'var(--b)':'inherit'}">${nw.toLocaleString()}만원</span></div><div class="kv"><b>빚</b>${rd(G.debt).toLocaleString()}만원</div><div class="kv"><b>챙긴 제도</b>${PK.filter(k=>G.done[k]).length}/${PK.length}</div></div>`}
 function miniCond(){const w=wx(),nw=rd(G.cash-G.debt);return `<div class="mini only-m"><span style="font-size:22px">${w[0]}</span><b>${G.me.n}</b><span class="mu">${G.job}</span><span class="mu" style="margin-left:auto">순자산 ${nw.toLocaleString()}만원 · 피로 ${rd(G.st.burn)}</span></div>`}
