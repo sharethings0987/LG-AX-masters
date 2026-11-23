@@ -69,6 +69,71 @@ window.LIFE = (() => {
   // [기획] 대학생 남성의 입대 시점 비중: 1학년 마친 뒤 / 2학년 마친 뒤
   const ARMY_STUDENT_SPLIT = {after1: .6, after2: .4};
 
+  /* ── 3단계: 경제 모델 [기획값] (단위: 만 원/월). 엔진 내부 계산용이고 화면에는 숫자로 보여 주지 않는다. ── */
+  const ECON = {
+    // 생활비(거주 형태별). 본가는 용돈·교통·통신(형편 q마다 +4), 월세는 기본 + 월세(서울/그 외)
+    living: {본가: 40, 본가PerQ: 4, 기숙사: 70, 월세: 110, 전세: 90, 자가: 90},
+    rent: {서울: 55, 기타: 40},
+    married: -20, kid: 55, pet: 8, army: 20,
+    // 부모 지원(형편 q1~q5) · 알바 수입 범위 · 장학금
+    allowance: [0, 0, 15, 30, 50, 70], partTime: [40, 80], scholarship: 25,
+    seekerAllowance: .5,         // 취준·공시생은 부모 지원의 절반(부모 지원 이벤트로 바뀜)
+    nonEarnerMaxDeficit: 30,     // 학생·취준·공시·쉬는 중: 한 달 적자는 최대 30(나머지는 가족 도움·지출 줄이기로 메운다)
+    livingLoanCap: 1200,         // 학생·구직자의 생활비 대출이 이만큼 쌓이면 그 뒤 적자는 가족이 메운다(자신감 소폭 하락)
+    armyPay: 100,                // 병장 기준 월급(평균)
+    // 직업별 연차 상승률(연)과 월 수입 변동폭(±)
+    raise: {대기업: .07, 공무원: .03, '중견·중소': .04, 스타트업: .04, 프리랜서: .03, 창업: .02},
+    swing: {프리랜서: .4, 창업: .7},
+    levelStep: .1,               // 승진·연봉 협상·이직 한 단계당 수입 +10%
+    // 빚 종류: 월 이자율, 최소 상환(규칙은 엔진 loanMin)
+    loan: {
+      student: {rate: .0014, label: '학자금'},       // 저리, 재학·구직 중 상환 유예, 취업 후 소득 비례 상환
+      living:  {rate: .0015, label: '생활비 대출'},  // 학생·구직자의 생활비 부족분
+      card:    {rate: .013,  label: '카드'},         // 직장인의 현금 부족분. 3개월 이상 밀리면 연체 이벤트
+      mortgage:{rate: .0033, label: '주택담보대출', years: 30},
+      jeonse:  {rate: .0025, label: '전세대출'},
+      private: {rate: .02,   label: '사적 대출'},
+    },
+    studentMinShare: .06,        // 취업 후 학자금 상환 = 월 수입의 6%
+    tuitionLoan: 350,            // 학자금대출 한 학기
+    // 지출·수입 규모 등급(기준 금액). 실제 금액 = 기준 × 소득 계수(월 수입/250, 0.4~1.5)
+    grade: {S: 10, M: 50, L: 200, XL: 800},
+    // 집·보증금(지역별)
+    monthlyDeposit: {서울: 1000, 기타: 500},
+    jeonseDeposit: {서울: 25000, '경기·인천': 18000, '비수도권 대도시': 14000, '지방 소도시': 9000},
+    housePrice: {서울: 60000, '경기·인천': 40000, '비수도권 대도시': 30000, '지방 소도시': 20000},
+    jeonseLoanMax: .8,           // 전세대출은 보증금의 80%까지
+    emergencyMonths: 3,          // 이만큼의 생활비를 넘는 현금은 추가 상환·저축에 쓴다
+    repayRatio: {balanced: .3, repay: .6, save: .1},
+  };
+
+  /* ── 3단계: 상태 규칙 [기획값] ── */
+  const STAT_RULES = {
+    // 재정(0~100) = 집안 형편 기반 + 순자산 점수 + 현금 흐름 점수 + 빚 부담 점수
+    finance: {
+      base: [0, 10, 18, 25, 33, 40],          // q1~q5. 30세에 절반, 35세에 1/3로 줄어든다(결혼·자가는 더 줄임)
+      nwBaselinePerYear: 250, nwBaselineFrom: 22, // 나이 기준선(만 원): 22세 0 → 해마다 +250
+      nwPosDiv: 800, nwNegDiv: 300, nwMin: -25, nwMax: 35,
+      flowDiv: 10, flowMax: 15,                // 최근 3개월 평균 흑자 10만 원당 +1 (±15)
+      burdenMul: 50, burdenMax: 20,            // 월 상환액/월 수입 × 50 (최대 -20), 유예 중 학자금은 절반
+      stableBonus: {공무원: 4},
+      approach: .15,                           // 매달 목표값 쪽으로 15%씩
+    },
+    // 상태끼리 연결(월)
+    link: {
+      stressBurden: .3, stressDeficitMonths: 3, stress: {self: -.6, burn: .5, mood: -.4},
+      cushionMonths: 6, cushion: {self: .3, burn: -.2},
+      tiredAt: 70, tired: {health: -.4, soc: -.3}, sickAt: 40,
+      lonelyAt: 30, lonely: {mood: -.4}, closeAt: 70, close: {mood: .3, self: .2},
+    },
+    // 자신감 기준점: 50 + 직업 상태 + (재정-50)×0.15 + 최근 성공·실패
+    selfAnchor: {employed: 5, stableJob: 8, longSeek: -8, resting: -10, financeMul: .15, momentumDecay: .9},
+    // 성공 가능성 표시 구간
+    chance: {high: .65, mid: .4},
+    // 상태가 극단일수록 관련 이벤트 가중치: 1 + 벗어난 정도 / 25 (기준에서 10 넘게 벗어난 만큼)
+    extremeDiv: 25, extremeFree: 10, norm: {health: 70, mood: 55, soc: 50, self: 50, burn: 35, money: 40},
+  };
+
   const clamp = p => Math.max(0, Math.min(CLAMP_MAX, p));
   const rate = rg => COLLEGE_RATE[rg] || COLLEGE_RATE.전국;
 
@@ -111,7 +176,7 @@ window.LIFE = (() => {
   }
 
   return {
-    NAMES, COLLEGE_RATE, CAREER_HOPE, GRAD_MONTHS, LEAVE_AVG_MONTHS, YOUTH, ARMY_MONTHS,
+    NAMES, ECON, STAT_RULES, COLLEGE_RATE, CAREER_HOPE, GRAD_MONTHS, LEAVE_AVG_MONTHS, YOUTH, ARMY_MONTHS,
     RETAKE_RATE, RETAKE_BONUS, Q_ADJ, LEAVE_P, LEAVE_LEN, LEAVE_AGAIN_P, COLLEGE3_P,
     DEFER_P, DEFER_MONTHS, HS_JOB_P, ARMY_FIRST_P, ARMY_LAST_AGE, ARMY_STUDENT_SPLIT,
     FAIL_W, RETAKE_SUCCESS, admitP, careerWeights, failWeights, clamp,
